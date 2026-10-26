@@ -1,0 +1,22 @@
+# Never commit supplier price feeds, staged products, real customer/creator data or secrets.
+private_staging/
+data/
+exports/
+backups/
+*.sqlite
+*.sqlite3
+*.db
+*.bak
+*.pem
+*.p12
+*.key
+.env
+.env.*
+!.env.example
+credentials.*
+secrets.*
+node_modules/
+dist/
+coverage/
+.DS_Store
+.netlify/
