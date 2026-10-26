@@ -72,3 +72,16 @@ test("All research and supplier staging remains separate from public deployment"
   const ignore=await read(".gitignore");
   assert.ok(ignore.includes("private_staging/"));
 });
+
+
+test("Creator wishlist has one delegated add handler and does not truncate choices",async()=>{
+  const js=await read("site/app.js");
+  const catalog=await read("site/catalog.js");
+  assert.ok(js.includes('document.addEventListener("click",function(e){'),"Expected delegated click handling");
+  assert.ok(js.includes('else if(wish){wishlist(Number(wish.dataset.wish));'),"Wishlist click branch must remain");
+  assert.ok(!js.includes('el("wishlistPicker").addEventListener("click"'),"Picker must not also toggle wishlist on same bubbling click");
+  assert.ok(!js.includes('.slice(0,60)'),"Wishlist picker should not drop the last six research products");
+  const sandbox={window:{}};
+  runInNewContext(catalog,sandbox,{timeout:1200});
+  assert.equal(sandbox.window.GIM_PRODUCTS.length,66);
+});
