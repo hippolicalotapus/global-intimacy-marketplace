@@ -1,0 +1,270 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-26",
+  "disclaimer": "INTERNAL PLANNING METADATA. No supplier in this file has been verified as an approved reseller or live fulfillment partner. Never publish this file as a storefront asset.",
+  "defaultControls": {
+    "resellerApproved": false,
+    "commercialPhotoPermission": false,
+    "fulfillmentApproved": false,
+    "territoriesApproved": [],
+    "realInventoryConfirmed": false,
+    "canPublish": false,
+    "canAcceptOrders": false
+  },
+  "suppliers": [
+    {
+      "id": "concorde-pro",
+      "name": "Concorde Pro",
+      "region": "France / EU",
+      "contact": "commercial2@concorde.fr",
+      "status": "onboarding_required",
+      "evidence": "Actual email reply 2026-10-26",
+      "notes": [
+        "Create account at concordepro.com to receive credentials and dealer discount schedule",
+        "CSV URL product feed stated; includes EAN, photos, descriptions, retail price recommendations, stock levels; refresh stated every 30 minutes",
+        "Existing dropship module €149 is PrestaShop-only and not suitable for this custom site without separate integration",
+        "Shopify CSV workflow described via Matrixify ($50/mo Big initial, $20/mo Basic updates) is not evidence of custom order API support",
+        "Orders reportedly dispatch 24–48 hours after payment in plain packaging",
+        "Retailer handles returns/customer claims before contacting Concorde Pro"
+      ],
+      "feed": {
+        "type": "csv_url",
+        "claimedIntervalMinutes": 30,
+        "publicDownloadAllowed": false,
+        "mapping": "needs_sample",
+        "credentialStatus": "not_provided"
+      },
+      "orderIntegration": "not_verified_for_custom_site",
+      "mediaRights": "unclear_obtain_written_permission"
+    },
+    {
+      "id": "sexy-living",
+      "name": "Sexy Living",
+      "region": "Canada",
+      "contact": "info@sexyliving.com",
+      "status": "inquiry_sent",
+      "evidence": "Sales outreach Oct 25; publicly advertised dropship program only",
+      "notes": [
+        "Canadian dropship program and Shopify option advertised",
+        "Shipping fees must be confirmed for actual destination/orders",
+        "Custom storefront integration must be separately verified"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "pending_approval",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "ep-products-canada",
+      "name": "EP Products Canada",
+      "region": "Canada",
+      "contact": "sales@epproductscanada.com",
+      "status": "inquiry_sent",
+      "evidence": "Sales outreach Oct 25",
+      "notes": [
+        "Dropship/wholesale eligibility for independent custom retail storefront requires confirmation"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "williams-trading",
+      "name": "Williams Trading",
+      "region": "US",
+      "contact": "sales@williamstradingco.com",
+      "status": "inquiry_sent",
+      "evidence": "Sales outreach Oct 25",
+      "notes": [
+        "Potential API and inventory feeds; confirm eligibility for Canadian-registered businesses and US deliveries",
+        "No account approval received"
+      ],
+      "feed": {
+        "type": "unknown_possible_api_csv"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "eldorado",
+      "name": "Eldorado Trading",
+      "region": "US",
+      "contact": "customerservice@eldorado.net",
+      "status": "inquiry_sent",
+      "evidence": "Sales outreach Oct 25",
+      "notes": [
+        "US wholesale/dropship requirements and Canada eligibility unknown"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "dreamlove",
+      "name": "Dreamlove",
+      "region": "Spain / EU",
+      "contact": "info@dreamlove.es",
+      "status": "inquiry_sent",
+      "evidence": "Sales outreach Oct 25",
+      "notes": [
+        "Large dropship-eligible catalogue advertised; validate actual SKU and territories",
+        "Need tax, duties, shipping and photos rights"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "msx-distribution",
+      "name": "MSX Distribution",
+      "region": "Italy / EU",
+      "contact": "info@msxdistribution.com",
+      "status": "acknowledged",
+      "evidence": "Automated ticket #39564 receipt Oct 25, not approval",
+      "notes": [
+        "Awaiting response with eligibility, catalogue, dropshipping, media rights and regions"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "lelo",
+      "name": "LELO",
+      "region": "International brand",
+      "contact": "retailer@lelo.com",
+      "status": "inquiry_sent",
+      "evidence": "Retailer inquiry Oct 25",
+      "notes": [
+        "Authorized retailer and regional distribution approval required"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "svakom",
+      "name": "SVAKOM",
+      "region": "International brand",
+      "contact": "sales@svakom.com",
+      "status": "inquiry_sent",
+      "evidence": "Retailer inquiry Oct 25",
+      "notes": [
+        "Awaiting authorised sales channels and dropshipping partner details"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "kiiroo",
+      "name": "Kiiroo",
+      "region": "International brand",
+      "contact": "info@kiiroo.com",
+      "status": "inquiry_sent",
+      "evidence": "Retailer inquiry Oct 25",
+      "notes": [
+        "Connected-device model specifications and resale/photography approval required"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "satisfyer",
+      "name": "Satisfyer",
+      "region": "International brand",
+      "contact": "info@satisfyer.com",
+      "status": "acknowledged",
+      "evidence": "Automated support ticket #1 received Oct 25, not approval",
+      "notes": [
+        "Auto-acknowledgment advises usual 48h response; do not treat as guaranteed deadline",
+        "Awaiting retailer eligibility and model photo rights"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "good-clean-love",
+      "name": "Good Clean Love",
+      "region": "US brand",
+      "contact": "sales@goodcleanlove.com",
+      "status": "inquiry_sent",
+      "evidence": "Policy clarification request Oct 25",
+      "notes": [
+        "Possible restriction on third-party marketplaces; do not list without affirmative permission"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "lovense",
+      "name": "Lovense",
+      "region": "International brand",
+      "contact": "Official reseller application",
+      "status": "application_pending",
+      "evidence": "No completed application confirmed",
+      "notes": [
+        "Authorized reseller status and model-specific approved connected-device specifications required"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "lovehoney-group",
+      "name": "Lovehoney Group (We-Vibe, Womanizer, Arcwave)",
+      "region": "International brand group",
+      "contact": "Official B2B enquiry form",
+      "status": "application_pending",
+      "evidence": "No completed application confirmed",
+      "notes": [
+        "Brand media library access and third-party marketplace channel permissions must be granted in writing"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    },
+    {
+      "id": "the-handy",
+      "name": "The Handy",
+      "region": "International brand",
+      "contact": "Official wholesale form",
+      "status": "application_pending",
+      "evidence": "No completed application confirmed",
+      "notes": [
+        "No completed wholesale application, seller approval, or integration credentials yet"
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "unverified"
+    }
+  ]
+}
