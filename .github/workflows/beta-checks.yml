@@ -1,0 +1,31 @@
+name: Marketplace beta checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check site/app.js
+          node --check site/catalog.js
+          node --check operations/suppliers/import-feed.mjs
+          node --check operations/suppliers/import-feed.test.mjs
+      - name: Unit tests and static smoke tests
+        run: node --test tests/site.smoke.test.mjs operations/suppliers/import-feed.test.mjs
