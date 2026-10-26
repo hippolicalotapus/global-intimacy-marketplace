@@ -12,7 +12,7 @@
 - Guest wishlist preview and gift-interest demo without accepting payment
 - Separate creator/fan interest-survey demo stored only in the current browser, not sent anywhere
 - Accessible mobile bottom navigation and desktop top navigation
-- Official approved Global Intimacy Marketplace wordmark/logo artwork (a resized copy, not a redesign)
+- Exact approved Global Intimacy Marketplace logo artwork, optimized for web and embedded in a local SVG wrapper (not redrawn)
 
 ## What is intentionally not live
 
@@ -20,7 +20,7 @@ Real creator accounts, recipient identity/address storage, multi-device account 
 
 ## Free beta deployment
 
-This is a **zero-build static site**. On Netlify, connect this private GitHub repository and select **Deploy with no build command**; publish directory is the repository root `.`. Netlify can create a free `*.netlify.app` preview URL. Do not publicize it until checking the site's content and adult-business hosting policy and running the beta checklist.
+This is a **zero-build static beta**. The public deploy directory is only `site/`; the private supplier registry and import tools in `operations/` are excluded from public hosting. On Netlify, connect this private GitHub repository and select **Deploy with no build command**; publish directory is `site` (configured in `netlify.toml`). Netlify can create a free `*.netlify.app` preview URL. Do not publicize it until checking the site's content and adult-business hosting policy and running the beta checklist.
 
 This project was rebuilt rather than exported from Replit. Do not delete Replit until backup of its database and object storage has been arranged. No private personal data from the old app is in this repository.
 
@@ -42,3 +42,11 @@ Research candidates came from the earlier `candidate_catalogue_66.csv` research 
 ## Brand
 
 **Global Intimacy Marketplace** · `globalintimacypartner@gmail.com` · Official navy/teal/copper globe-and-connection logo. The source is owned by this GitHub account. No affiliation with OnlyFans, Stripchat, Chaturbate, Fansly or device manufacturers is claimed.
+
+## Supplier compatibility
+
+See `operations/suppliers/README.md` and the 15-contact status records in `operations/suppliers/supplier-registry.json`. The local importer stages approved-source CSV/JSON data without automatically accepting wholesale prices, posting live inventory, using media, or activating checkout. The Oct 26 Concorde Pro response is recorded accurately, including the CSV refresh statement and incompatibility of its PrestaShop-only paid module with this custom site.
+
+## QA
+
+GitHub Actions runs syntax checks and Node tests on updates; see `.github/workflows/beta-checks.yml`. Testing a deployed browser/mobile experience and backend integrations remains necessary before a public invitation.
