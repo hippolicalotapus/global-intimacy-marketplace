@@ -60,16 +60,47 @@
       "name": "EP Products Canada",
       "region": "Canada",
       "contact": "sales@epproductscanada.com",
-      "status": "inquiry_sent",
-      "evidence": "Sales outreach Oct 25",
+      "status": "onboarding_required",
+      "evidence": "Human sales response Oct 26 2026, Gmail message 1a179361a47b1d42, thread 1a174584f46a5f65; sender sales@epproductscanada.com; independently cross-checked against official epproductscanada.com dropshipping and terms pages. No reseller approval.",
       "notes": [
-        "Dropship/wholesale eligibility for independent custom retail storefront requires confirmation"
+        "Dropship/wholesale eligibility for independent custom retail storefront requires confirmation",
+        "Oct 26 sales reply: register via official epproductscanada.com/account/register; business number/incorporation documentation and province-dependent tax registration requested; approval required for wholesale pricing and catalogue access.",
+        "CSV/Excel catalogue and inventory files referenced at official epproductscanada.com/pages/dropshipping; no files imported or model/SKU approvals verified.",
+        "Custom non-Shopify storefront: CSV/Excel inventory/product updates, but orders must be placed manually on supplier website; Shopify app automation not compatible with this GitHub custom site.",
+        "Sales email says Canada-only dropshipping, CAD $20/order fulfillment/shipping/handling, discreet parcels, estimated 2–5 business days from Vancouver-area warehouse. OFFICIAL SITE CONFLICT: terms and dropshipping-app page also mention USA delivery, and terms qualify $20 for up to 3 items. Do not assume USA eligibility or flat fee for larger orders; seek written clarification before any order.",
+        "Sales email says product photos/descriptions accessible after account approval and store connection; NOT an explicit commercial reproduction licence. Model-specific media rights and permitted channels still unverified.",
+        "Tester offer: buy three units of identical item for one free tester, max one per store, availability and manufacturer restrictions; official Shopify FAQ says testers intended for brick-and-mortar stores, review samples may require manufacturer approval. Eligibility for online-only store unresolved.",
+        "Defects: supplier requests photo/video plus original order number; may credit or include replacement in next order. Sales email says hygiene returns not accepted; official site terms describe RA exceptions and varying claims periods; written policy for dropship orders needed.",
+        "Official dropshipping app FAQ references manufacturer-specific SKU dropship restrictions and MAP-related pricing controls; do not assume all products or advertised pricing are eligible.",
+        "No account created, terms accepted, orders placed, product files imported, checkout enabled, or media published."
       ],
       "feed": {
-        "type": "unknown"
+        "type": "csv_excel_manual",
+        "claimedIntervalMinutes": null,
+        "publicDownloadAllowed": false,
+        "mapping": "needs_sample_and_approval",
+        "credentialStatus": "not_provided",
+        "source": "https://epproductscanada.com/pages/dropshipping"
       },
-      "orderIntegration": "unverified",
-      "mediaRights": "unverified"
+      "orderIntegration": "manual_order_placement_for_custom_site_only_pending_account_approval",
+      "mediaRights": "not_licensed_in_writing_requires_model_specific_permission",
+      "fulfillment": {
+        "emailStatedTerritories": [
+          "Canada"
+        ],
+        "territoryConflict": "Official supplier pages also mention USA; not approved for either until account/territory confirmation",
+        "statedShippingCadPerOrder": 20,
+        "feeScopeConflict": "Official terms limit CAD 20 to orders of 3 items or fewer; clarify exceptions",
+        "statedDeliveryBusinessDays": "2-5",
+        "discreetPackagingClaimed": true
+      },
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
     },
     {
       "id": "williams-trading",
