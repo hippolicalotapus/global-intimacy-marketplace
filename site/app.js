@@ -58,7 +58,7 @@
   }
   function renderPicker(){
     var q=el("wishlistSearch").value.trim().toLocaleLowerCase();
-    var filtered=products.filter(function(p){return !q||(p.name+" "+p.brand).toLocaleLowerCase().includes(q);}).slice(0,60);
+    var filtered=products.filter(function(p){return !q||(p.name+" "+p.brand).toLocaleLowerCase().includes(q);});
     el("wishlistPicker").innerHTML=filtered.map(function(p){
       var added=selected.includes(p.id);
       return '<div class="picker-item"><div><b>'+esc(p.brand+" · "+p.name)+'</b><small>'+esc(p.category)+'</small></div>'+
@@ -160,7 +160,8 @@
     el("creatorAlias").value=creatorAlias;
     el("creatorAlias").addEventListener("input",function(e){creatorAlias=safeAlias(e.target.value);saveJson("gim:creatorName",creatorAlias);renderSelection();});
     el("wishlistSearch").addEventListener("input",renderPicker);
-    el("wishlistPicker").addEventListener("click",function(e){var n=e.target.closest("[data-wish]");if(n)wishlist(Number(n.dataset.wish));});
+    // Wishlist clicks are handled by the document-level delegated handler above.
+    // A second picker-level listener would toggle a product on and immediately off.
     el("createShareLink").addEventListener("click",function(){
       var alias=safeAlias(el("creatorAlias").value);
       if(alias.length<2){notify("Enter a public creator name (at least 2 characters).");el("creatorAlias").focus();return;}
