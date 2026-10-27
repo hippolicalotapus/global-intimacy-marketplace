@@ -17,7 +17,7 @@
       "name": "Concorde Pro",
       "region": "France / EU",
       "contact": "commercial2@concorde.fr",
-      "status": "onboarding_required",
+      "status": "awaiting_supplier_clarification_and_owner_onboarding",
       "evidence": "Actual email reply 2026-10-26",
       "notes": [
         "Create account at concordepro.com to receive credentials and dealer discount schedule",
@@ -25,7 +25,8 @@
         "Existing dropship module €149 is PrestaShop-only and not suitable for this custom site without separate integration",
         "Shopify CSV workflow described via Matrixify ($50/mo Big initial, $20/mo Basic updates) is not evidence of custom order API support",
         "Orders reportedly dispatch 24–48 hours after payment in plain packaging",
-        "Retailer handles returns/customer claims before contacting Concorde Pro"
+        "Retailer handles returns/customer claims before contacting Concorde Pro",
+        "Oct 26 follow-up sent: requested EU/UK territories from Canadian retailer, custom-store dropship/manual workflow and CSV, product media rights, taxes/returns, registration documents and any costs; no PrestaShop/Shopify module purchase authorized."
       ],
       "feed": {
         "type": "csv_url",
@@ -35,7 +36,10 @@
         "credentialStatus": "not_provided"
       },
       "orderIntegration": "not_verified_for_custom_site",
-      "mediaRights": "unclear_obtain_written_permission"
+      "mediaRights": "unclear_obtain_written_permission",
+      "lastReplySentAt": "2026-10-26",
+      "lastReplySentMessageId": "1a17b6db44e5538c",
+      "nextAction": "Await supplier clarification; owner to complete registration after business details available"
     },
     {
       "id": "sexy-living",
@@ -60,7 +64,7 @@
       "name": "EP Products Canada",
       "region": "Canada",
       "contact": "sales@epproductscanada.com",
-      "status": "onboarding_required",
+      "status": "awaiting_supplier_clarification_and_owner_onboarding",
       "evidence": "Human sales response Oct 26 2026, Gmail message 1a179361a47b1d42, thread 1a174584f46a5f65; sender sales@epproductscanada.com; independently cross-checked against official epproductscanada.com dropshipping and terms pages. No reseller approval.",
       "notes": [
         "Dropship/wholesale eligibility for independent custom retail storefront requires confirmation",
@@ -72,7 +76,8 @@
         "Tester offer: buy three units of identical item for one free tester, max one per store, availability and manufacturer restrictions; official Shopify FAQ says testers intended for brick-and-mortar stores, review samples may require manufacturer approval. Eligibility for online-only store unresolved.",
         "Defects: supplier requests photo/video plus original order number; may credit or include replacement in next order. Sales email says hygiene returns not accepted; official site terms describe RA exceptions and varying claims periods; written policy for dropship orders needed.",
         "Official dropshipping app FAQ references manufacturer-specific SKU dropship restrictions and MAP-related pricing controls; do not assume all products or advertised pricing are eligible.",
-        "No account created, terms accepted, orders placed, product files imported, checkout enabled, or media published."
+        "No account created, terms accepted, orders placed, product files imported, checkout enabled, or media published.",
+        "Oct 26 follow-up sent: asked about Canadian business-number/incorporation documents, shipping fee scope and US terms, custom-store manual order process, precise commercial image rights, sample feed schema, online-only tester eligibility."
       ],
       "feed": {
         "type": "csv_excel_manual",
@@ -100,7 +105,10 @@
       "territoriesApproved": [],
       "realInventoryConfirmed": false,
       "canPublish": false,
-      "canAcceptOrders": false
+      "canAcceptOrders": false,
+      "lastReplySentAt": "2026-10-26",
+      "lastReplySentMessageId": "1a17b6daa4ec9a35",
+      "nextAction": "Await registration requirements clarification, then owner completes supplier account application"
     },
     {
       "id": "williams-trading",
