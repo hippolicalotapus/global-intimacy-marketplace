@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-26",
+  "updatedAt": "2026-10-27",
   "disclaimer": "INTERNAL PLANNING METADATA. No supplier in this file has been verified as an approved reseller or live fulfillment partner. Never publish this file as a storefront asset.",
   "defaultControls": {
     "resellerApproved": false,
@@ -17,7 +17,7 @@
       "name": "Concorde Pro",
       "region": "France / EU",
       "contact": "commercial2@concorde.fr",
-      "status": "awaiting_supplier_clarification_and_owner_onboarding",
+      "status": "registration_submitted_awaiting_supplier_review",
       "evidence": "Actual email reply 2026-10-26",
       "notes": [
         "Create account at concordepro.com to receive credentials and dealer discount schedule",
@@ -26,7 +26,8 @@
         "Shopify CSV workflow described via Matrixify ($50/mo Big initial, $20/mo Basic updates) is not evidence of custom order API support",
         "Orders reportedly dispatch 24–48 hours after payment in plain packaging",
         "Retailer handles returns/customer claims before contacting Concorde Pro",
-        "Oct 26 follow-up sent: requested EU/UK territories from Canadian retailer, custom-store dropship/manual workflow and CSV, product media rights, taxes/returns, registration documents and any costs; no PrestaShop/Shopify module purchase authorized."
+        "Oct 26 follow-up sent: requested EU/UK territories from Canadian retailer, custom-store dropship/manual workflow and CSV, product media rights, taxes/returns, registration documents and any costs; no PrestaShop/Shopify module purchase authorized.",
+        "Oct 27 2026: Owner-authorized professional registration submitted via concordepro.com/content/6-inscription-professionnel with Future création checked. Supplier site displayed 'Votre message a été envoyé avec succès à notre équipe.' No reference number. No paid services, modules, or agreements accepted. Confirmation email not yet received at time of immediate post-submit check. Await human account review and dealer credentials/discount schedule; registration submission is not reseller approval."
       ],
       "feed": {
         "type": "csv_url",
@@ -39,7 +40,14 @@
       "mediaRights": "unclear_obtain_written_permission",
       "lastReplySentAt": "2026-10-26",
       "lastReplySentMessageId": "1a17b6db44e5538c",
-      "nextAction": "Await supplier clarification; owner to complete registration after business details available"
+      "nextAction": "Await Concorde Pro human approval, account login instructions, discount schedule, country eligibility, feed access and image license; do not pay module fees.",
+      "registrationSubmittedDate": "2026-10-27",
+      "registrationConfirmation": "Votre message a été envoyé avec succès à notre équipe.",
+      "registrationEvidenceRunUrl": "https://agent.tinyfish.ai/runs/41ab1691-7883-4282-93e9-e798929879d9",
+      "registrationReceiptEmailReceived": false,
+      "resellerApproved": false,
+      "canPublish": false,
+      "canAcceptOrders": false
     },
     {
       "id": "sexy-living",
