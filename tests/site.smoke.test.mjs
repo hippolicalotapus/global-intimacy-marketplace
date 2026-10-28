@@ -83,5 +83,24 @@ test("Creator wishlist has one delegated add handler and does not truncate choic
   assert.ok(!js.includes('.slice(0,60)'),"Wishlist picker should not drop the last six research products");
   const sandbox={window:{}};
   runInNewContext(catalog,sandbox,{timeout:1200});
-  assert.equal(sandbox.window.GIM_PRODUCTS.length,66);
+  assert.equal(sandbox.window.GIM_PRODUCTS.length,73);
+});
+
+test("New companion and adult life-size research collections remain unapproved",async()=>{
+  const catalog=await read("site/catalog.js");
+  const app=await read("site/app.js");
+  const html=await read("site/index.html");
+  const sandbox={window:{}};
+  runInNewContext(catalog,sandbox,{timeout:1200});
+  const ps=sandbox.window.GIM_PRODUCTS;
+  assert.equal(ps.length,73);
+  for(const category of ["AI Companions","Life-Size Dolls","Doll Care & Parts"]){
+    assert.ok(ps.some(p=>p.category===category), "Missing category "+category);
+    assert.ok(app.includes('"'+category+'"'),"Missing navigation category "+category);
+  }
+  assert.ok(ps.some(p=>p.brand==="Realbotix"&&p.name==="Echo Full-Body Humanoid"));
+  assert.ok(ps.some(p=>p.brand==="WM Custom Dolls"));
+  assert.ok(ps.filter(p=>["AI Companions","Life-Size Dolls","Doll Care & Parts"].includes(p.category)).every(p=>p.resellerApproved===false&&p.imageApproved===false&&p.stockVerified===false&&p.priceVerified===false));
+  assert.match(html,/NEW COLLECTION UNDER RESEARCH/);
+  assert.match(html,/Not yet available to purchase, reserve, or gift/);
 });
