@@ -6,7 +6,7 @@
 
 - 18+ self-attestation (session only)
 - Responsive discovery with search, category and brand filters, sorting, detail panels
-- Research catalogue derived from the October 2026 candidate-sourcing research; all entries are explicitly **unverified and not for sale**
+- Research catalogue with 73 previews: original connected devices plus unapproved AI companion robots, adult-proportioned life-size silicone/TPE dolls, and care accessories. All entries are **unverified and not for sale**
 - Local favorites and creator wishlist editor
 - Discreet shareable public demo wishlist link based on the browser URL fragment (contains only creator stage name and selected item IDs)
 - Guest wishlist preview and gift-interest demo without accepting payment
@@ -37,7 +37,7 @@ This project was rebuilt rather than exported from Replit. Do not delete Replit 
 
 ## Source of product names
 
-Research candidates came from the earlier `candidate_catalogue_66.csv` research file. These names are **not claims of authorized dealership, availability, safety certification, current app support or pricing**. All photos use intentionally non-product abstract placeholders pending explicit commercial image rights.
+The original 66 research candidates came from the earlier `candidate_catalogue_66.csv` research file; seven companion/doll research-range entries were added October 28, 2026. These names are **not claims of authorized dealership, availability, safety certification, current app support or pricing**. All photos use intentionally non-product abstract placeholders pending explicit commercial image rights.
 
 ## Brand
 
@@ -45,7 +45,7 @@ Research candidates came from the earlier `candidate_catalogue_66.csv` research 
 
 ## Supplier compatibility
 
-See `operations/suppliers/README.md` and the 15-contact status records in `operations/suppliers/supplier-registry.json`. The local importer stages approved-source CSV/JSON data without automatically accepting wholesale prices, posting live inventory, using media, or activating checkout. The Oct 26 Concorde Pro response is recorded accurately, including the CSV refresh statement and incompatibility of its PrestaShop-only paid module with this custom site.
+See `operations/suppliers/README.md` and the 18-contact/prospect status records in `operations/suppliers/supplier-registry.json`, including three uncontacted robotics/doll leads. See `operations/suppliers/COMPANION_ROBOTICS_AND_DOLL_SOURCING.md` for category-specific adult-proportion, manufacturer-permission, customs, app-privacy and shipping gates. The local importer stages approved-source CSV/JSON data without automatically accepting wholesale prices, posting live inventory, using media, or activating checkout. The Oct 26 Concorde Pro response is recorded accurately, including the CSV refresh statement and incompatibility of its PrestaShop-only paid module with this custom site.
 
 ## QA
 
