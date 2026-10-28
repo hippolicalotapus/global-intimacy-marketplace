@@ -47,3 +47,26 @@ Expand the existing globally inclusive adult marketplace—not replace connected
 - https://www.cbsa-asfc.gc.ca/import/guide-2-eng.html
 - https://fintrac-canafe.canada.ca/intel/operation/exploitation-eng
 - https://support.stripe.com/questions/prohibited-and-restricted-business-list-faqs
+
+
+## Proposed creator-licensed made-to-order editions (not offered for sale)
+- Verified adult creator **opts in to exactly defined** likeness-in-an-intimate-object use; has a creator-side independent approval workflow. Identity/age verification belongs to independent secure providers. Scope by products, territories, duration, royalties, payment timing, publicity, revocation for future orders, existing physical goods treatment, and brand/creator reputation rights.
+- Creator supplies their OWN images or a voluntary professional 3D scan; disallow fan-sourced face uploads and any recognizable unlicensed individual; no minors or minors-resembling bodies or faces. Treat scans, voice, video and AI training materials as sensitive biometric/identity data. Require explicit separately recorded permissions for each modality, encryption, access controls, deletion timelines, breach notices, and refusal to train general AI without separate informed opt-in.
+- Creator approves 3D proof BEFORE fabrication; factory must destroy draft files after agreed retention window. Only approve adult-proportioned product, realistic full product preview and ethical, lawful imagery.
+- Premium made-to-order/limited runs are speculative; prices, deposits, refunds, units, and licensing terms cannot be quoted until written manufacturer terms and merchant processor approval.
+- **No creator agreements yet. No creators' likenesses, voices or photos have been submitted to manufacturers.** Nothing in this project implies permission from any specific creator.
+
+## Optional live one-on-one creator telepresence (R&D feasibility ONLY)
+- Future customer may book an adult-only private LIVE session after buying an authorized creator-edition doll or compatible AI humanoid. The creator can choose to activate live voice/appearance and *only manufacturer-approved safe remote functions*, if supported.
+- **Never imply current dolls/robots support remote intimate actuation or two-way video.** Ask for hardware, secure low-latency API/SDK, modularity, latency and actuators, and safety certification; no speculative feature should be marketed as working.
+- Initiate a fresh explicit creator consent for EVERY session; remote access must expire automatically; manual and hardware stop button within customer reach plus creator kill switch; strict remote control speed/torque limits, bodily safety certification and fail-safe defaults; disable control on network drop.
+- Show clear live-human vs synthetic-AI indicators. Separate and revocable permissions needed to clone or synthesize voice, face, personality or likeness in an AI companion. No default autonomous imitation when the creator is unavailable.
+- Strong adult age assurance, secure authenticated booking/payment + merchant service approval, geofencing, encrypted real-time streams, session-based keys and consent event logs. No ambient always-on camera or mic; no recording by default; explicit agreement for any capture, finite retention, strong anti-harassment/abuse rules.
+- Respect creator right to decline, pause or end sessions without penalty. Avoid any framing that a creator must perform particular intimate acts due to a product sale. Let creators set boundaries, blackout windows, rates and contact preferences; fans cannot contact without an active booking.
+- Distinguish fees: physical goods margin, optional creator licensing royalty, and a separately priced live session where the creator receives a negotiated share. Make no promises of actual revenue, integration or availability.
+
+## Contact/outreach record
+- 2026-10-28 email sent to Realbotix verified official sales@realbotix.com (Gmail id 1a182a5b47f2f871)
+- 2026-10-28 email sent to Realdoll verified official sales@realdoll.com (Gmail id 1a182a5c2bd71b75)
+- 2026-10-28 email sent to WM Custom Dolls verified official maggiexufs@gmail.com (Gmail id 1a182a5ce0898c6c)
+- The inquiries ask whether face replicas and human-in-the-loop live telepresence are possible, and explicitly avoid adult creator likeness files, financial commitments, claim of live products, or authorization to use people without consent.
