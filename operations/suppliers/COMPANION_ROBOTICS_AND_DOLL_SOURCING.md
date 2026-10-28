@@ -70,3 +70,30 @@ Expand the existing globally inclusive adult marketplace—not replace connected
 - 2026-10-28 email sent to Realdoll verified official sales@realdoll.com (Gmail id 1a182a5c2bd71b75)
 - 2026-10-28 email sent to WM Custom Dolls verified official maggiexufs@gmail.com (Gmail id 1a182a5ce0898c6c)
 - The inquiries ask whether face replicas and human-in-the-loop live telepresence are possible, and explicitly avoid adult creator likeness files, financial commitments, claim of live products, or authorization to use people without consent.
+
+
+## Two-track manufacturer program — broader standard resale independent of creator replicas (October 28, 2026)
+**Owner decision:** Every manufacturer should be evaluated both for authorized resale of its EXISTING lawful adult catalogue and, as a separate opportunity, opt-in creator face replicas/live telepresence if genuinely possible. Standard resale must not depend on the manufacturer agreeing to customized robotics. No supplier is approved without valid business and product/media/territory/fulfillment rights.
+
+| Lead | Standard catalogue / no-inventory fit | Creator custom / AI fit | Contact / status |
+|---|---|---|---|
+| SEDOLL, official TPE/silicone manufacturer | Advertises wholesale 3+ mixed models, US/EU stock, discuss dropship; **not proven single-unit** | Custom silicone heads and visual proof processes advertised; no creator rights established | sherry@sedoll.com — emailed Oct 28, 1a182b5230a36ce9 |
+| CoolMate Silicone Doll Factory | OEM & standard models; site says 1-piece *sample* MOQ only | OEM face development, AI voice claims require model demo | sales@ai-coolmate.com — emailed Oct 28, 1a182b5326b79500 |
+| YX ROBOT | Site advertises silicone doll OEM/ODM, private label and dropshipping | Custom faces and intelligent voice claimed; live third-party operator unverified | info@yxrobot.ai — emailed Oct 28, 1a182b542406edcc |
+| EvasDoll / AndyEva | Existing adult silicone models on brand site; reseller terms unknown | AI-Box and robotics headlines; actual shipping version/capability unverified | handsomechan@evasdoll.com — emailed Oct 28, 1a182b5572346c28 |
+| Sex Doll Canada (distribution, not manufacturer) | **High priority for Canada**: advertises a no-inventory wholesale program for registered businesses and a separate affiliate route; Canadian importer of record on eligible orders | May support customized manufacturer orders but creator likeness-specific product not proven | inquiries@sexdollcanada.com — emailed Oct 28, 1a182b567fb0e12f |
+| Diaoshi Industrial / Nightbae | Broad standard dolls, inflatable, silicone products, accessories and OEM | Selected production customizations; not confirmed face replica or AI | Official contact at https://sexdollmanufacturer.com/; **not yet contacted** |
+| SexDollBay (distributor, not proven manufacturer) | Advertises bulk wholesale MOQ 3+, warehouse network; single-unit dropship unverified | No verified replica or AI | service@sexdollbay.com; **not yet contacted** |
+
+**Email request in every contacted lead:** independently ask for wholesale and/or affiliate pricing and legal permission, stock feed, image rights, explicit destinations and no-inventory dropship **even if custom faces are unavailable**. Custom face proposal requires prior written creator permission and one-by-one final creator approval; no faces sent. Optional live telepresence is speculative, not a present sales feature. No quote, purchase or contract accepted.
+
+### Sources verified on 2026-10-28
+- https://www.sedoll.com/wholesale-bulk-orders/
+- https://www.sedoll.com/product/single-silicone-head/
+- https://www.ai-coolmate.com/contact-us.html
+- https://yxrobot.ai/
+- https://www.evasdoll.com/aboutUs/
+- https://sexdollcanada.com/pages/wholesale-program
+- https://sexdollcanada.com/pages/affiliate-program
+- https://sexdollmanufacturer.com/
+- https://www.sexdollbay.com/pages/wholesale-1
