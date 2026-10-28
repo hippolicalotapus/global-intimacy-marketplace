@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-27",
+  "updatedAt": "2026-10-28",
   "disclaimer": "INTERNAL PLANNING METADATA. No supplier in this file has been verified as an approved reseller or live fulfillment partner. Never publish this file as a storefront asset.",
   "defaultControls": {
     "resellerApproved": false,
@@ -17,7 +17,7 @@
       "name": "Concorde Pro",
       "region": "France / EU",
       "contact": "commercial2@concorde.fr",
-      "status": "registration_submitted_awaiting_supplier_review",
+      "status": "trade_account_activated_fulfillment_documents_pending",
       "evidence": "Actual email reply 2026-10-26",
       "notes": [
         "Create account at concordepro.com to receive credentials and dealer discount schedule",
@@ -27,7 +27,11 @@
         "Orders reportedly dispatch 24–48 hours after payment in plain packaging",
         "Retailer handles returns/customer claims before contacting Concorde Pro",
         "Oct 26 follow-up sent: requested EU/UK territories from Canadian retailer, custom-store dropship/manual workflow and CSV, product media rights, taxes/returns, registration documents and any costs; no PrestaShop/Shopify module purchase authorized.",
-        "Oct 27 2026: Owner-authorized professional registration submitted via concordepro.com/content/6-inscription-professionnel with Future création checked. Supplier site displayed 'Votre message a été envoyé avec succès à notre équipe.' No reference number. No paid services, modules, or agreements accepted. Confirmation email not yet received at time of immediate post-submit check. Await human account review and dealer credentials/discount schedule; registration submission is not reseller approval."
+        "Oct 27 2026: Owner-authorized professional registration submitted via concordepro.com/content/6-inscription-professionnel with Future création checked. Supplier site displayed 'Votre message a été envoyé avec succès à notre équipe.' No reference number. No paid services, modules, or agreements accepted. Confirmation email not yet received at time of immediate post-submit check. Await human account review and dealer credentials/discount schedule; registration submission is not reseller approval.",
+        "Oct 28 2026: ConcordePro account registration confirmed, professional discounts activated and 3-page confidential brand discount PDF received. Account access is not proof of Canadian fulfillment, permission to reproduce photos, approval for a custom storefront, or any product feed authorization. No orders placed.",
+        "Oct 28 welcome email: first order minimum EUR 50 excl VAT; payment via invoice after order preparation by bank transfer or card, not online checkout. Dispatch claimed within 48h after payment excluding weekends/holidays. Free shipping thresholds stated for metropolitan France (EUR 150 excl VAT; Paris EUR 100) and specified EU countries (EUR 300 excl VAT); Canadian/UK shipping not confirmed.",
+        "Oct 28: first order shipment requires KBIS (French company registry extract) and personal identity document. Canadian-registered business must ask sales for accepted equivalent before sharing sensitive identity documents. Do not transmit identity documents or accept terms without owner review.",
+        "Security: automated account email contained a plaintext password. Do not copy or store password in GitHub; owner should reset it via independently verified official ConcordePro website before use."
       ],
       "feed": {
         "type": "csv_url",
@@ -40,14 +44,43 @@
       "mediaRights": "unclear_obtain_written_permission",
       "lastReplySentAt": "2026-10-26",
       "lastReplySentMessageId": "1a17b6db44e5538c",
-      "nextAction": "Await Concorde Pro human approval, account login instructions, discount schedule, country eligibility, feed access and image license; do not pay module fees.",
+      "nextAction": "Owner: securely reset emailed plaintext password, then obtain written confirmation of Canadian business registration alternative to KBIS and permissible fulfillment territories, permitted custom-store channels, media licensing, tax/returns, CSV feed access and any dropship costs. Do not submit identity documents, order, publish media or enable checkout until reviewed.",
       "registrationSubmittedDate": "2026-10-27",
       "registrationConfirmation": "Votre message a été envoyé avec succès à notre équipe.",
       "registrationEvidenceRunUrl": "https://agent.tinyfish.ai/runs/41ab1691-7883-4282-93e9-e798929879d9",
-      "registrationReceiptEmailReceived": false,
+      "registrationReceiptEmailReceived": true,
       "resellerApproved": false,
       "canPublish": false,
-      "canAcceptOrders": false
+      "canAcceptOrders": false,
+      "tradeAccountActivated": true,
+      "brandDiscountScheduleReceived": true,
+      "brandDiscountScheduleConfidential": true,
+      "accountCredentialsReceived": true,
+      "credentialsStoredInRepository": false,
+      "firstOrderMinimumEurExVat": 50,
+      "firstOrderShipmentDocumentsPending": true,
+      "lastInboundAt": "2026-10-28",
+      "inboundEvidence": [
+        {
+          "date": "2026-10-28",
+          "type": "account_registration_confirmation",
+          "gmailMessageId": "1a181cc2578120fc",
+          "summary": "ConcordePro confirmed account registration and sent login details in email. Credentials deliberately excluded from registry. Sender domain concorde-admin.fr passed SPF/DMARC; separate commercial2@concorde.fr message corroborates account activation."
+        },
+        {
+          "date": "2026-10-28",
+          "type": "commercial_welcome_and_terms",
+          "gmailMessageId": "1a181cc4e7eefcaa",
+          "summary": "Authenticated sales contact Céline Benitez confirmed professional website access, first order minimum EUR 50 excluding VAT, invoice settlement by bank transfer/card, UPS shipment after payment, and first-order shipment hold until French KBIS extract and identity documentation. French and listed EU free-shipping thresholds described; Canada shipping/eligibility unconfirmed. DKIM/SPF/DMARC pass for concorde.fr."
+        },
+        {
+          "date": "2026-10-28",
+          "type": "brand_discount_schedule_received",
+          "gmailMessageId": "1a181cd2dc204cc9",
+          "attachmentFilename": "REMISES 2026.pdf",
+          "summary": "Authenticated sales contact confirmed dealer discounts active from first order; brand-level confidential discount schedule attached (three pages, no SKU/EAN inventory feed). Exact discount percentages and original PDF retained in business Gmail, not repository."
+        }
+      ]
     },
     {
       "id": "sexy-living",
