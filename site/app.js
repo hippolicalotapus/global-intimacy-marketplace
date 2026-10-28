@@ -4,7 +4,7 @@
 (function () {
   var products = Array.isArray(window.GIM_PRODUCTS) ? window.GIM_PRODUCTS : [];
   var byId = new Map(products.map(function (p) { return [p.id,p]; }));
-  var categories = ["All","Wearables","Interactive","Couples","Connected devices","Wellness"];
+  var categories = ["All","AI Companions","Life-Size Dolls","Doll Care & Parts","Wearables","Interactive","Couples","Connected devices","Wellness"];
   var brands = Array.from(new Set(products.map(function (p) {return p.brand;}))).sort();
   var activeCategory = "All", search = "", brand = "all", sort = "featured";
   var toastTimer;
@@ -16,13 +16,13 @@
   function readJson(key, fallback) {try {var raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback;}catch(e){return fallback;}}
   function saveJson(key, value) {try {localStorage.setItem(key,JSON.stringify(value));}catch(e){notify("Local storage is unavailable in this browser.");}}
   function cleanIds(value,max) {return Array.isArray(value) ? Array.from(new Set(value.map(Number).filter(function(id){return Number.isInteger(id)&&byId.has(id);}))).slice(0,max||50) : [];}
-  var favorites = cleanIds(readJson("gim:favorites",[]),66);
+  var favorites = cleanIds(readJson("gim:favorites",[]),100);
   var selected = cleanIds(readJson("gim:wishlist",[]),24);
   function safeAlias(raw) {return String(raw||"").replace(/[\u0000-\u001f<>]/g,"").trim().slice(0,36);}
   var creatorAlias = safeAlias(readJson("gim:creatorName",""));
   function notify(message) {var node=el("toast");node.textContent=message;node.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){node.classList.remove("show");},3400);}
-  function mark(p) {return p.category==="Couples"?"♡":p.category==="Interactive"?"◎":p.category==="Wearables"?"✧":p.category==="Wellness"?"◈":"✦";}
-  function visualClass(p) {return p.category==="Couples"?"visual-couples":p.category==="Interactive"?"visual-interactive":p.category==="Wellness"?"visual-wellness":"";}
+  function mark(p) {return p.category==="AI Companions"?"◇":p.category==="Life-Size Dolls"?"✧":p.category==="Doll Care & Parts"?"✳":p.category==="Couples"?"♡":p.category==="Interactive"?"◎":p.category==="Wearables"?"✧":p.category==="Wellness"?"◈":"✦";}
+  function visualClass(p) {return p.category==="AI Companions"?"visual-ai":p.category==="Life-Size Dolls"?"visual-dolls":p.category==="Doll Care & Parts"?"visual-care":p.category==="Couples"?"visual-couples":p.category==="Interactive"?"visual-interactive":p.category==="Wellness"?"visual-wellness":"";}
   function card(p) {
     var saved=favorites.includes(p.id);
     return '<article class="product-card">'+
@@ -91,7 +91,7 @@
     var p=byId.get(id);if(!p)return;
     el("modalBody").innerHTML='<div class="modal-visual">'+mark(p)+'</div><div class="modal-content"><span class="product-brand">'+esc(p.brand)+'</span>'+
       '<h2 id="modalName">'+esc(p.name)+'</h2><p>'+esc(p.researchType)+' · '+esc(p.researchFeature)+'</p>'+
-      '<p>Explore this product as a potential addition to a future collection. Device connectivity and features must be verified for this exact model before launch.</p>'+
+      '<p>Explore this product as a potential addition to a future collection. Model-specific features, materials, country eligibility and AI functions (if any) must be verified before launch.</p>'+
       '<div class="modal-notice"><b>Research candidate — not for sale.</b><br>No current price, stock, supplier authorization or photo license has been confirmed. The image is an abstract placeholder.</div>'+
       '<div class="modal-controls"><button class="button button-ghost" type="button" data-fav="'+p.id+'">'+(favorites.includes(p.id)?"♥ Saved":"♡ Save")+'</button>'+
       '<button class="button button-primary" type="button" data-wish="'+p.id+'">Add to wishlist demo</button></div></div>';
