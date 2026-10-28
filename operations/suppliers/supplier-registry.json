@@ -345,6 +345,85 @@
       },
       "orderIntegration": "unverified",
       "mediaRights": "unverified"
+    },
+    {
+      "id": "realbotix",
+      "name": "Realbotix / Echo humanoids",
+      "region": "USA; Echo deliveries advertised US only in 2027",
+      "contact": "https://www.realbotix.com/",
+      "status": "research_only_not_contacted",
+      "evidence": "Official Realbotix Echo website verified 2026-10-28; consumer US-only 2027 program, no reseller agreement",
+      "notes": [
+        "Echo Tabletop and Full-Body are conversational humanoid companion robots; do NOT advertise sexual functionality. Separate official Realbotix materials say robots are NOT capable of physical sexual acts.",
+        "Manufacturer currently describes U.S.-only deliveries beginning second half 2027, optional AI subscriptions and reservation deposits; do NOT charge or reserve products in our store.",
+        "Request B2B/reseller eligibility, legal exports and territories, demo/affiliate structure, wholesale quote, warranties, mandatory AI subscription, camera/microphone privacy/security, media licence.",
+        "Strictly adult-only for any sexual-wellness marketing context; do not infer international availability or integrations."
+      ],
+      "feed": {
+        "type": "unverified"
+      },
+      "orderIntegration": "none",
+      "mediaRights": "not licensed",
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
+    },
+    {
+      "id": "realdoll-abyss",
+      "name": "Realdoll / Abyss Creations",
+      "region": "USA; global territories unverified",
+      "contact": "https://www.realdoll.com/about-us/",
+      "status": "research_only_not_contacted",
+      "evidence": "Official Realdoll brand site verified 2026-10-28 describes silicone companions and AI-enabled companion products; no authorization",
+      "notes": [
+        "Research full-size adult silicone companions, custom builds and verified adult-function AI robotics; products must be inspected for exact make/model and truthful features.",
+        "Prior affiliate program reported in 2021, but any current reseller or affiliate eligibility must be confirmed directly with the company.",
+        "Ask for wholesale versus referral or affiliate model, permitted countries, drop-ship/made-to-order, customs, packaging, damage/warranty policy, product materials and rights to use product imagery.",
+        "Require age-adult body appearance; no childlike or minor-resembling products, titles, depictions or marketing. No celebrity/real-person likeness without rights."
+      ],
+      "feed": {
+        "type": "unverified"
+      },
+      "orderIntegration": "none",
+      "mediaRights": "not licensed",
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
+    },
+    {
+      "id": "wm-custom-dolls",
+      "name": "WM Custom Dolls — independent wholesale sourcing service",
+      "region": "Hong Kong / China; US/EU regional stock advertised, Canada eligibility unverified",
+      "contact": "https://wmcustomdolls.com/dolls/; official site states maggiexufs@gmail.com",
+      "status": "research_only_not_contacted",
+      "evidence": "WM Custom Dolls' own published wholesale and stock website verified 2026-10-28; independent supplier claims not independently audited",
+      "notes": [
+        "Offers multi-brand adult-size silicone/TPE full-size dolls, torsos and accessories, mixed wholesale orders and selected OEM/private label.",
+        "Business identity, legal status, manufacturer authorization, actual factory supply and legal product export territories must be independently verified before onboarding.",
+        "Ask about genuine single-unit dropship, custom order lead times, US/EU/Canada warehouses, landed cost and oversized freight, tax/customs, warranty, hygienic returns, materials safety and commercial image rights.",
+        "Never publish adult doll photographs until per-brand written approval and non-explicit image review; prohibit minor-resembling product shapes, imagery or descriptions.",
+        "No online order, deposit, media licence or stock feed verified."
+      ],
+      "feed": {
+        "type": "unverified"
+      },
+      "orderIntegration": "none",
+      "mediaRights": "not licensed",
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
     }
   ],
   "creatorPlatforms": [
