@@ -65,10 +65,20 @@ window.GIM_PRODUCTS = [
 ["Satisfyer","Sexy Secret (Wine Red) Connect","Wearable","App control"],
 ["Satisfyer","Strong One Ring (Blue) Connect","Couples ring","App control"],
 ["Satisfyer","Sweet Seal (Lilac) Connect","App-controlled anal","App control"],
-["Satisfyer","Trendsetter (Black) Connect","App-controlled anal","App control"]
+["Satisfyer","Trendsetter (Black) Connect","App-controlled anal","App control"],
+["Realbotix","Echo Full-Body Humanoid","AI companion robot","Conversational humanoid; physical sexual functions not claimed; distribution unapproved"],
+["Realbotix","Echo Tabletop Humanoid","AI companion robot","Conversational humanoid; distribution and delivery territory unapproved"],
+["Realdoll","AI-Enabled Companion Range","AI intimate companion","Research range only; specific model, capabilities and availability unverified"],
+["Realdoll","Full-Size Silicone Companion Range","Full-size silicone doll","Research range only; customization and fulfillment unverified"],
+["WM Custom Dolls","Full-Size Silicone Doll Range","Full-size silicone doll","Wholesale research range; adult-only models and destinations require approval"],
+["WM Custom Dolls","Full-Size TPE Doll Range","Full-size TPE doll","Wholesale research range; model suitability and destinations require approval"],
+["WM Custom Dolls","Doll Parts and Care Range","Doll accessories","Research range only; compatibility and approved supplies unverified"]
 ].map(function (v, i) {
   var c = v[2].toLowerCase();
-  var group = c.includes("wearable") ? "Wearables"
+  var group = c.includes("ai companion") || c.includes("ai intimate") ? "AI Companions"
+    : c.includes("full-size") || c.includes("doll") && !c.includes("accessories") ? "Life-Size Dolls"
+    : c.includes("accessories") ? "Doll Care & Parts"
+    : c.includes("wearable") ? "Wearables"
     : c.includes("couples") || c.includes("ring") ? "Couples"
     : c.includes("stroker") || c.includes("machine") || c.includes("interactive") ? "Interactive"
     : c.includes("anal") || c.includes("plug") ? "Wellness"
