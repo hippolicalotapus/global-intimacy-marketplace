@@ -313,5 +313,121 @@
       "orderIntegration": "unverified",
       "mediaRights": "unverified"
     }
+  ],
+  "creatorPlatforms": [
+    {
+      "id": "stripchat-stripcash",
+      "name": "Stripchat / StripCash",
+      "status": "referred_to_internal_department_awaiting_interest",
+      "lastInboundAt": "2026-10-27",
+      "contactChannel": "affiliates@stripchat.com",
+      "evidence": [
+        {
+          "date": "2026-10-26",
+          "type": "support_reply",
+          "gmailMessageId": "1a1776a027b90e5d",
+          "gmailThreadId": "1a175e483b84dd0d",
+          "summary": "StripCash support (Max) said inquiry passed to appropriate department; team will contact only if interested."
+        },
+        {
+          "date": "2026-10-27",
+          "type": "automated_survey",
+          "gmailMessageId": "1a17c9999693047a",
+          "summary": "Support satisfaction survey referencing request #25065; not a partnership decision."
+        }
+      ],
+      "notes": [
+        "No platform approval, creator membership benefit, approved external wishlist links, logo/branding rights, technical integration, or co-branded pilot confirmed."
+      ],
+      "partnershipApproved": false,
+      "externalLinksApproved": false,
+      "coBrandingApproved": false,
+      "canPublishAffiliation": false,
+      "nextAction": "Await substantive business-development response; independently verify sender and official policy before proposing a pilot."
+    },
+    {
+      "id": "fansly",
+      "name": "Fansly",
+      "status": "human_escalation_requested_no_decision",
+      "lastInboundAt": "2026-10-26",
+      "contactChannel": "support@fansly.com",
+      "evidence": [
+        {
+          "date": "2026-10-26",
+          "type": "automated_ai_support_reply",
+          "gmailMessageId": "1a175e54bc49d2f6",
+          "gmailThreadId": "1a175e494d450a00",
+          "summary": "Fansly AI agent advised requesting a human agent for business development inquiries."
+        },
+        {
+          "date": "2026-10-26",
+          "type": "outbound_followup",
+          "gmailMessageId": "1a175fefeaf483db",
+          "summary": "Requested human representative and creator partnership referral; no later substantive inbound response found."
+        }
+      ],
+      "notes": [
+        "No permission confirmed for external wishlist links, creator benefit, branding, or integration."
+      ],
+      "partnershipApproved": false,
+      "externalLinksApproved": false,
+      "coBrandingApproved": false,
+      "canPublishAffiliation": false,
+      "nextAction": "Await human support routing and written policy clarification."
+    },
+    {
+      "id": "chaturbate",
+      "name": "Chaturbate",
+      "status": "acknowledged_awaiting_human_reply",
+      "lastInboundAt": "2026-10-26",
+      "contactChannel": "affiliates@chaturbate.com",
+      "evidence": [
+        {
+          "date": "2026-10-26",
+          "type": "automated_acknowledgment",
+          "gmailMessageId": "1a175e4d5541f69f",
+          "gmailThreadId": "1a175e4898377106",
+          "summary": "Automated receipt requested broadcaster username; not a business partnership approval."
+        },
+        {
+          "date": "2026-10-27",
+          "type": "outbound_followup",
+          "gmailMessageId": "1a17b6dbe6c35985",
+          "summary": "Explained independent business inquiry and requested partnerships or policy referral; no human reply yet."
+        }
+      ],
+      "notes": [
+        "No platform approval for wishlist links, creator benefit, co-branding, or connected-device integration."
+      ],
+      "partnershipApproved": false,
+      "externalLinksApproved": false,
+      "coBrandingApproved": false,
+      "canPublishAffiliation": false,
+      "nextAction": "Await business-development routing; do not create a broadcaster account solely to satisfy support automation."
+    },
+    {
+      "id": "onlyfans",
+      "name": "OnlyFans",
+      "status": "inquiry_sent_no_reply",
+      "lastInboundAt": null,
+      "contactChannel": "media@onlyfans.com",
+      "evidence": [
+        {
+          "date": "2026-10-26",
+          "type": "outbound_inquiry",
+          "gmailMessageId": "1a175e48f645a105",
+          "gmailThreadId": "1a175e48f645a105",
+          "summary": "Proposed free creator wishlist benefit and requested official policy/partnership contact; no inbound reply found."
+        }
+      ],
+      "notes": [
+        "No platform permission, official affiliation, branding rights, or external wishlist link approval verified."
+      ],
+      "partnershipApproved": false,
+      "externalLinksApproved": false,
+      "coBrandingApproved": false,
+      "canPublishAffiliation": false,
+      "nextAction": "Await verified official response; no endorsement or partnership claims."
+    }
   ]
 }
