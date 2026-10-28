@@ -436,6 +436,196 @@
       "outreachDate": "2026-10-28",
       "outreachMessageId": "1a182a5ce0898c6c",
       "nextAction": "Await manufacturer response. Verify authorized adult creator likeness program and confirmed technical telepresence capabilities before any prototype, payment or customer marketing."
+    },
+    {
+      "id": "sedoll",
+      "name": "SEDOLL — full-size silicone/TPE custom doll manufacturer",
+      "region": "China with claimed US/EU stock",
+      "contact": "sherry@sedoll.com",
+      "status": "initial_partnership_inquiry_sent",
+      "evidence": "Official wholesale site and SE Doll customer support email on own site; initial email sent 2026-10-28, Gmail 1a182b5230a36ce9",
+      "notes": [
+        "Wholesale minimum currently advertised as 3 units (mix allowed); individual dropshipping conditional, ask supplier. Do not assume single-unit fulfillment.",
+        "Official SEDOLL materials advertise photo-based custom face and head options; prior face-sculpt proof process is manufacturer claim, not independently audited.",
+        "Potential standard catalog path even when customization or real-time AI is unavailable.",
+        "Confirm business registration prerequisite, price/feed/media rights, Canadian customs, 3-piece MOQ, adult-only product eligibility and privacy controls."
+      ],
+      "outreachMessageId": "1a182b5230a36ce9",
+      "outreachDate": "2026-10-28",
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "not verified",
+      "mediaRights": "not licensed",
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
+    },
+    {
+      "id": "coolmate",
+      "name": "CoolMate Silicone Doll Factory",
+      "region": "Shenzhen, China",
+      "contact": "sales@ai-coolmate.com",
+      "status": "initial_partnership_inquiry_sent",
+      "evidence": "Manufacturer contact and OEM page on ai-coolmate.com; initial email sent 2026-10-28, Gmail 1a182b5326b79500",
+      "notes": [
+        "Official site advertises 1-unit sample MOQ, OEM/ODM, face customization and international exports. MOQ 1 sample does not demonstrate per-order dropshipping.",
+        "AI voice / electronic smart module claims are not independent verification; need demo, specification, and safety review.",
+        "Consider existing adult-proportioned standard doll catalogue regardless of custom creator or telepresence capability.",
+        "Obtain written media, resale, feed, shipping, territory, warranty and hygiene-returns terms."
+      ],
+      "outreachMessageId": "1a182b5326b79500",
+      "outreachDate": "2026-10-28",
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "not verified",
+      "mediaRights": "not licensed",
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
+    },
+    {
+      "id": "yx-robot",
+      "name": "YX ROBOT / Dongguan Yixing Intelligent Robot",
+      "region": "Dongguan, China",
+      "contact": "info@yxrobot.ai",
+      "status": "initial_partnership_inquiry_sent",
+      "evidence": "Manufacturer official domain yxrobot.ai and Cloudflare-protected contact decode; initial email sent 2026-10-28, Gmail 1a182b542406edcc",
+      "notes": [
+        "Official company site advertises custom silicone faces and bodies, OEM/ODM, smart speech features, private-label and dropshipping; none independently production-tested.",
+        "Ask for confirmed existing AI/telepresence specifications, engineering test results, cybersecurity, product compliance, certified materials and per-SKU country eligibility.",
+        "Existing standard silicone doll models are a separate, viable sourcing track if custom creator editions unavailable.",
+        "Verify exporter legal identity and commercial image rights."
+      ],
+      "outreachMessageId": "1a182b542406edcc",
+      "outreachDate": "2026-10-28",
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "not verified",
+      "mediaRights": "not licensed",
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
+    },
+    {
+      "id": "evasdoll",
+      "name": "EvasDoll / AndyEva Intelligent Robot",
+      "region": "Dongguan, China",
+      "contact": "handsomechan@evasdoll.com",
+      "status": "initial_partnership_inquiry_sent",
+      "evidence": "Official evasdoll.com company profile and email; initial email sent 2026-10-28, Gmail 1a182b5572346c28",
+      "notes": [
+        "Company's published site offers adult silicone dolls and AI-Box related products; verify current commercially shipping AI capabilities and official catalog.",
+        "Standard catalogue reselling can be considered independently of any creator replica or telepresence functionality.",
+        "Request MOQ, genuine dropship, territories, costs and media rights, plus license and source confirmation."
+      ],
+      "outreachMessageId": "1a182b5572346c28",
+      "outreachDate": "2026-10-28",
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "not verified",
+      "mediaRights": "not licensed",
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
+    },
+    {
+      "id": "sex-doll-canada",
+      "name": "Sex Doll Canada — Canadian multi-brand distributor",
+      "region": "Toronto, Ontario, Canada",
+      "contact": "inquiries@sexdollcanada.com",
+      "status": "initial_partnership_inquiry_sent",
+      "evidence": "Official sexdollcanada.com wholesale and affiliate pages; initial email sent 2026-10-28, Gmail 1a182b567fb0e12f",
+      "notes": [
+        "Official site advertises existing wholesale and affiliate programs, multi-brand sourcing, local Toronto warehouse and Canadian customs clearance. Wholesale program says registered business already operating, so ask for prelaunch affiliate option first.",
+        "Supplier describes no-inventory retail arrangements and direct factory dropshipping for custom orders with specific exclusions; verify reseller/affiliate distinctions and customer data protections.",
+        "Could be highest-priority Canadian launch route for existing adult-proportioned models independent of custom creator editions.",
+        "Get precise margin/commission, product/media rights, ordering integration, product eligibility, tax and importer-of-record terms."
+      ],
+      "outreachMessageId": "1a182b567fb0e12f",
+      "outreachDate": "2026-10-28",
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "supplier-managed_wholesale_or_affiliate_unverified",
+      "mediaRights": "not licensed",
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
+    },
+    {
+      "id": "diaoshi",
+      "name": "Diaoshi Industrial / Nightbae",
+      "region": "Dongguan, China",
+      "contact": "https://sexdollmanufacturer.com/",
+      "status": "research_lead_not_contacted",
+      "evidence": "Manufacturer's own sexdollmanufacturer.com pages claim OEM/ODM and broad adult goods; no individually verified contact email as of 2026-10-28",
+      "notes": [
+        "Broader existing adult retail range including silicone dolls, inflatable dolls, accessories and selected OEM/ODM private-label manufacturing.",
+        "Potential standard catalogue source regardless of creator customization.",
+        "Verify factory, lawful adult-only model suitability, verified commercial media rights, MOQ, shipping and supply chain compliance.",
+        "Contact via verified official contact form after checking recipient identity."
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "not licensed",
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
+    },
+    {
+      "id": "sexdollbay",
+      "name": "SexDollBay — multi-brand wholesale distributor",
+      "region": "International warehouses claimed; supplier location unverified",
+      "contact": "service@sexdollbay.com",
+      "status": "research_lead_not_contacted",
+      "evidence": "Published wholesale page at sexdollbay.com offers MOQ 3+ and adult retailer channel, but not verified manufacturer and no correspondence yet.",
+      "notes": [
+        "Potential standard multi-brand catalog with MOQ 3+ for resellers; not proof of single-unit dropship.",
+        "Model approvals, true shipping territories, authorized dealer status, customs and image rights to be verified.",
+        "No creator likeness manufacturing or telepresence demonstrated."
+      ],
+      "feed": {
+        "type": "unknown"
+      },
+      "orderIntegration": "unverified",
+      "mediaRights": "not licensed",
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
     }
   ],
   "creatorPlatforms": [
