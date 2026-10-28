@@ -7,7 +7,7 @@ This is the rebuilt version of our **existing business concept**, not a narrower
 - Global Intimacy Marketplace name and approved artwork
 - Adults 18+ self-attestation (not identity verification)
 - Mobile-first navigation: Explore / Saved / Creators / Join; desktop responsive navigation
-- 66 research candidates across multiple connected-device brands (not approved inventory)
+- 73 research candidates across connected-device, AI companion, adult-proportioned life-size doll and care categories (not approved inventory)
 - Search, category and brand filtering, sort, product details
 - Local-only favorites and a demo creator wishlist builder
 - Public share-link demo with creator stage name and selected product IDs only; no addresses
@@ -17,15 +17,15 @@ This is the rebuilt version of our **existing business concept**, not a narrower
 
 ## Built as an internal integration tool
 
-- Fifteen supplier/manufacturer records with actual correspondence state
-- Concorde Pro 30-minute supplier CSV update claim and pending account onboarding; no false custom-site fulfillment integration
+- Eighteen supplier/manufacturer research records, including three new uncontacted companion/doll leads, with actual correspondence state
+- Concorde Pro professional account confirmed and 30-minute supplier CSV refresh claim; custom-site fulfillment and product media authorization remain unverified
 - Supplier CSV/JSON staging parser with SKU/GTIN, inventory, pricing and image URL normalization; duplicates quarantined
 - Stock/wholesale and catalog data kept out of the publicly hosted folder
 - Approval gates initialized false; no auto-publish or automatic ordering
 - Hourly Gmail monitoring updated to prioritize the new private GitHub supplier registry rather than Replit
 - GitHub validation workflow (execution results still need confirmation)
 
-## Not yet implemented or activated in the rebuilt beta
+- New adult companion and doll research banner, separate category chips and placeholders; no doll imagery, real orders or product reservations\n\n## Not yet implemented or activated in the rebuilt beta
 
 - Cloud-synced accounts, secure creator login and verification
 - Private shipping addresses, secure gift purchase/reservation, fan payment checkout
