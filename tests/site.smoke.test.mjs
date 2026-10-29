@@ -83,7 +83,7 @@ test("Creator wishlist has one delegated add handler and does not truncate choic
   assert.ok(!js.includes('.slice(0,60)'),"Wishlist picker should not drop the last six research products");
   const sandbox={window:{}};
   runInNewContext(catalog,sandbox,{timeout:1200});
-  assert.equal(sandbox.window.GIM_PRODUCTS.length,73);
+  assert.equal(sandbox.window.GIM_PRODUCTS.length,87);
 });
 
 test("New companion and adult life-size research collections remain unapproved",async()=>{
@@ -93,7 +93,7 @@ test("New companion and adult life-size research collections remain unapproved",
   const sandbox={window:{}};
   runInNewContext(catalog,sandbox,{timeout:1200});
   const ps=sandbox.window.GIM_PRODUCTS;
-  assert.equal(ps.length,73);
+  assert.equal(ps.length,87);
   for(const category of ["AI Companions","Life-Size Dolls","Doll Care & Parts"]){
     assert.ok(ps.some(p=>p.category===category), "Missing category "+category);
     assert.ok(app.includes('"'+category+'"'),"Missing navigation category "+category);
@@ -103,4 +103,26 @@ test("New companion and adult life-size research collections remain unapproved",
   assert.ok(ps.filter(p=>["AI Companions","Life-Size Dolls","Doll Care & Parts"].includes(p.category)).every(p=>p.resellerApproved===false&&p.imageApproved===false&&p.stockVerified===false&&p.priceVerified===false));
   assert.match(html,/NEW COLLECTION UNDER RESEARCH/);
   assert.match(html,/Not yet available to purchase, reserve, or gift/);
+});
+
+test("Concorde research catalogue and collection tier filters remain unpriced",async()=>{
+  const cat=await read("site/catalog.js");
+  const js=await read("site/app.js");
+  const html=await read("site/index.html");
+  const sandbox={window:{}};
+  runInNewContext(cat,sandbox,{timeout:1200});
+  const ps=sandbox.window.GIM_PRODUCTS;
+  assert.equal(ps.length,87);
+  for(const collection of ["Everyday","Premium","ULTRA"]){
+    assert.ok(ps.some(p=>p.collection===collection),"Missing collection "+collection);
+    assert.ok(html.includes('data-collection="'+collection+'"'));
+  }
+  for(const category of ["Lingerie","Essentials","Massage & Care","Games & Gifts"]){
+    assert.ok(ps.some(p=>p.category===category),"Missing category "+category);
+  }
+  assert.ok(html.includes('id="collectionFilters"'));
+  assert.ok(js.includes('el("collectionFilters").addEventListener("click"'));
+  assert.ok(js.includes('activeCollection==="All"||p.collection===activeCollection'));
+  assert.ok(ps.slice(73).every(p=>p.resellerApproved===false&&p.imageApproved===false&&p.priceVerified===false&&p.stockVerified===false));
+  assert.ok(!html.includes('action="/checkout"'));
 });
