@@ -15,3 +15,17 @@
 .product-visual.visual-dolls{background:linear-gradient(155deg,#f4e7e1,#d5aab4 60%,#916c85)}
 .product-visual.visual-care{background:linear-gradient(155deg,#d9d8ea,#a8c7ca 60%,#72a3a5)}
 @media(max-width:650px){.future-collection{padding:18px;gap:12px;align-items:flex-start;flex-wrap:wrap}.future-collection-icon{font-size:1.9rem}.future-status{margin-left:2.5rem;max-width:none}}
+
+/* Unpriced Everyday / Premium / ULTRA research merchandising controls */
+.tier-intro{display:flex;align-items:baseline;gap:16px;justify-content:space-between;flex-wrap:wrap;margin:17px 0 12px}
+.tier-intro p{margin:0;flex:1 1 400px;font-size:.83rem;line-height:1.55;color:var(--muted)}
+.tier-chooser{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0 23px}
+.tier-option{display:flex;flex-direction:column;gap:7px;align-items:flex-start;text-align:left;background:var(--paper);color:var(--navy);border:1px solid var(--line);border-radius:15px;padding:18px 15px;min-height:98px;transition:border-color .15s,box-shadow .15s}
+.tier-option strong{font-size:1.08rem;font-weight:750}
+.tier-option small{font-size:.77rem;color:var(--muted)}
+.tier-option.active{border:2px solid var(--teal);padding:17px 14px;box-shadow:0 3px 20px rgba(8,123,131,.13)}
+.tier-option.premium-option{background:linear-gradient(145deg,#f5f1eb,#e9dfd5);border-color:#d4bda9}
+.tier-option.ultra-option{background:linear-gradient(145deg,#112b39,#23434c);color:#e7c19e;border-color:#315663}
+.tier-option.ultra-option small{color:#bed0d1}
+.tier-option.ultra-option.active{border:2px solid #bf926c;padding:17px 14px;box-shadow:0 4px 18px rgba(16,43,55,.28)}
+@media(max-width:650px){.tier-chooser{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.tier-option{padding:14px 11px;min-height:81px}.tier-option.active,.tier-option.ultra-option.active{padding:13px 10px}.tier-option strong{font-size:.99rem}.tier-intro{gap:8px}}
