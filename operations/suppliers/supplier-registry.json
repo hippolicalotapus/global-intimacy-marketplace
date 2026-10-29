@@ -32,7 +32,8 @@
         "Oct 28 welcome email: first order minimum EUR 50 excl VAT; payment via invoice after order preparation by bank transfer or card, not online checkout. Dispatch claimed within 48h after payment excluding weekends/holidays. Free shipping thresholds stated for metropolitan France (EUR 150 excl VAT; Paris EUR 100) and specified EU countries (EUR 300 excl VAT); Canadian/UK shipping not confirmed.",
         "Oct 28: first order shipment requires KBIS (French company registry extract) and personal identity document. Canadian-registered business must ask sales for accepted equivalent before sharing sensitive identity documents. Do not transmit identity documents or accept terms without owner review.",
         "Security: automated account email contained a plaintext password. Do not copy or store password in GitHub; owner should reset it via independently verified official ConcordePro website before use.",
-        "Oct 28 2026: Public product categories verified at concordepro.com; 14 SKU/product-name research references staged in private operations/suppliers/concorde-public-candidates.json and displayed on public beta as unpriced abstract research preview cards. Source verification is not permission to reproduce manufacturer imagery, enable checkout, or claim synchronized inventory; official confidential CSV feed URL not yet obtained. Everyday/Premium/ULTRA grouping is provisional editorial metadata without actual supplier cost or stock."
+        "Oct 28 2026: Public product categories verified at concordepro.com; 14 SKU/product-name research references staged in private operations/suppliers/concorde-public-candidates.json and displayed on public beta as unpriced abstract research preview cards. Source verification is not permission to reproduce manufacturer imagery, enable checkout, or claim synchronized inventory; official confidential CSV feed URL not yet obtained. Everyday/Premium/ULTRA grouping is provisional editorial metadata without actual supplier cost or stock.",
+        "Oct 28 2026: Account activation follow-up sent to Céline at commercial2@concorde.fr, Gmail 1a1857ce1e66001c, requesting official SKU/EAN/stock CSV feed, written rights to photos/descriptions, permitted custom-built reseller territories including Canada/UK/EU, dropship mechanics and secure Canadian equivalent documents for KBIS. No purchase, legal terms, identity documents or paid modules authorized."
       ],
       "feed": {
         "type": "csv_url",
@@ -84,7 +85,9 @@
       ],
       "publicResearchCandidatesCount": 14,
       "publicResearchCandidateFile": "operations/suppliers/concorde-public-candidates.json",
-      "sourcePreviewOnly": true
+      "sourcePreviewOnly": true,
+      "lastFollowupMessageId": "1a1857ce1e66001c",
+      "lastFollowupAt": "2026-10-28"
     },
     {
       "id": "sexy-living",
