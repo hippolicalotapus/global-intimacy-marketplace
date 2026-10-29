@@ -7,7 +7,7 @@ This is the rebuilt version of our **existing business concept**, not a narrower
 - Global Intimacy Marketplace name and approved artwork
 - Adults 18+ self-attestation (not identity verification)
 - Mobile-first navigation: Explore / Saved / Creators / Join; desktop responsive navigation
-- 73 research candidates across connected-device, AI companion, adult-proportioned life-size doll and care categories (not approved inventory)
+- 87 research candidates across connected-device, AI companion, adult-proportioned life-size doll and care categories (not approved inventory)
 - Search, category and brand filtering, sort, product details
 - Local-only favorites and a demo creator wishlist builder
 - Public share-link demo with creator stage name and selected product IDs only; no addresses
@@ -25,7 +25,7 @@ This is the rebuilt version of our **existing business concept**, not a narrower
 - Hourly Gmail monitoring updated to prioritize the new private GitHub supplier registry rather than Replit
 - GitHub validation workflow (execution results still need confirmation)
 
-- New adult companion and doll research banner, separate category chips and placeholders; no doll imagery, real orders or product reservations\n\n## Not yet implemented or activated in the rebuilt beta
+- New Everyday/Premium/ULTRA editorial collection selector and 14 publicly verified Concorde Pro catalogue reference previews, without prices, licensed images or stock claims. New adult companion and doll research banner, separate category chips and placeholders; no doll imagery, real orders or product reservations\n\n## Not yet implemented or activated in the rebuilt beta
 
 - Cloud-synced accounts, secure creator login and verification
 - Private shipping addresses, secure gift purchase/reservation, fan payment checkout
