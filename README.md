@@ -1,12 +1,12 @@
 # Global Intimacy Marketplace — rebuilt beta
 
-**Status: pre-launch demonstration.** This is the new, independent, mobile-first Global Intimacy Marketplace storefront. It is not a checkout-enabled store. No live inventory, prices, supplier authorization, recurring marketing database, or customer orders are implied.
+**Status: pre-launch demonstration.** This is the new, independent, mobile-first Global Intimacy Marketplace storefront. It is not a checkout-enabled store. No live inventory, prices, commercial photo permission, confirmed resale-territory authorization, recurring marketing database, or customer orders are implied.
 
 ## What works in this beta
 
 - 18+ self-attestation (session only)
-- Responsive discovery with search, category and brand filters, sorting, detail panels
-- Research catalogue with 73 previews: original connected devices plus unapproved AI companion robots, adult-proportioned life-size silicone/TPE dolls, and care accessories. All entries are **unverified and not for sale**
+- Responsive discovery with functional Everyday, Premium and ULTRA provisional editorial filters, search, category and brand filters, sorting and detail panels
+- Research catalogue with 87 previews: original connected devices plus unapproved AI companion robots, adult-proportioned life-size silicone/TPE dolls, and care accessories. All entries are **unverified and not for sale**
 - Local favorites and creator wishlist editor
 - Discreet shareable public demo wishlist link based on the browser URL fragment (contains only creator stage name and selected item IDs)
 - Guest wishlist preview and gift-interest demo without accepting payment
@@ -35,9 +35,9 @@ This project was rebuilt rather than exported from Replit. Do not delete Replit 
 7. Use the approved logo in branded emails with an actual hosted HTTPS image or approved inline attachment. Do not silently replace the approved mark.
 8. Never expose supplier wholesale costs, secrets or real delivery information client-side.
 
-## Source of product names
+## Concorde Pro catalogue staging\n\nOn Oct 28, 2026 our Concorde Pro professional account was activated and a confidential brand discount schedule delivered. The new 14 public-source research preview listings are staged privately with exact supplier page/EAN references under `operations/suppliers/concorde-public-candidates.json`. They are **not a live authorized feed, for sale, licensed photos, verified stock, retail prices or confirmed fulfillment**. The official CSV feed, media permissions, allowed custom-site resale countries and Canadian documentation equivalence remain to be confirmed with Céline Benitez. No €149 PrestaShop module or Shopify Matrixify purchase has been approved.\n\n## Source of product names
 
-The original 66 research candidates came from the earlier `candidate_catalogue_66.csv` research file; seven companion/doll research-range entries were added October 28, 2026. These names are **not claims of authorized dealership, availability, safety certification, current app support or pricing**. All photos use intentionally non-product abstract placeholders pending explicit commercial image rights.
+The original 66 research candidates came from the earlier `candidate_catalogue_66.csv` research file; seven companion/doll research-range entries and 14 Concorde Pro public catalogue research previews were added October 28, 2026. These names are **not claims of authorized dealership, availability, safety certification, current app support or pricing**. All photos use intentionally non-product abstract placeholders pending explicit commercial image rights.
 
 ## Brand
 
