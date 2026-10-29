@@ -72,10 +72,28 @@ window.GIM_PRODUCTS = [
 ["Realdoll","Full-Size Silicone Companion Range","Full-size silicone doll","Research range only; customization and fulfillment unverified"],
 ["WM Custom Dolls","Full-Size Silicone Doll Range","Full-size silicone doll","Wholesale research range; adult-only models and destinations require approval"],
 ["WM Custom Dolls","Full-Size TPE Doll Range","Full-size TPE doll","Wholesale research range; model suitability and destinations require approval"],
-["WM Custom Dolls","Doll Parts and Care Range","Doll accessories","Research range only; compatibility and approved supplies unverified"]
+["WM Custom Dolls","Doll Parts and Care Range","Doll accessories","Research range only; compatibility and approved supplies unverified"],
+["Pretty Love","Hazelynn — App-Controlled Wearable","Connected wearable","Concorde Pro public product preview; verify current app compatibility"],
+["Pretty Love","August — Connected Couples Device","Connected couples","Concorde Pro public product preview; verify exact features"],
+["SVAKOM","Erica Plus — Wearable Massager","Connected wearable","Concorde Pro public product preview; check manufacturer specifications"],
+["Orgie","Organic Chamomile Intimate Gel — 100 ml","Lubricant","Water-based intimate gel; ingredient and territory checks pending"],
+["Lubrix","Nature Water-Based Lubricant — 200 ml","Lubricant","Concorde Pro public product preview; verify label and market eligibility"],
+["Lubrix","Nature Water-Based Lubricant — 100 ml","Lubricant","Concorde Pro public product preview; verify label and market eligibility"],
+["Lubrix","Toy Cleaner — 125 ml","Toy care","Accessory-care spray; composition and sale permissions unverified"],
+["Paris Hollywood","Black Floral-Lace Babydoll & Thong","Lingerie","Black floral lace apparel; sizes and variants to verify"],
+["Paris Hollywood","Lace Kimono & Matching Thong","Lingerie","Lace robe set; size and stock to verify"],
+["Secret Play Games","Mission 69 — Couples Board Game","Couples game","Concorde Pro public game preview; product availability unverified"],
+["Orgie","Acqua Croccante — Strawberry Massage Foam","Massage product","Massage mousse; ingredients and sale permissions unverified"],
+["Orgie","Acqua Croccante — Passion Fruit Massage Foam","Massage product","Massage mousse; ingredients and sale permissions unverified"],
+["pjur","Organic Flavours Cherry — 100 ml","Lubricant","Flavoured gel; verified ingredient and use labeling needed"],
+["pjur","Organic Flavours Caramel — 100 ml","Lubricant","Flavoured gel; verified ingredient and use labeling needed"]
 ].map(function (v, i) {
   var c = v[2].toLowerCase();
-  var group = c.includes("ai companion") || c.includes("ai intimate") ? "AI Companions"
+  var group = c.includes("lingerie") ? "Lingerie"
+    : c.includes("lubricant") ? "Essentials"
+    : c.includes("toy care") || c.includes("massage product") ? "Massage & Care"
+    : c.includes("couples game") ? "Games & Gifts"
+    : c.includes("ai companion") || c.includes("ai intimate") ? "AI Companions"
     : c.includes("full-size") || c.includes("doll") && !c.includes("accessories") ? "Life-Size Dolls"
     : c.includes("accessories") ? "Doll Care & Parts"
     : c.includes("wearable") ? "Wearables"
@@ -83,7 +101,9 @@ window.GIM_PRODUCTS = [
     : c.includes("stroker") || c.includes("machine") || c.includes("interactive") ? "Interactive"
     : c.includes("anal") || c.includes("plug") ? "Wellness"
     : "Connected devices";
-  return { id:i+1,brand:v[0],name:v[1],category:group,researchType:v[2],
+  var collection = group==="AI Companions" || group==="Life-Size Dolls" ? "ULTRA"
+    : group==="Interactive" || group==="Connected devices" || group==="Wearables" || group==="Couples" ? "Premium" : "Everyday";
+  return { id:i+1,brand:v[0],name:v[1],category:group,collection:collection,researchType:v[2],
     researchFeature:v[3],status:"Research candidate",imageApproved:false,
     resellerApproved:false,stockVerified:false,priceVerified:false };
 });
