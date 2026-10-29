@@ -4,9 +4,10 @@
 (function () {
   var products = Array.isArray(window.GIM_PRODUCTS) ? window.GIM_PRODUCTS : [];
   var byId = new Map(products.map(function (p) { return [p.id,p]; }));
-  var categories = ["All","AI Companions","Life-Size Dolls","Doll Care & Parts","Wearables","Interactive","Couples","Connected devices","Wellness"];
+  var categories = ["All","Lingerie","Essentials","Massage & Care","Games & Gifts","AI Companions","Life-Size Dolls","Doll Care & Parts","Wearables","Interactive","Couples","Connected devices","Wellness"];
+  var collections = ["All","Everyday","Premium","ULTRA"];
   var brands = Array.from(new Set(products.map(function (p) {return p.brand;}))).sort();
-  var activeCategory = "All", search = "", brand = "all", sort = "featured";
+  var activeCategory = "All", activeCollection = "All", search = "", brand = "all", sort = "featured";
   var toastTimer;
 
   function el(id) {return document.getElementById(id);}
@@ -31,8 +32,15 @@
       '<button type="button" class="fav-button'+(saved?" is-saved":"")+'" data-fav="'+p.id+'" aria-label="'+(saved?"Remove from":"Add to")+' saved items" aria-pressed="'+saved+'">'+(saved?"♥":"♡")+'</button>'+
       '<span class="product-mark" aria-hidden="true">'+mark(p)+'</span></div>'+
       '<div class="product-card-body"><div class="product-brand">'+esc(p.brand)+'</div><h3>'+esc(p.name)+'</h3>'+
-      '<p class="product-meta">'+esc(p.researchType)+'</p><div class="product-footer"><span class="product-status">Preview only</span>'+
+      '<p class="product-meta">'+esc(p.researchType)+' · '+esc(p.collection)+' collection</p><div class="product-footer"><span class="product-status">Preview only</span>'+
       '<button type="button" class="outline-small" data-detail="'+p.id+'">View details →</button></div></div></article>';
+  }
+  function renderCollections(){
+    el("collectionFilters").querySelectorAll("[data-collection]").forEach(function(btn){
+      var on=btn.dataset.collection===activeCollection;
+      btn.classList.toggle("active",on);
+      btn.setAttribute("aria-pressed",String(on));
+    });
   }
   function renderChips(){
     el("categoryChips").innerHTML=categories.map(function(c){return '<button type="button" data-category="'+esc(c)+'" aria-pressed="'+(activeCategory===c)+'" class="category-chip'+(activeCategory===c?" active":"")+'">'+esc(c)+'</button>';}).join("");
@@ -40,7 +48,8 @@
   function renderCatalog(){
     var q=search.toLocaleLowerCase();
     var list=products.filter(function(p){
-      return (activeCategory==="All"||p.category===activeCategory)&&
+      return (activeCollection==="All"||p.collection===activeCollection)&&
+        (activeCategory==="All"||p.category===activeCategory)&&
         (brand==="all"||p.brand===brand)&&
         (!q||(p.name+" "+p.brand+" "+p.category+" "+p.researchType+" "+p.researchFeature).toLocaleLowerCase().includes(q));
     });
@@ -49,7 +58,7 @@
     el("resultCount").textContent=list.length;
     el("productGrid").innerHTML=list.map(card).join("");
     el("emptyProducts").hidden=list.length!==0;
-    renderChips();
+    renderChips();renderCollections();
   }
   function renderFavorites(){
     var favProducts=favorites.map(function(id){return byId.get(id);}).filter(Boolean);
@@ -146,7 +155,11 @@
     el("brandSelect").addEventListener("change",function(e){brand=e.target.value;renderCatalog();});
     el("sortSelect").addEventListener("change",function(e){sort=e.target.value;renderCatalog();});
     el("categoryChips").addEventListener("click",function(e){var b=e.target.closest("[data-category]");if(b){activeCategory=b.dataset.category;renderCatalog();}});
-    el("clearFilters").addEventListener("click",function(){activeCategory="All";brand="all";search="";sort="featured";el("brandSelect").value="all";el("sortSelect").value="featured";el("searchInput").value="";renderCatalog();});
+    el("collectionFilters").addEventListener("click",function(e){
+      var b=e.target.closest("[data-collection]");
+      if(b){activeCollection=b.dataset.collection;renderCatalog();}
+    });
+    el("clearFilters").addEventListener("click",function(){activeCollection="All";activeCategory="All";brand="all";search="";sort="featured";el("brandSelect").value="all";el("sortSelect").value="featured";el("searchInput").value="";renderCatalog();});
     el("openSearchBtn").addEventListener("click",function(){location.hash="catalog";setTimeout(function(){el("searchInput").focus();},50);});
     document.addEventListener("click",function(e){
       var fav=e.target.closest("[data-fav]"),wish=e.target.closest("[data-wish]"),detail=e.target.closest("[data-detail]"),remove=e.target.closest("[data-remove]");
