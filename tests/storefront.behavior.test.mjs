@@ -16,7 +16,7 @@ async function storefront(hash = "") {
       this.classList = { add() {}, remove() {}, toggle() {} };
     }
     addEventListener(type, handler) { (this.listeners[type] ||= []).push(handler); }
-    dispatch(type, target = this) { for (const handler of this.listeners[type] || []) handler({ target }); }
+    dispatch(type, target = this) { for (const handler of this.listeners[type] || []) handler({ target, preventDefault() {} }); }
     setAttribute() {}
     removeAttribute() {}
     querySelectorAll() { return this.children || []; }
@@ -146,4 +146,33 @@ test("Store search finds the Gay and Lesbian section without assigning shopper i
   app.search("one heart");
   assert.equal(app.nodes.get("communitySearchResult").hidden, true);
   assert.equal(app.count(), 16);
+});
+
+test("Header search reaches all products from another page and clears stale filters", async () => {
+  const app = await storefront("#creators");
+  app.nodes.get("brandSelect").value = "Lovense";
+  app.nodes.get("brandSelect").dispatch("change");
+  app.search("oneheart");
+  assert.equal(app.location.hash, "results");
+  assert.equal(app.count(), 16);
+  assert.equal(app.nodes.get("brandSelect").value, "all");
+  assert.equal(app.nodes.get("activeFilterSummary").hidden, false);
+  assert.ok(app.nodes.get("activeFilterText").textContent.includes("oneheart"));
+  app.nodes.get("storeSearchForm").dispatch("submit");
+  assert.equal(app.count(), 16);
+  app.nodes.get("clearActiveFilters").dispatch("click");
+  assert.equal(app.count(), 103);
+  assert.equal(app.nodes.get("activeFilterSummary").hidden, true);
+});
+
+test("Category menu links and select controls expose the same catalogue categories", async () => {
+  const app = await storefront();
+  app.document.dispatch("click", { closest: selector => selector === "[data-browse-category]" ? { dataset: { browseCategory: "Couples" } } : null });
+  assert.equal(app.count(), 15);
+  assert.equal(app.nodes.get("categorySelect").value, "Couples");
+  assert.equal(app.nodes.get("shopMenu").open, false);
+  app.nodes.get("categorySelect").value = "ONE HEART Hoodies";
+  app.nodes.get("categorySelect").dispatch("change");
+  assert.equal(app.count(), 5);
+  assert.ok(app.nodes.get("activeFilterText").textContent.includes("ONE HEART Hoodies"));
 });
