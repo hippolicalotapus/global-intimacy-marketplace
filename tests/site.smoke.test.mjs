@@ -9,7 +9,7 @@ const read=path=>readFile(new URL(path,root),"utf8");
 
 test("All storefront files and approved logo exist in deployable site",async()=>{
   const html=await read("site/index.html");
-  const paths=["site/styles.css","site/catalog.js","site/app.js","site/assets/approved-logo.svg"];
+  const paths=["site/styles.css","site/catalog.js","site/apparel.js","site/app.js","site/assets/approved-logo.svg"];
   await Promise.all(paths.map(path=>access(new URL(path,root))));
   assert.ok(html.includes('assets/approved-logo.svg'));
   assert.ok(!html.includes("assets/approved-logo.webp"));
@@ -124,5 +124,40 @@ test("Concorde research catalogue and collection tier filters remain unpriced",a
   assert.ok(js.includes('el("collectionFilters").addEventListener("click"'));
   assert.ok(js.includes('activeCollection==="All"||p.collection===activeCollection'));
   assert.ok(ps.slice(73).every(p=>p.resellerApproved===false&&p.imageApproved===false&&p.priceVerified===false&&p.stockVerified===false));
+  assert.ok(!html.includes('action="/checkout"'));
+});
+
+test("ONE HEART 16 owner-approved image concepts augment the existing 87-item catalogue",async()=>{
+  const sandbox={window:{}};
+  runInNewContext(await read("site/catalog.js"),sandbox,{timeout:1200});
+  assert.equal(sandbox.window.GIM_PRODUCTS.length,87);
+  runInNewContext(await read("site/apparel.js"),sandbox,{timeout:1200});
+  const products=sandbox.window.GIM_PRODUCTS;
+  assert.equal(products.length,103);
+  const apparel=products.filter(p=>p.collection==="ONE HEART");
+  assert.equal(apparel.length,16);
+  assert.equal(apparel.filter(p=>p.category==="ONE HEART Hoodies").length,5);
+  assert.equal(apparel.filter(p=>p.category==="ONE HEART Art Tees").length,11);
+  assert.equal(new Set(products.map(p=>p.id)).size,103);
+  for(const p of apparel){
+    assert.equal(p.conceptImage,true);
+    assert.equal(p.priceVerified,false);
+    assert.equal(p.stockVerified,false);
+    assert.equal(p.resellerApproved,false);
+    assert.equal(p.preorderType,"nonbinding enquiry");
+    assert.ok(/^assets\/one-heart\/[a-z-]+\.webp$/.test(p.previewImage));
+    assert.ok(p.previewImageAlt.includes("not a photo"));
+    await access(new URL("site/"+p.previewImage,root));
+  }
+});
+test("Store offers ONE HEART filters and nonbinding email enquiries, no paid pre-orders",async()=>{
+  const html=await read("site/index.html"),js=await read("site/app.js");
+  assert.ok(html.includes('data-collection="ONE HEART"'));
+  assert.ok(html.includes('src="apparel.js"'));
+  assert.ok(html.includes('data-oneheart'));
+  assert.ok(js.includes("mailto:globalintimacypartner@gmail.com"));
+  assert.ok(js.includes('activeCollection="ONE HEART"'));
+  assert.ok(js.includes('p.previewImage'));
+  assert.ok(html.includes("No purchases or live stock yet."));
   assert.ok(!html.includes('action="/checkout"'));
 });

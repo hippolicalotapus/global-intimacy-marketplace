@@ -4,8 +4,8 @@
 (function () {
   var products = Array.isArray(window.GIM_PRODUCTS) ? window.GIM_PRODUCTS : [];
   var byId = new Map(products.map(function (p) { return [p.id,p]; }));
-  var categories = ["All","Lingerie","Essentials","Massage & Care","Games & Gifts","AI Companions","Life-Size Dolls","Doll Care & Parts","Wearables","Interactive","Couples","Connected devices","Wellness"];
-  var collections = ["All","Everyday","Premium","ULTRA"];
+  var categories = ["All","ONE HEART Hoodies","ONE HEART Art Tees","Lingerie","Essentials","Massage & Care","Games & Gifts","AI Companions","Life-Size Dolls","Doll Care & Parts","Wearables","Interactive","Couples","Connected devices","Wellness"];
+  var collections = ["All","Everyday","Premium","ULTRA","ONE HEART"];
   var brands = Array.from(new Set(products.map(function (p) {return p.brand;}))).sort();
   var activeCategory = "All", activeCollection = "All", search = "", brand = "all", sort = "featured";
   var toastTimer;
@@ -22,18 +22,24 @@
   function safeAlias(raw) {return String(raw||"").replace(/[\u0000-\u001f<>]/g,"").trim().slice(0,36);}
   var creatorAlias = safeAlias(readJson("gim:creatorName",""));
   function notify(message) {var node=el("toast");node.textContent=message;node.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){node.classList.remove("show");},3400);}
+  function enquiryUrl(p) {
+    var subject="Pre-order enquiry — "+p.brand+" · "+p.name;
+    var body="Hello Global Intimacy Marketplace,\n\nI would like information about the potential pre-order of: "+p.brand+" · "+p.name+" (preview ID "+p.id+").\n\nPlease contact me when legal availability, manufacturer approval, pricing, production, shipping and delivery information are confirmed. I understand this email is an enquiry only: I am NOT placing a paid, binding, reserved or guaranteed order, and no delivery date has been promised.\n\nCountry / region: \nQuantity of interest (optional): \n\nThank you.";
+    return "mailto:globalintimacypartner@gmail.com?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body);
+  }
   function mark(p) {return p.category==="AI Companions"?"◇":p.category==="Life-Size Dolls"?"✧":p.category==="Doll Care & Parts"?"✳":p.category==="Couples"?"♡":p.category==="Interactive"?"◎":p.category==="Wearables"?"✧":p.category==="Wellness"?"◈":"✦";}
   function visualClass(p) {return p.category==="AI Companions"?"visual-ai":p.category==="Life-Size Dolls"?"visual-dolls":p.category==="Doll Care & Parts"?"visual-care":p.category==="Couples"?"visual-couples":p.category==="Interactive"?"visual-interactive":p.category==="Wellness"?"visual-wellness":"";}
   function card(p) {
     var saved=favorites.includes(p.id);
     return '<article class="product-card">'+
-      '<div class="product-visual '+visualClass(p)+'">'+
+      '<div class="product-visual '+(p.previewImage?"visual-oneheart ":"")+visualClass(p)+'">'+
       '<span class="tag">'+esc(p.category)+'</span>'+
       '<button type="button" class="fav-button'+(saved?" is-saved":"")+'" data-fav="'+p.id+'" aria-label="'+(saved?"Remove from":"Add to")+' saved items" aria-pressed="'+saved+'">'+(saved?"♥":"♡")+'</button>'+
-      '<span class="product-mark" aria-hidden="true">'+mark(p)+'</span></div>'+
+      '<span class="product-mark" aria-hidden="true">'+(p.previewImage?'<img class="product-preview-image" src="'+esc(p.previewImage)+'" alt="'+esc(p.previewImageAlt)+'" loading="lazy" decoding="async" width="307" height="438">' : mark(p))+'</span></div>'+
       '<div class="product-card-body"><div class="product-brand">'+esc(p.brand)+'</div><h3>'+esc(p.name)+'</h3>'+
       '<p class="product-meta">'+esc(p.researchType)+' · '+esc(p.collection)+' collection</p><div class="product-footer"><span class="product-status">Preview only</span>'+
-      '<button type="button" class="outline-small" data-detail="'+p.id+'">View details →</button></div></div></article>';
+      '<button type="button" class="outline-small" data-detail="'+p.id+'">View details →</button></div>'+
+      '<a class="preorder-link" href="'+esc(enquiryUrl(p))+'" aria-label="Email a nonbinding pre-order enquiry for '+esc(p.name)+'">Ask about pre-order ↗</a></div></article>';
   }
   function renderCollections(){
     el("collectionFilters").querySelectorAll("[data-collection]").forEach(function(btn){
@@ -98,12 +104,13 @@
   }
   function details(id){
     var p=byId.get(id);if(!p)return;
-    el("modalBody").innerHTML='<div class="modal-visual">'+mark(p)+'</div><div class="modal-content"><span class="product-brand">'+esc(p.brand)+'</span>'+
+    el("modalBody").innerHTML='<div class="modal-visual'+(p.previewImage?" with-preview":"")+'">'+(p.previewImage?'<img src="'+esc(p.previewImage)+'" alt="'+esc(p.previewImageAlt)+'">':mark(p))+'</div><div class="modal-content"><span class="product-brand">'+esc(p.brand)+'</span>'+
       '<h2 id="modalName">'+esc(p.name)+'</h2><p>'+esc(p.researchType)+' · '+esc(p.researchFeature)+'</p>'+
-      '<p>Explore this product as a potential addition to a future collection. Model-specific features, materials, country eligibility and AI functions (if any) must be verified before launch.</p>'+
-      '<div class="modal-notice"><b>Research candidate — not for sale.</b><br>No current price, stock, supplier authorization or photo license has been confirmed. The image is an abstract placeholder.</div>'+
+      '<p>'+(p.conceptImage?"This is an approved ONE HEART lookbook concept, not a manufactured product. Final fabric, sizing, colour accuracy and print quality require factory sampling.":"Explore this potential future product. Model-specific features, materials, territories and available stock must be verified before any sale.")+'</p>'+
+      '<div class="modal-notice"><b>Pre-order enquiry only — not a binding order.</b><br>No payment or reservation will be taken. Prices, stock, production and delivery are unconfirmed. '+(p.conceptImage?"Image is an AI lookbook mockup, not a production-ready print file.":"Manufacturer resale and product-photo rights remain under review; abstract placeholder shown.")+'</div>'+
       '<div class="modal-controls"><button class="button button-ghost" type="button" data-fav="'+p.id+'">'+(favorites.includes(p.id)?"♥ Saved":"♡ Save")+'</button>'+
-      '<button class="button button-primary" type="button" data-wish="'+p.id+'">Add to wishlist demo</button></div></div>';
+      '<button class="button button-ghost" type="button" data-wish="'+p.id+'">Add to wishlist demo</button>'+
+      '<a class="button button-primary" href="'+esc(enquiryUrl(p))+'">Ask about pre-order</a></div></div>';
     el("productDialog").showModal();
   }
   function encodeShare(obj){
@@ -155,6 +162,7 @@
     el("brandSelect").addEventListener("change",function(e){brand=e.target.value;renderCatalog();});
     el("sortSelect").addEventListener("change",function(e){sort=e.target.value;renderCatalog();});
     el("categoryChips").addEventListener("click",function(e){var b=e.target.closest("[data-category]");if(b){activeCategory=b.dataset.category;renderCatalog();}});
+    document.querySelectorAll("[data-oneheart]").forEach(function(link){link.addEventListener("click",function(){activeCollection="ONE HEART";activeCategory="All";brand="all";sort="featured";search="";el("searchInput").value="";el("brandSelect").value="all";el("sortSelect").value="featured";renderCatalog();});});
     el("collectionFilters").addEventListener("click",function(e){
       var b=e.target.closest("[data-collection]");
       if(b){activeCollection=b.dataset.collection;renderCatalog();}
