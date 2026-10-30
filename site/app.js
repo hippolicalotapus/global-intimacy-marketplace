@@ -84,7 +84,24 @@
     el("resultCount").textContent=list.length+(sectionMatch?1:0);
     el("productGrid").innerHTML=list.map(card).join("");
     el("emptyProducts").hidden=list.length!==0||sectionMatch;
+    el("categorySelect").value=activeCategory;
+    var filters=[];
+    if(activeCollection!=="All")filters.push(activeCollection);
+    if(activeCategory!=="All")filters.push(activeCategory);
+    if(brand!=="all")filters.push(brand);
+    if(search)filters.push('Search: "'+search+'"');
+    el("activeFilterText").textContent=filters.join(" · ");
+    el("activeFilterSummary").hidden=filters.length===0;
     renderChips();renderCollections();
+  }
+  function runGlobalSearch(){
+    activeCollection="All";activeCategory="All";brand="all";search=el("searchInput").value.trim();
+    el("brandSelect").value="all";renderCatalog();location.hash="results";
+  }
+  function browseCategory(category){
+    selectCollection("All");
+    activeCategory=categories.includes(category)?category:"All";
+    el("shopMenu").open=false;renderCatalog();
   }
   function renderCommunity(){
     var allowed=communityGroups[communityGroup], query=el("communitySearch").value;
@@ -174,7 +191,7 @@
   }
   function navigate(){
     var hash=location.hash.slice(1);
-    var view=hash.startsWith("gift=")?"gift":(hash==="catalog"||hash==="one-heart")?"shop":hash.split("?")[0];
+    var view=hash.startsWith("gift=")?"gift":(hash==="catalog"||hash==="one-heart"||hash==="results")?"shop":hash.split("?")[0];
     if(hash==="one-heart")selectCollection("ONE HEART");
     if(!["shop","favorites","creators","gift","early","about","gay-lesbian"].includes(view))view="shop";
     document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("active",p.id==="view-"+view);});
@@ -183,15 +200,20 @@
     if(view==="creators"){renderPicker();renderSelection();}
     if(view==="gift")renderGift();
     if(view==="gay-lesbian")renderCommunity();
-    if(view==="shop"&&(hash==="catalog"||hash==="one-heart")){requestAnimationFrame(function(){el("catalog").scrollIntoView({block:"start"});});}
+    if(view==="shop"&&(hash==="catalog"||hash==="one-heart"||hash==="results")){requestAnimationFrame(function(){el(hash==="results"?"catalogResults":"catalog").scrollIntoView({block:"start"});});}
     else window.scrollTo({top:0,behavior:"instant"});
     document.title=(view==="shop"?"Explore":view==="gay-lesbian"?"Gay & Lesbian":view.charAt(0).toUpperCase()+view.slice(1))+" | Global Intimacy Marketplace";
   }
   function setup(){
     el("year").textContent=new Date().getFullYear();
     el("brandSelect").innerHTML='<option value="all">All brands</option>'+brands.map(function(b){return '<option value="'+esc(b)+'">'+esc(b)+'</option>';}).join("");
+    el("categorySelect").innerHTML=categories.map(function(c){return '<option value="'+esc(c)+'">'+esc(c==="All"?"All categories":c)+'</option>';}).join("");
+    el("shopCategoryLinks").innerHTML=categories.map(function(c){return '<a href="#catalog" data-browse-category="'+esc(c)+'">'+esc(c==="All"?"All products":c)+'</a>';}).join("");
     renderCatalog();renderFavorites();
-    el("searchInput").addEventListener("input",function(e){search=e.target.value.trim();renderCatalog();});
+    el("searchInput").addEventListener("input",runGlobalSearch);
+    el("storeSearchForm").addEventListener("submit",function(e){e.preventDefault();runGlobalSearch();});
+    el("categorySelect").addEventListener("change",function(e){activeCategory=e.target.value;renderCatalog();});
+    el("clearActiveFilters").addEventListener("click",function(){selectCollection("All");});
     el("brandSelect").addEventListener("change",function(e){brand=e.target.value;renderCatalog();});
     el("sortSelect").addEventListener("change",function(e){sort=e.target.value;renderCatalog();});
     el("categoryChips").addEventListener("click",function(e){var b=e.target.closest("[data-category]");if(b){activeCategory=b.dataset.category;renderCatalog();}});
@@ -202,13 +224,14 @@
       if(b){selectCollection(b.dataset.collection);}
     });
     el("clearFilters").addEventListener("click",function(){selectCollection("All");});
-    el("openSearchBtn").addEventListener("click",function(){location.hash="catalog";setTimeout(function(){el("searchInput").focus();},50);});
+    el("openSearchBtn").addEventListener("click",function(){el("searchInput").focus();});
     document.addEventListener("click",function(e){
-      var fav=e.target.closest("[data-fav]"),wish=e.target.closest("[data-wish]"),detail=e.target.closest("[data-detail]"),remove=e.target.closest("[data-remove]");
+      var fav=e.target.closest("[data-fav]"),wish=e.target.closest("[data-wish]"),detail=e.target.closest("[data-detail]"),remove=e.target.closest("[data-remove]"),browse=e.target.closest("[data-browse-category]");
       if(fav){favorite(Number(fav.dataset.fav));if(el("productDialog").open)details(Number(fav.dataset.fav));}
       else if(wish){wishlist(Number(wish.dataset.wish));if(el("productDialog").open){el("productDialog").close();location.hash="creators";}}
       else if(detail)details(Number(detail.dataset.detail));
       else if(remove)wishlist(Number(remove.dataset.remove));
+      else if(browse)browseCategory(browse.dataset.browseCategory);
     });
     el("closeModal").addEventListener("click",function(){el("productDialog").close();});
     el("productDialog").addEventListener("click",function(e){if(e.target===el("productDialog"))el("productDialog").close();});

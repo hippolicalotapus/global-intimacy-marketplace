@@ -27,17 +27,26 @@
     </nav>
     <div class="header-actions"><button class="text-action" id="openSearchBtn" type="button" aria-label="Search products">⌕ <span>Search</span></button><a class="button button-sm button-primary" href="#early" data-route="early">Get early access <span aria-hidden="true">↗</span></a></div>
   </div>
+  <div class="global-search-inner"><details class="shop-menu" id="shopMenu"><summary>Categories <span aria-hidden="true">⌄</span></summary><nav id="shopCategoryLinks" aria-label="Product categories"></nav></details><form id="storeSearchForm" role="search"><label class="search-box"><span aria-hidden="true">⌕</span><span class="sr-only">Search products</span><input id="searchInput" type="search" placeholder="Search all products and collections…" autocomplete="off"></label><button type="submit" class="button button-primary">Search</button></form></div>
 </header>
 <main id="main" tabindex="-1">
   <section class="page active" id="view-shop" aria-labelledby="heroTitle">
     <div class="hero site-width">
-      <div class="hero-copy"><span class="eyebrow"><span class="sparkle">✦</span> GLOBAL INTIMACY MARKETPLACE · ONE HEART</span><h1 id="heroTitle">Discover more.<br><em>Wear the experience.</em></h1><p>Start with our visual ONE HEART apparel collection, then explore connected wellness, companion technology and private creator gifting—all in one marketplace.</p><div class="hero-buttons"><a href="#one-heart" class="button button-primary" id="exploreProducts" data-oneheart>Shop ONE HEART previews <span>↗</span></a><a href="#catalog" class="button button-ghost" data-all-products>Explore all products</a><a href="#creators" class="button button-ghost" data-route="creators">For creators <span>→</span></a></div><div class="hero-note"><span class="mini-avatar">♡</span> Built for adults, all identities and all kinds of connection</div></div>
+      <div class="hero-copy"><span class="eyebrow"><span class="sparkle">✦</span> GLOBAL INTIMACY MARKETPLACE · ONE HEART</span><h1 id="heroTitle">Discover your kind<br><em>of connection.</em></h1><p>Explore wellness, connected technology, distinctive clothing and thoughtful creator gifting. Search the full marketplace or start with a category below.</p><div class="hero-buttons"><a href="#catalog" class="button button-primary" id="exploreProducts" data-all-products>Explore all products <span>↗</span></a><a href="#one-heart" class="button button-ghost" data-oneheart>ONE HEART artwear</a><a href="#creators" class="button button-ghost" data-route="creators">For creators <span>→</span></a></div><div class="hero-note"><span class="mini-avatar">♡</span> Built for adults, all identities and all kinds of connection</div></div>
       <div class="hero-art hero-product-display" aria-label="ONE HEART clothing and mountain hoodie artwork">
         <button type="button" class="hero-product-tile hero-product-primary" data-detail="99" aria-label="View ONE HEART Rocky Mountains hoodie"><img src="assets/one-heart/rocky-mountains.webp" width="307" height="438" alt="ONE HEART Rocky Mountains hoodie design preview" fetchpriority="high"><span>Mountain hoodies</span></button>
         <button type="button" class="hero-product-tile" data-detail="89" aria-label="View ONE HEART Cosmic Fluidity art tee"><img src="assets/one-heart/cosmic-fluidity.webp" width="301" height="344" alt="ONE HEART Cosmic Fluidity psychedelic T-shirt concept" fetchpriority="high"><span>Visionary artwear</span></button>
         <button type="button" class="hero-product-tile" data-detail="93" aria-label="View ONE HEART Melting Ruby Heart art tee"><img src="assets/one-heart/melting-ruby-heart.webp" width="499" height="517" alt="ONE HEART Melting Ruby Heart T-shirt design" loading="lazy"><span>Ruby Heart edition</span></button>
       </div>
     </div>
+    <section class="site-width quick-shop" aria-labelledby="quickShopTitle"><div class="photo-first-heading"><h2 id="quickShopTitle">Shop by category</h2><a href="#catalog" data-all-products>See all products ↗</a></div><div class="quick-shop-grid">
+      <a href="#one-heart" data-oneheart><img src="assets/one-heart/rocky-mountains.webp" width="307" height="438" alt="ONE HEART hoodie design concept"><strong>ONE HEART</strong><small>Artwear &amp; hoodies</small></a>
+      <a href="#catalog" data-browse-category="Connected devices"><span class="category-symbol symbol-connected" aria-hidden="true">◎</span><strong>Connected</strong><small>Interactive discovery</small></a>
+      <a href="#catalog" data-browse-category="Couples"><img src="assets/community/connection-lifestyle.webp" width="1600" height="900" alt="AI-generated couples lifestyle illustration" loading="lazy"><strong>Couples</strong><small>Connection &amp; gifting</small></a>
+      <a href="#catalog" data-browse-category="Wellness"><span class="category-symbol symbol-care" aria-hidden="true">♡</span><strong>Wellness</strong><small>Personal care</small></a>
+      <a href="#gay-lesbian" data-route="gay-lesbian"><span class="category-symbol symbol-community" aria-hidden="true">◈</span><strong>Gay &amp; Lesbian</strong><small>Your dedicated section</small></a>
+      <a href="#creators" data-route="creators"><span class="category-symbol symbol-gifts" aria-hidden="true">✧</span><strong>Creator gifting</strong><small>Wishlists &amp; saved ideas</small></a>
+    </div></section>
     <section class="site-width photo-first-showcase" aria-labelledby="photoFirstTitle">
       <div class="photo-first-heading"><div><span class="section-kicker">LOOKBOOK · ACTUAL DESIGN PREVIEWS</span><h2 id="photoFirstTitle">See the designs first.</h2><p>Real ONE HEART lookbook artwork, not pictures of finished stock. Browse the five mountain hoodies and our psychedelic artwear designs.</p></div><a href="#one-heart" data-oneheart class="photo-all-link">See all 16 designs →</a></div>
       <div class="photo-first-grid">
@@ -67,11 +76,19 @@
         <button type="button" data-collection="ULTRA" class="tier-option ultra-option" aria-pressed="false"><strong>ULTRA ◇</strong><small>Bespoke research</small></button>
         <button type="button" data-collection="ONE HEART" class="tier-option one-heart-option" aria-pressed="false"><strong>ONE HEART ♡</strong><small>Artwear &amp; mountain hoodies</small></button>
       </div>
+      <div class="category-scroll" id="categoryChips" role="group" aria-label="Filter categories"></div>
+      <div id="catalogResults" class="catalog-results">
+      <div class="catalog-toolbar"><label class="select-box"><span class="sr-only">Filter by category</span><select id="categorySelect"><option value="All">All categories</option></select></label><label class="select-box"><span class="sr-only">Filter by brand</span><select id="brandSelect"><option value="all">All brands</option></select></label><label class="select-box"><span class="sr-only">Sort products</span><select id="sortSelect"><option value="featured">Featured</option><option value="az">Name A–Z</option><option value="brand">By brand</option></select></label></div>
+      <div class="catalog-note"><span aria-hidden="true">ⓘ</span> Preview collection: prices and availability are unconfirmed. Pre-order links open an informational email enquiry; they do not take payment, reserve stock or confirm delivery.</div>
+      <div id="activeFilterSummary" class="active-filter-summary" hidden><span id="activeFilterText"></span><button id="clearActiveFilters" type="button">Clear filters</button></div>
+      <a id="communitySearchResult" class="community-search-result" href="#gay-lesbian" data-route="gay-lesbian" hidden><strong>Explore the Gay &amp; Lesbian section ↗</strong><span>Connection, wellness, clothing and gifts</span></a>
+      <div id="productGrid" class="product-grid" aria-live="polite"></div><div id="emptyProducts" class="empty-state" hidden><div>⌕</div><h3>No matches yet</h3><p>Try another brand, category or keyword.</p><button type="button" id="clearFilters" class="button button-ghost">Clear filters</button></div>
+      </div>
       <section class="oneheart-feature" aria-labelledby="oneHeartTitle">
         <div class="oneheart-feature-copy">
           <span class="oneheart-kicker">ONE HEART · NO BORDERS · ART APPAREL</span>
           <h3 id="oneHeartTitle">Wear the experience.</h3>
-          <p>Explore 11 psychedelic T-shirt concepts and five Alberta-inspired mountain hoodies, featuring your approved ONE HEART designs. These are visual mockups, not photographs of manufactured garments.</p>
+          <p>Explore 11 psychedelic T-shirt concepts and five Alberta-inspired mountain hoodies, featuring original ONE HEART artwork. These are visual mockups, not photographs of manufactured garments.</p>
           <a class="button oneheart-explore" href="#one-heart" data-oneheart>Explore the 16 ONE HEART designs</a>
           <small>Pre-order enquiries welcome · No payments, confirmed orders or delivery dates yet</small>
         </div>
@@ -86,11 +103,6 @@
         <div><span class="future-kicker">NEW COLLECTION UNDER RESEARCH</span><h3>AI companions &amp; life-size dolls</h3><p>Explore upcoming research previews for humanoid companions, adult-size silicone and TPE dolls, customized designs, and care accessories. Not yet available to purchase, reserve, or gift.</p></div>
         <span class="future-status">Supplier approval pending</span>
       </div>
-      <div class="category-scroll" id="categoryChips" role="group" aria-label="Filter categories"></div>
-      <div class="catalog-toolbar"><label class="search-box"><span aria-hidden="true">⌕</span><span class="sr-only">Search products</span><input id="searchInput" type="search" placeholder="Search ONE HEART, hoodies, art tees, devices…" autocomplete="off"></label><label class="select-box"><span class="sr-only">Filter by brand</span><select id="brandSelect"><option value="all">All brands</option></select></label><label class="select-box"><span class="sr-only">Sort products</span><select id="sortSelect"><option value="featured">Featured</option><option value="az">Name A–Z</option><option value="brand">By brand</option></select></label></div>
-      <div class="catalog-note"><span aria-hidden="true">ⓘ</span> Research preview: all pre-order actions are nonbinding email enquiries; no payment, confirmed reservations or delivery promises. Concorde Pro permissions, pricing, resale territories, dropshipping and inventory remain unverified.</div>
-      <a id="communitySearchResult" class="community-search-result" href="#gay-lesbian" data-route="gay-lesbian" hidden><strong>Explore the Gay &amp; Lesbian section ↗</strong><span>Connection, wellness, clothing and gifts</span></a>
-      <div id="productGrid" class="product-grid" aria-live="polite"></div><div id="emptyProducts" class="empty-state" hidden><div>⌕</div><h3>No matches yet</h3><p>Try another brand, category or keyword.</p><button type="button" id="clearFilters" class="button button-ghost">Clear filters</button></div>
     </div>
     <section class="creator-promo"><div class="site-width creator-promo-inner"><div><span class="eyebrow">MADE FOR THE CREATOR COMMUNITY</span><h2>Your wishlist. Your community.<br><em>Your boundaries.</em></h2><p>A complimentary wishlist program planned for eligible adult creators on all platforms—not affiliated with any of them. Try the shareable wishlist demo today.</p><a href="#creators" data-route="creators" class="button button-light">Explore creator wishlists →</a></div><div class="promo-art" aria-hidden="true"><span>♡</span><b>THE GIFT<br>OF CONNECTION</b></div></div></section>
   </section>
