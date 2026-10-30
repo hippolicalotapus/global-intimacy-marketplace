@@ -31,6 +31,7 @@ async function storefront(hash = "") {
     return new Element("", dataset);
   });
   nodes.get("collectionFilters").children = [...html.matchAll(/<button[^>]*data-collection="([^"]+)"/g)].map(m => new Element("", { collection: m[1] }));
+  nodes.get("communityFilters").children = [...html.matchAll(/<button[^>]*data-community-group="([^"]+)"/g)].map(m => new Element("", { communityGroup: m[1] }));
   const document = new Element("document");
   document.readyState = "loading";
   document.getElementById = id => { assert.ok(nodes.has(id), `Undefined DOM ID ${id}`); return nodes.get(id); };
@@ -115,4 +116,34 @@ test("ONE HEART details, favorites and shareable wishlist use real catalogue IDs
   const guest = await storefront(share.hash);
   assert.equal(guest.nodes.get("giftAlias").textContent, "Test Studio");
   assert.ok(guest.nodes.get("giftGrid").innerHTML.includes("Rocky Mountains"));
+});
+
+test("Gay and lesbian section has a direct route and searches existing products", async () => {
+  const app = await storefront("#gay-lesbian");
+  assert.equal(app.document.title, "Gay & Lesbian | Global Intimacy Marketplace");
+  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 103);
+  app.nodes.get("communitySearch").value = "oneheart";
+  app.nodes.get("communitySearch").dispatch("input");
+  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 16);
+  app.click("communityFilters", { communityGroup: "style" });
+  assert.equal(app.nodes.get("communitySearch").value, "");
+  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 19);
+  app.nodes.get("communitySearch").value = "no-such-item";
+  app.nodes.get("communitySearch").dispatch("input");
+  assert.equal(app.nodes.get("communityEmpty").hidden, false);
+  app.nodes.get("clearCommunityFilters").dispatch("click");
+  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 103);
+});
+
+test("Store search finds the Gay and Lesbian section without assigning shopper identities", async () => {
+  const app = await storefront();
+  for (const query of ["gay", "lesbian", "gay and lesbian", "LGBTQ"]) {
+    app.search(query);
+    assert.equal(app.nodes.get("communitySearchResult").hidden, false, query);
+    assert.equal(app.count(), 1, query);
+    assert.equal(app.nodes.get("emptyProducts").hidden, true, query);
+  }
+  app.search("one heart");
+  assert.equal(app.nodes.get("communitySearchResult").hidden, true);
+  assert.equal(app.count(), 16);
 });

@@ -9,6 +9,8 @@
   var brands = Array.from(new Set(products.map(function (p) {return p.brand;}))).sort();
   var activeCategory = "All", activeCollection = "All", search = "", brand = "all", sort = "featured";
   var toastTimer;
+  var communityGroup="all";
+  var communityGroups={all:null,connection:["Couples","Wearables","Connected devices","Interactive"],care:["Wellness","Essentials","Massage & Care"],style:["Lingerie","Games & Gifts","ONE HEART Hoodies","ONE HEART Art Tees"]};
 
   function el(id) {return document.getElementById(id);}
   function esc(value) {return String(value === null || value === undefined ? "" : value).replace(/[&<>"']/g,function (c) {
@@ -77,10 +79,23 @@
     if(sort==="featured")list.sort(function(a,b){return Number(!!b.previewImage)-Number(!!a.previewImage)||a.id-b.id;});
     else if(sort==="az")list.sort(function(a,b){return a.name.localeCompare(b.name);});
     else if(sort==="brand")list.sort(function(a,b){return a.brand.localeCompare(b.brand)||a.name.localeCompare(b.name);});
-    el("resultCount").textContent=list.length;
+    var sectionMatch=/(^| )(gay|lesbian|lgbt|lgbtq|queer)( |$)/.test(normalizeSearch(search));
+    el("communitySearchResult").hidden=!sectionMatch;
+    el("resultCount").textContent=list.length+(sectionMatch?1:0);
     el("productGrid").innerHTML=list.map(card).join("");
-    el("emptyProducts").hidden=list.length!==0;
+    el("emptyProducts").hidden=list.length!==0||sectionMatch;
     renderChips();renderCollections();
+  }
+  function renderCommunity(){
+    var allowed=communityGroups[communityGroup], query=el("communitySearch").value;
+    var list=products.filter(function(p){return (!allowed||allowed.includes(p.category))&&matchesSearch(p,query);});
+    list.sort(function(a,b){return Number(!!b.previewImage)-Number(!!a.previewImage)||a.id-b.id;});
+    el("communityResultCount").textContent=list.length;
+    el("communityGrid").innerHTML=list.map(card).join("");
+    el("communityEmpty").hidden=list.length>0;
+    el("communityFilters").querySelectorAll("[data-community-group]").forEach(function(btn){
+      var on=btn.dataset.communityGroup===communityGroup;btn.classList.toggle("active",on);btn.setAttribute("aria-pressed",String(on));
+    });
   }
   function renderFavorites(){
     var favProducts=favorites.map(function(id){return byId.get(id);}).filter(Boolean);
@@ -108,7 +123,7 @@
   function favorite(id) {
     if(!byId.has(id))return;
     favorites=favorites.includes(id)?favorites.filter(function(x){return x!==id;}):favorites.concat(id);
-    saveJson("gim:favorites",favorites);renderCatalog();renderFavorites();
+    saveJson("gim:favorites",favorites);renderCatalog();renderFavorites();renderCommunity();
     notify(favorites.includes(id)?"Saved to your favorites.":"Removed from favorites.");
   }
   function wishlist(id){
@@ -161,15 +176,16 @@
     var hash=location.hash.slice(1);
     var view=hash.startsWith("gift=")?"gift":(hash==="catalog"||hash==="one-heart")?"shop":hash.split("?")[0];
     if(hash==="one-heart")selectCollection("ONE HEART");
-    if(!["shop","favorites","creators","gift","early","about"].includes(view))view="shop";
+    if(!["shop","favorites","creators","gift","early","about","gay-lesbian"].includes(view))view="shop";
     document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("active",p.id==="view-"+view);});
     document.querySelectorAll("[data-route]").forEach(function(n){var on=n.dataset.route===view;n.classList.toggle("active",on);if(on)n.setAttribute("aria-current","page");else n.removeAttribute("aria-current");});
     if(view==="favorites")renderFavorites();
     if(view==="creators"){renderPicker();renderSelection();}
     if(view==="gift")renderGift();
+    if(view==="gay-lesbian")renderCommunity();
     if(view==="shop"&&(hash==="catalog"||hash==="one-heart")){requestAnimationFrame(function(){el("catalog").scrollIntoView({block:"start"});});}
     else window.scrollTo({top:0,behavior:"instant"});
-    document.title=(view==="shop"?"Explore":view.charAt(0).toUpperCase()+view.slice(1))+" | Global Intimacy Marketplace";
+    document.title=(view==="shop"?"Explore":view==="gay-lesbian"?"Gay & Lesbian":view.charAt(0).toUpperCase()+view.slice(1))+" | Global Intimacy Marketplace";
   }
   function setup(){
     el("year").textContent=new Date().getFullYear();
@@ -198,6 +214,14 @@
     el("productDialog").addEventListener("click",function(e){if(e.target===el("productDialog"))el("productDialog").close();});
     el("creatorAlias").value=creatorAlias;
     el("creatorAlias").addEventListener("input",function(e){creatorAlias=safeAlias(e.target.value);saveJson("gim:creatorName",creatorAlias);renderSelection();});
+    el("communitySearch").addEventListener("input",renderCommunity);
+    el("communityFilters").addEventListener("click",function(e){
+      var b=e.target.closest("[data-community-group]");
+      if(b&&Object.prototype.hasOwnProperty.call(communityGroups,b.dataset.communityGroup)){
+        communityGroup=b.dataset.communityGroup;el("communitySearch").value="";renderCommunity();
+      }
+    });
+    el("clearCommunityFilters").addEventListener("click",function(){communityGroup="all";el("communitySearch").value="";renderCommunity();});
     el("wishlistSearch").addEventListener("input",renderPicker);
     // Wishlist clicks are handled by the document-level delegated handler above.
     // A second picker-level listener would toggle a product on and immediately off.
