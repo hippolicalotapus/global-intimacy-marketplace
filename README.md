@@ -5,14 +5,20 @@
 ## What works in this beta
 
 - 18+ self-attestation (session only)
-- Responsive discovery with functional Everyday, Premium and ULTRA provisional editorial filters, search, category and brand filters, sorting and detail panels
-- Research catalogue with 87 previews: original connected devices plus unapproved AI companion robots, adult-proportioned life-size silicone/TPE dolls, and care accessories. All entries are **unverified and not for sale**
+- Responsive discovery with functional Everyday, Premium, ULTRA and ONE HEART editorial collection filters, search, category and brand filters, sorting and detail panels
+- Research catalogue with 103 previews (87 supplier research entries plus 16 owner-approved ONE HEART design concepts): original connected devices plus unapproved AI companion robots, adult-proportioned life-size silicone/TPE dolls, and care accessories. All entries are **unverified and not for sale**
 - Local favorites and creator wishlist editor
 - Discreet shareable public demo wishlist link based on the browser URL fragment (contains only creator stage name and selected item IDs)
 - Guest wishlist preview and gift-interest demo without accepting payment
 - Separate creator/fan interest-survey demo stored only in the current browser, not sent anywhere
 - Accessible mobile bottom navigation and desktop top navigation
 - Exact approved Global Intimacy Marketplace logo artwork, optimized for web and embedded in a local SVG wrapper (not redrawn)
+
+## ONE HEART artwear previews and pre-order enquiries
+
+The approved ONE HEART collection now includes five mountain hoodies (Rocky Mountains, Canadian Rockies, Purcell, Selkirk and Columbia Mountains) and eleven visionary art T-shirt concepts (Dimension One, Cosmic Fluidity, Sacred Forest, Stardust Unity, Realms Within, Melting Ruby Heart, Time Dissolves, Parallel Realms, Mind Expansion, Liquid Dimensions and Fractal Awakening). The branded artwork is shown using web-optimized reference crops derived from the owner's approved lookbook images, labelled as concept previews — not production-ready source files or manufactured-garment photography.
+
+All 103 discovery entries offer a **nonbinding pre-order enquiry** link that opens the shopper's email app to contact globalintimacypartner@gmail.com. This does not collect, charge, reserve, confirm, authenticate, or promise a purchase. No prices, availability, ETA, stock, manufacturer agreement or supplier license should be implied. Store launch needs sample production, material/print approval, a compliant adult-friendly payment provider and explicit owner sign-off before paid pre-orders.
 
 ## What is intentionally not live
 

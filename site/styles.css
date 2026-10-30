@@ -29,3 +29,30 @@
 .tier-option.ultra-option small{color:#bed0d1}
 .tier-option.ultra-option.active{border:2px solid #bf926c;padding:17px 14px;box-shadow:0 4px 18px rgba(16,43,55,.28)}
 @media(max-width:650px){.tier-chooser{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.tier-option{padding:14px 11px;min-height:81px}.tier-option.active,.tier-option.ultra-option.active{padding:13px 10px}.tier-option strong{font-size:.99rem}.tier-intro{gap:8px}}
+
+/* Owner-approved ONE HEART artwork previews and nonbinding pre-order email enquiries. */
+.tier-chooser{grid-template-columns:repeat(5,minmax(0,1fr))}
+.tier-option.one-heart-option{background:linear-gradient(135deg,#0c2838,#184e61);color:#f4d5ae;border-color:#245069}
+.tier-option.one-heart-option small{color:#c5dbe2}
+.tier-option.one-heart-option.active{border:2px solid #e3ac75;padding:17px 14px;box-shadow:0 5px 19px #17445538}
+.oneheart-feature{margin:12px 0 24px;display:grid;grid-template-columns:1.25fr .9fr;align-items:center;gap:26px;background:linear-gradient(125deg,#0d2734,#0e3a4d 65%,#224c52);color:#f5ede1;border:1px solid #315866;border-radius:20px;padding:27px;overflow:hidden}
+.oneheart-feature h3{font-size:clamp(1.6rem,2.5vw,2.4rem);margin:10px 0 12px;font-family:Georgia,serif;color:#f7d3a6}
+.oneheart-feature p{color:#e0e8e5;font-size:.92rem;max-width:51ch;line-height:1.55}
+.oneheart-kicker{font-weight:750;color:#e2bd8e;font-size:.7rem;letter-spacing:.15em}
+.oneheart-feature small{display:block;color:#b7cad0;margin-top:12px;font-size:.76rem;line-height:1.5}
+.oneheart-explore{background:#f2d5b1;color:#17313b;padding:11px 18px;min-height:42px;font-size:.83rem}
+.oneheart-feature-art{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-height:245px;align-items:stretch;overflow:hidden}
+.oneheart-feature-art img{width:100%;height:245px;object-fit:cover;object-position:center top;border-radius:10px;box-shadow:0 5px 25px #0008}
+.product-visual.visual-oneheart{height:243px;background:linear-gradient(165deg,#061822,#152e41);padding:0}
+.visual-oneheart:before,.visual-oneheart:after{display:none}
+.product-visual.visual-oneheart .product-mark{height:100%;width:100%;display:flex;align-items:center;justify-content:center;font-size:0}
+.product-preview-image{height:100%;width:100%;object-fit:contain;object-position:center;display:block}
+.product-visual.visual-oneheart .tag{z-index:1;color:#233b42;background:#fffdf4ee}
+.preorder-link{display:block;margin-top:13px;text-align:center;padding:11px 9px;border:1px solid #9cc8c2;border-radius:10px;background:#edf7f5;color:#165b63;font-size:.81rem;font-weight:750;text-decoration:none}
+.preorder-link:hover{background:#d7f0eb}
+.modal-visual.with-preview{background:#0b2230;overflow:hidden;height:325px}
+.modal-visual.with-preview img{display:block;width:100%;height:100%;object-fit:contain}
+.modal-controls{flex-wrap:wrap}
+.modal-controls .button{min-width:145px}
+@media(max-width:800px){.oneheart-feature{grid-template-columns:1fr;padding:20px;gap:14px}.oneheart-feature-art{max-height:180px}.oneheart-feature-art img{height:180px}.tier-chooser{grid-template-columns:repeat(2,minmax(0,1fr))}.tier-option.one-heart-option{grid-column:span 2}}
+@media(max-width:650px){.product-visual.visual-oneheart{height:215px}.modal-visual.with-preview{height:260px}.mobile-bottom a[data-oneheart] span{font-size:1.16rem}}
