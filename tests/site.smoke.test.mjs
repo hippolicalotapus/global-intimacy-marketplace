@@ -161,3 +161,17 @@ test("Store offers ONE HEART filters and nonbinding email enquiries, no paid pre
   assert.ok(html.includes("No purchases or live stock yet."));
   assert.ok(!html.includes('action="/checkout"'));
 });
+
+test("Photo-first storefront surfaces owner-supplied imagery above old abstract hero",async()=>{
+  const html=await read("site/index.html"), js=await read("site/app.js"), css=await read("site/styles.css");
+  const gallery=html.indexOf('class="photo-first-grid"');
+  const research=html.indexOf('id="catalog"');
+  assert.ok(gallery>0&&gallery<research,"Photo gallery must come before entire research catalogue");
+  assert.ok(html.includes('class="hero-art hero-product-display"'));
+  assert.ok(html.includes('data-detail="99"'));
+  assert.ok(html.includes('data-detail="103"'));
+  assert.ok(html.includes('data-detail="93"'));
+  assert.match(js,/sort==="featured"\)list\.sort\(function\(a,b\)\{return Number\(!!b\.previewImage\)-Number\(!!a\.previewImage\)/);
+  assert.ok(css.includes(".photo-first-grid"));
+  assert.ok(html.includes("No purchases or live stock yet."));
+});

@@ -5,7 +5,7 @@
 ## What works in this beta
 
 - 18+ self-attestation (session only)
-- Responsive discovery with functional Everyday, Premium, ULTRA and ONE HEART editorial collection filters, search, category and brand filters, sorting and detail panels
+- Photo-first home hero, early gallery of owner-supplied ONE HEART design previews, and image-first default catalogue sorting. Responsive discovery with functional Everyday, Premium, ULTRA and ONE HEART editorial collection filters, search, category and brand filters, sorting and detail panels
 - Research catalogue with 103 previews (87 supplier research entries plus 16 owner-approved ONE HEART design concepts): original connected devices plus unapproved AI companion robots, adult-proportioned life-size silicone/TPE dolls, and care accessories. All entries are **unverified and not for sale**
 - Local favorites and creator wishlist editor
 - Discreet shareable public demo wishlist link based on the browser URL fragment (contains only creator stage name and selected item IDs)

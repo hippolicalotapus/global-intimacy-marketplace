@@ -59,7 +59,8 @@
         (brand==="all"||p.brand===brand)&&
         (!q||(p.name+" "+p.brand+" "+p.category+" "+p.researchType+" "+p.researchFeature).toLocaleLowerCase().includes(q));
     });
-    if(sort==="az")list.sort(function(a,b){return a.name.localeCompare(b.name);});
+    if(sort==="featured")list.sort(function(a,b){return Number(!!b.previewImage)-Number(!!a.previewImage)||a.id-b.id;});
+    else if(sort==="az")list.sort(function(a,b){return a.name.localeCompare(b.name);});
     else if(sort==="brand")list.sort(function(a,b){return a.brand.localeCompare(b.brand)||a.name.localeCompare(b.name);});
     el("resultCount").textContent=list.length;
     el("productGrid").innerHTML=list.map(card).join("");
