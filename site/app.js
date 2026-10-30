@@ -51,13 +51,28 @@
   function renderChips(){
     el("categoryChips").innerHTML=categories.map(function(c){return '<button type="button" data-category="'+esc(c)+'" aria-pressed="'+(activeCategory===c)+'" class="category-chip'+(activeCategory===c?" active":"")+'">'+esc(c)+'</button>';}).join("");
   }
+  function normalizeSearch(value){
+    return String(value||"").normalize("NFKD").replace(/\p{M}/gu,"").toLowerCase()
+      .replace(/\bone[\s_-]*heart\b/g,"one heart").replace(/[^\p{L}\p{N}]+/gu," ").trim();
+  }
+  function matchesSearch(p,query){
+    var q=normalizeSearch(query);
+    if(!q)return true;
+    var text=normalizeSearch([p.name,p.brand,p.category,p.collection,"collection",p.collectionGroup,p.researchType,p.researchFeature,p.colorway].filter(Boolean).join(" "));
+    return q.split(" ").every(function(word){return text.includes(word);});
+  }
+  function selectCollection(collection){
+    activeCollection=collections.includes(collection)?collection:"All";
+    activeCategory="All";brand="all";search="";sort="featured";
+    el("brandSelect").value="all";el("searchInput").value="";el("sortSelect").value="featured";
+    renderCatalog();
+  }
   function renderCatalog(){
-    var q=search.toLocaleLowerCase();
     var list=products.filter(function(p){
       return (activeCollection==="All"||p.collection===activeCollection)&&
         (activeCategory==="All"||p.category===activeCategory)&&
         (brand==="all"||p.brand===brand)&&
-        (!q||(p.name+" "+p.brand+" "+p.category+" "+p.researchType+" "+p.researchFeature).toLocaleLowerCase().includes(q));
+        matchesSearch(p,search);
     });
     if(sort==="featured")list.sort(function(a,b){return Number(!!b.previewImage)-Number(!!a.previewImage)||a.id-b.id;});
     else if(sort==="az")list.sort(function(a,b){return a.name.localeCompare(b.name);});
@@ -73,8 +88,8 @@
     el("favoritesEmpty").hidden=favProducts.length>0;
   }
   function renderPicker(){
-    var q=el("wishlistSearch").value.trim().toLocaleLowerCase();
-    var filtered=products.filter(function(p){return !q||(p.name+" "+p.brand).toLocaleLowerCase().includes(q);});
+    var query=el("wishlistSearch").value;
+    var filtered=products.filter(function(p){return matchesSearch(p,query);});
     el("wishlistPicker").innerHTML=filtered.map(function(p){
       var added=selected.includes(p.id);
       return '<div class="picker-item"><div><b>'+esc(p.brand+" · "+p.name)+'</b><small>'+esc(p.category)+'</small></div>'+
@@ -144,14 +159,15 @@
   }
   function navigate(){
     var hash=location.hash.slice(1);
-    var view=hash.startsWith("gift=")?"gift":hash==="catalog"?"shop":hash.split("?")[0];
+    var view=hash.startsWith("gift=")?"gift":(hash==="catalog"||hash==="one-heart")?"shop":hash.split("?")[0];
+    if(hash==="one-heart")selectCollection("ONE HEART");
     if(!["shop","favorites","creators","gift","early","about"].includes(view))view="shop";
     document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("active",p.id==="view-"+view);});
     document.querySelectorAll("[data-route]").forEach(function(n){var on=n.dataset.route===view;n.classList.toggle("active",on);if(on)n.setAttribute("aria-current","page");else n.removeAttribute("aria-current");});
     if(view==="favorites")renderFavorites();
     if(view==="creators"){renderPicker();renderSelection();}
     if(view==="gift")renderGift();
-    if(view==="shop"&&hash==="catalog"){requestAnimationFrame(function(){el("catalog").scrollIntoView({block:"start"});});}
+    if(view==="shop"&&(hash==="catalog"||hash==="one-heart")){requestAnimationFrame(function(){el("catalog").scrollIntoView({block:"start"});});}
     else window.scrollTo({top:0,behavior:"instant"});
     document.title=(view==="shop"?"Explore":view.charAt(0).toUpperCase()+view.slice(1))+" | Global Intimacy Marketplace";
   }
@@ -163,12 +179,13 @@
     el("brandSelect").addEventListener("change",function(e){brand=e.target.value;renderCatalog();});
     el("sortSelect").addEventListener("change",function(e){sort=e.target.value;renderCatalog();});
     el("categoryChips").addEventListener("click",function(e){var b=e.target.closest("[data-category]");if(b){activeCategory=b.dataset.category;renderCatalog();}});
-    document.querySelectorAll("[data-oneheart]").forEach(function(link){link.addEventListener("click",function(){activeCollection="ONE HEART";activeCategory="All";brand="all";sort="featured";search="";el("searchInput").value="";el("brandSelect").value="all";el("sortSelect").value="featured";renderCatalog();});});
+    document.querySelectorAll("[data-oneheart]").forEach(function(link){link.addEventListener("click",function(){selectCollection("ONE HEART");});});
+    document.querySelectorAll('[data-all-products], [data-route="shop"]').forEach(function(link){link.addEventListener("click",function(){selectCollection("All");});});
     el("collectionFilters").addEventListener("click",function(e){
       var b=e.target.closest("[data-collection]");
-      if(b){activeCollection=b.dataset.collection;renderCatalog();}
+      if(b){selectCollection(b.dataset.collection);}
     });
-    el("clearFilters").addEventListener("click",function(){activeCollection="All";activeCategory="All";brand="all";search="";sort="featured";el("brandSelect").value="all";el("sortSelect").value="featured";el("searchInput").value="";renderCatalog();});
+    el("clearFilters").addEventListener("click",function(){selectCollection("All");});
     el("openSearchBtn").addEventListener("click",function(){location.hash="catalog";setTimeout(function(){el("searchInput").focus();},50);});
     document.addEventListener("click",function(e){
       var fav=e.target.closest("[data-fav]"),wish=e.target.closest("[data-wish]"),detail=e.target.closest("[data-detail]"),remove=e.target.closest("[data-remove]");

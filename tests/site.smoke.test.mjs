@@ -156,7 +156,7 @@ test("Store offers ONE HEART filters and nonbinding email enquiries, no paid pre
   assert.ok(html.includes('src="apparel.js"'));
   assert.ok(html.includes('data-oneheart'));
   assert.ok(js.includes("mailto:globalintimacypartner@gmail.com"));
-  assert.ok(js.includes('activeCollection="ONE HEART"'));
+  assert.ok(js.includes('selectCollection("ONE HEART")'));
   assert.ok(js.includes('p.previewImage'));
   assert.ok(html.includes("No purchases or live stock yet."));
   assert.ok(!html.includes('action="/checkout"'));
@@ -175,3 +175,4 @@ test("Photo-first storefront surfaces owner-supplied imagery above old abstract 
   assert.ok(css.includes(".photo-first-grid"));
   assert.ok(html.includes("No purchases or live stock yet."));
 });
+
