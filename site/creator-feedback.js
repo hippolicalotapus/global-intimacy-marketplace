@@ -33,13 +33,17 @@
     if(!hasAnswer()){status("cf-answer-status","Please answer at least one question before preparing an email.");return;}
     let link="mailto:globalintimacypartner@gmail.com?subject="+encodeURIComponent("Creator feedback — GIM development preview")+"&body="+encodeURIComponent(answerText());
     if(link.length>5500){status("cf-answer-status","Your answers are too long for an email link. Use Copy responses instead.");return;}
+    $("cf-answer-preview").value=answerText();
+    $("cf-answer-preview-wrap").hidden=false;
     $("cf-send-email").href=link;
     $("cf-send-wrap").hidden=false;
     status("cf-answer-status","Email prepared, not sent. Use the button below to open your email app and review before sending.");
   });
   $("cf-copy-answers").addEventListener("click",async function(){
     if(!hasAnswer()){status("cf-answer-status","Please answer at least one question to copy.");return;}
-    const ok=await copy(answerText(),"cf-wishlist");
+    $("cf-answer-preview").value=answerText();
+    $("cf-answer-preview-wrap").hidden=false;
+    const ok=await copy(answerText(),"cf-answer-preview");
     status("cf-answer-status",ok?"Responses copied. Paste into your email app to send.":"Clipboard permission unavailable. Please select and copy your answers manually.");
   });
   $("cf-copy-link").addEventListener("click",async function(){
