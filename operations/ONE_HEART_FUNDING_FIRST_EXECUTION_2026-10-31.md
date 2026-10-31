@@ -94,3 +94,24 @@ https://cfsun.ca/userfiles/file/Self-Employment%20Program%20Questions%20and%20An
 ACTI info@acti.org, Gmail message 1a193b241d7126d9; Microbusiness microbiz@microbusiness.ca, Gmail message 1a193b246f4d340e. Asked whether rural applicant and public preview qualify; employment/EI, sector, income support, full-time training and intake. No personal application, loan, credit check or business spending initiated.
 
 Continue ATB and Community Futures funding inquiries plus printed-shirt/hoodie production cost quotes as the primary capital route. Self-employment program is complementary only if applicant qualifies.
+
+## User financing instruction & execution — October 31, 2026 (later update)
+
+**Owner direction:** "If you can get a loan without my approval go ahead and do it." Interpret as authority to actively seek appropriate startup financing and initiate nonbinding screening; **do not purport to waive the bank's legally required identity verification, borrower signature, credit consent, disclosure, fee payment, security or personal-guarantee consent**. Never represent that loan approval is already granted. Request only minimal $5k–$10k feasibility initially, not maximum financing. Continue to respect previous no third-party service credits/spending without approval.
+
+**Public sources reconfirmed**
+- ATB startup CSBFP: https://www.atb.com/business/borrowing/business-loans/canada-small-business-financing-program-loan/ ; general published email atbbusiness@atb.com: https://www.atb.com/resources/tools/business-and-ag-loan-calculator/
+- Servus Alberta business loan inquiry: https://servus.ca/business/small-business/borrowing-solutions/loans-mortgages/business-loan-application ; general email contact_us@servus.ca (we used only information email, NOT loan form)
+- Community Futures West Yellowhead lists **Wildwood** in its territory: https://westyellowhead.albertacf.com/services/business-loans/capital-growth-initiative-loan ; email CFWY@albertacf.com. Do not apply to this women-majority ownership-only special product; ask about the general program. Yellowhead East lists **Sangudo**: https://yellowheadeast.albertacf.com/services/starting-a-business-in-yellowhead-east . Clarify primary PHYSICAL operating address and territorial eligibility before any Community Futures formal application.
+- Federal CSBFP government rules and lender consent: https://ised-isde.canada.ca/site/canada-small-business-financing-program/en/canada-small-business-financing-program/find-loan-your-small-business . Participating lenders decide approval; interest/fees, security and possibly personal guarantee can apply.
+
+**Prior-email duplicate check** 2026-10-31: ATB, Servus and CFWY had NO earlier messages in the GIM mailbox; mjones@albertacf.com already received ONE HEART financing inquiry Oct 31; not resent.
+
+**New NONBINDING emails SENT 2026-10-31 from globalintimacypartner@gmail.com**
+1. ATB Business Banking atbbusiness@atb.com, topic: ONE HEART Alberta apparel startup — information-only CSBFP / $5k–$10k financing screening; Gmail id **1a193c85fa065233**.
+2. Servus Credit Union contact_us@servus.ca, topic: ONE HEART startup — pre-revenue apparel financing information request (no credit inquiry); Gmail id **1a193c862ab2d767**.
+3. Community Futures West Yellowhead CFWY@albertacf.com, topic: ONE HEART rural apparel startup loan jurisdiction and intake; Gmail id **1a193c8681a0d8fd**.
+
+Content disclosed no sales or operating checkout, the planned broader adults-only wellness marketplace, unknown registration/owner capital and unverified supplier quotes, and requested no credit check, fee, formal application or guarantee. These are NOT loan applications, approvals or borrowings.
+
+**Next:** Assess lender answers, invite secure eligibility/intake if lender ready, obtain final print/fulfillment price and demand data before deciding a loan request. Owner will have to complete ID/consent/credit checks and sign if lenders require. No personal financial information or private household situation disclosed.
