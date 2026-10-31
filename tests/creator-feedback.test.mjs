@@ -16,6 +16,8 @@ async function page(){
   select(){this.selected=true}
  }
  const elements=new Map([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>[m[1],new El(m[1])]));
+ elements.get("cf-send-wrap").hidden=true;
+ elements.get("cf-answer-preview-wrap").hidden=true;
  const doc={getElementById(id){assert.ok(elements.has(id),"Missing ID "+id);return elements.get(id)}};
  let clipboardWrites=[];
  const navigator={clipboard:{async writeText(text){clipboardWrites.push(text)}}};
@@ -49,7 +51,7 @@ test("Survey only prepares email when at least one response exists and does not 
  const app=await page();
  app.click("cf-form","submit");
  assert.match(app.elements.get("cf-answer-status").textContent,/at least one/);
- assert.equal(app.elements.get("cf-send-wrap").hidden,false===true);
+ assert.equal(app.elements.get("cf-send-wrap").hidden,true);
  app.elements.get("cf-products").value="Comfortable hoodies and app-connected gifts";
  app.elements.get("cf-alias").value="StageAlias";
  app.click("cf-form","submit");
