@@ -115,3 +115,20 @@ Continue ATB and Community Futures funding inquiries plus printed-shirt/hoodie p
 Content disclosed no sales or operating checkout, the planned broader adults-only wellness marketplace, unknown registration/owner capital and unverified supplier quotes, and requested no credit check, fee, formal application or guarantee. These are NOT loan applications, approvals or borrowings.
 
 **Next:** Assess lender answers, invite secure eligibility/intake if lender ready, obtain final print/fulfillment price and demand data before deciding a loan request. Owner will have to complete ID/consent/credit checks and sign if lenders require. No personal financial information or private household situation disclosed.
+
+## Corporate borrower clarification — 2026-10-31
+Owner explicitly directs: "**The loan will be under the business not under me personally**." Treat the intended borrower as a separate incorporated entity where legally established, **not** an individual's trade name / personal loan. Status of corporate incorporation and exact legal borrower name have NOT been independently verified; no statement was made to lenders that incorporation was already completed.
+
+Important Alberta authority: registering a trade name does not create a separate legal person, so a sole proprietor remains personally liable for business debts. https://www.alberta.ca/register-business-name
+
+Federal CSBFP authority: a corporation is an eligible type of borrower; lenders may require **unsecured** personal guarantees even on corporate CSBFP loans, and should generally hold allowed business asset security. Do not misrepresent a company loan as automatically free of personal liability. https://ised-isde.canada.ca/site/canada-small-business-financing-program/en/canada-small-business-financing-program/find-loan-your-small-business/canada-small-business-financing-program-guidelines
+
+Same-thread business-borrower correction email SENT to:
+1. ATB atbbusiness@atb.com, Gmail id 1a193c99fdf8fb2a in original thread 1a193c85fa065233.
+2. Servus contact_us@servus.ca, Gmail id 1a193c9a553e5fc8 in original thread 1a193c862ab2d767.
+3. Community Futures West Yellowhead CFWY@albertacf.com, Gmail id 1a193c9a87cf6306 in original thread 1a193c8681a0d8fd.
+4. Community Futures Yellowhead East mjones@albertacf.com, Gmail id 1a193c9b0be60432 in original thread 1a19218ba2e540db.
+
+All messages clarify **no incorporation status verified** and ask whether a corporation can be sole borrower without founder guarantee or personal assets at risk, whether personal credit check is needed, and what legal setup and equity is necessary; they explicitly disallow any credit inquiry, fee, application, signed guarantee or commitment. ATB auto-acknowledgment received 2026-10-31 (not an underwriting decision).
+
+Next action: confirm legal corporation record/name and jurisdiction, receive lender answers, evaluate true corporate-only structures, and complete minimum viable loan proposal only after quote-backed unit economics. All human credit consents/guarantees/signatures remain non-delegable.
