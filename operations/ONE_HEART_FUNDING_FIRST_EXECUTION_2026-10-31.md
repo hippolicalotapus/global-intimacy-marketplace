@@ -157,3 +157,9 @@ Next action: confirm legal corporation record/name and jurisdiction, receive len
 **Funding use of proceeds:** Keep a small separately budgeted market-test allocation (booth permits, folding display, portable pop-up, garment samples/sellable inventory, payment terminal, travel, appropriate public liability insurance) with itemized real quotes and approved loan purpose. Do not increase the $6,950/$19,300 total estimates silently: reallocate within current assumptions or show incremental spending and updated funding gap after quotations.
 
 **Immediate action:** Verify market eligibility and costs, run two small no-commitment trials after supplier approval, use verified outcomes in lender cash flow. No vendor applications, paid reservations, event deposits or purchases made.
+
+### Market-organizer research outreach — Oct 31, 2026
+Checked GIM Gmail before sending; no previous correspondence with the two contacts.
+- **Edson Farmers' Market** edsonfarmersmarket@yahoo.com, **sent** Gmail id 1a193d118f32e5ee, subject "ONE HEART apparel — farmers' market vendor eligibility and 2027 stall information". Asked whether Alberta-designed third-party printed apparel qualifies, 2027 dates, stall/insurance/licence costs, 1-day trial rules. Explicitly stated clothing only and no adult-oriented display.
+- **CanGift** exhibitor@cangift.org, **sent** Gmail id 1a193d11c08808e0, subject "ONE HEART clothing line — emerging-brand eligibility and exhibitor costs for Alberta Gift + Home Market 2027". Asked exhibitor eligibility and costs, first-time options, licensing/insurance, needed wholesale proof. Disclosed broader adult-wellness venture while confirming only ONE HEART clothing would be displayed.
+Both were **information-only messages**; no stall reserved, membership purchased, vendor application or payment submitted. Wait for actual manager responses before counting expected event sales as finance projections.
