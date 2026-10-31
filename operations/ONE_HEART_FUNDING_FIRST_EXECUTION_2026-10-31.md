@@ -73,3 +73,24 @@ Federal CSBFP can fund eligible working capital through term loans or a credit l
 
 ### Decision
 Recommend contacting **ATB Financial first**, then **Servus**, then **RBC**, followed by **Scotiabank / TD** after comparing loan fees and requirements. Keep Community Futures already-contacted in parallel. Wealthsimple useful as possible no-monthly-fee business banking, not preferred loan instrument.
+
+## Alberta Self-employment Program research — October 31, 2026
+
+**Not startup cash:** Free training and business-plan preparation plus possible personally assessed living-expense assistance, not an apparel inventory/production grant.
+Official: https://www.alberta.ca/training-and-employment-services-self-employment-program ; https://www.alberta.ca/foundational-learning-assistance
+
+**Personal eligibility unknown**: current hours employed, regular EI history, ownership percentage, ability to attend full-time training, household means, initial owner investment, and relevance of public preview website.
+
+**Provider 1 — ACTI Edmonton:** online or in-person, 26 weeks; training 9am–3pm M–F for first 10 weeks, then 16 weeks coached implementation. Next available published Jan 25 2027; Nov 16 2026 waitlist only. Eligibility page states at least 51% founder ownership and possible early-stage business <6 months. Phone 780-944-0909, info@acti.org.
+https://acti.org/acti-locations-pages/edmonton ; https://acti.org/ready-or-not
+
+**Provider 2 — Microbusiness Training Centre:** 26-week online (8 weeks training / 18 weeks coaching), northern Alberta distance option, 780-482-4462, microbiz@microbusiness.ca (public flyer). Need provider confirmation that Wildwood/Sangudo accepted, financial supports, next intake.
+https://www.alberta.ca/lookup/employment-and-training-services-directory.aspx?cmp=1
+
+**Potential disqualification**: Another regional provider, Community Futures Sun Country, publishes strict conditions about prelaunch advertising and prior business activity. Do not automatically attribute these conditions to ACTI or Microbusiness, but disclose public ONE HEART preview and wider adult-wellness marketplace.
+https://cfsun.ca/userfiles/file/Self-Employment%20Program%20Questions%20and%20Answers%281%29.pdf
+
+**SENT October 31 2026, NONBINDING information requests from GIM mailbox**:
+ACTI info@acti.org, Gmail message 1a193b241d7126d9; Microbusiness microbiz@microbusiness.ca, Gmail message 1a193b246f4d340e. Asked whether rural applicant and public preview qualify; employment/EI, sector, income support, full-time training and intake. No personal application, loan, credit check or business spending initiated.
+
+Continue ATB and Community Futures funding inquiries plus printed-shirt/hoodie production cost quotes as the primary capital route. Self-employment program is complementary only if applicant qualifies.
