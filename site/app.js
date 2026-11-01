@@ -31,6 +31,18 @@
   }
   function mark(p) {return p.category==="AI Companions"?"◇":p.category==="Life-Size Dolls"?"✧":p.category==="Doll Care & Parts"?"✳":p.category==="Couples"?"♡":p.category==="Interactive"?"◎":p.category==="Wearables"?"✧":p.category==="Wellness"?"◈":"✦";}
   function visualClass(p) {return p.category==="AI Companions"?"visual-ai":p.category==="Life-Size Dolls"?"visual-dolls":p.category==="Doll Care & Parts"?"visual-care":p.category==="Couples"?"visual-couples":p.category==="Interactive"?"visual-interactive":p.category==="Wellness"?"visual-wellness":"";}
+  function destinationVisible(p) { return !!window.GIMDestination && window.GIMDestination.include(p); }
+  function deliveryLabel(p) { return window.GIMDestination ? window.GIMDestination.label(p) : "Choose a country to check delivery"; }
+  function updateDestination() {
+    var d = window.GIMDestination;
+    var count = products.filter(function(p){return destinationVisible(p);}).length;
+    el("countryEmpty").hidden = !d || d.previews() || count > 0;
+    el("countryEmptyText").textContent = d ? "We have not confirmed products for delivery to " + d.name() + ". Choose another country above, or explore clearly marked research previews." : "Choose your country first.";
+    document.querySelectorAll("[data-research-content]").forEach(function(n){n.hidden = !d || !d.previews();});
+    renderCatalog();renderFavorites();renderCommunity();renderPicker();renderSelection();
+    if(location.hash.startsWith("#gift="))renderGift();
+    if(el("productDialog").open)el("productDialog").close();
+  }
   function card(p) {
     var saved=favorites.includes(p.id);
     return '<article class="product-card">'+
@@ -39,7 +51,7 @@
       '<button type="button" class="fav-button'+(saved?" is-saved":"")+'" data-fav="'+p.id+'" aria-label="'+(saved?"Remove from":"Add to")+' saved items" aria-pressed="'+saved+'">'+(saved?"♥":"♡")+'</button>'+
       '<span class="product-mark" aria-hidden="true">'+(p.previewImage?'<img class="product-preview-image" src="'+esc(p.previewImage)+'" alt="'+esc(p.previewImageAlt)+'" loading="lazy" decoding="async" width="307" height="438">' : mark(p))+'</span></div>'+
       '<div class="product-card-body"><div class="product-brand">'+esc(p.brand)+'</div><h3>'+esc(p.name)+'</h3>'+
-      '<p class="product-meta">'+esc(p.researchType)+' · '+esc(p.collection)+' collection</p><div class="product-footer"><span class="product-status">Preview only</span>'+
+      '<p class="delivery-label">'+esc(deliveryLabel(p))+'</p><p class="product-meta">'+esc(p.researchType)+' · '+esc(p.collection)+' collection</p><div class="product-footer"><span class="product-status">Preview only</span>'+
       '<button type="button" class="outline-small" data-detail="'+p.id+'">View details →</button></div>'+
       '<a class="preorder-link" href="'+esc(enquiryUrl(p))+'" aria-label="Email a nonbinding pre-order enquiry for '+esc(p.name)+'">Ask about pre-order ↗</a></div></article>';
   }
@@ -71,7 +83,7 @@
   }
   function renderCatalog(){
     var list=products.filter(function(p){
-      return (activeCollection==="All"||p.collection===activeCollection)&&
+      return destinationVisible(p) && (activeCollection==="All"||p.collection===activeCollection)&&
         (activeCategory==="All"||p.category===activeCategory)&&
         (brand==="all"||p.brand===brand)&&
         matchesSearch(p,search);
@@ -83,7 +95,7 @@
     el("communitySearchResult").hidden=!sectionMatch;
     el("resultCount").textContent=list.length+(sectionMatch?1:0);
     el("productGrid").innerHTML=list.map(card).join("");
-    el("emptyProducts").hidden=list.length!==0||sectionMatch;
+    el("emptyProducts").hidden=!el("countryEmpty").hidden||list.length!==0||sectionMatch;
     el("categorySelect").value=activeCategory;
     var filters=[];
     if(activeCollection!=="All")filters.push(activeCollection);
@@ -105,7 +117,7 @@
   }
   function renderCommunity(){
     var allowed=communityGroups[communityGroup], query=el("communitySearch").value;
-    var list=products.filter(function(p){return (!allowed||allowed.includes(p.category))&&matchesSearch(p,query);});
+    var list=products.filter(function(p){return destinationVisible(p) && (!allowed||allowed.includes(p.category))&&matchesSearch(p,query);});
     list.sort(function(a,b){return Number(!!b.previewImage)-Number(!!a.previewImage)||a.id-b.id;});
     el("communityResultCount").textContent=list.length;
     el("communityGrid").innerHTML=list.map(card).join("");
@@ -115,16 +127,16 @@
     });
   }
   function renderFavorites(){
-    var favProducts=favorites.map(function(id){return byId.get(id);}).filter(Boolean);
+    var favProducts=favorites.map(function(id){return byId.get(id);}).filter(function(p){return p && destinationVisible(p);});
     el("favoritesGrid").innerHTML=favProducts.map(card).join("");
     el("favoritesEmpty").hidden=favProducts.length>0;
   }
   function renderPicker(){
     var query=el("wishlistSearch").value;
-    var filtered=products.filter(function(p){return matchesSearch(p,query);});
+    var filtered=products.filter(function(p){return destinationVisible(p) && matchesSearch(p,query);});
     el("wishlistPicker").innerHTML=filtered.map(function(p){
       var added=selected.includes(p.id);
-      return '<div class="picker-item"><div><b>'+esc(p.brand+" · "+p.name)+'</b><small>'+esc(p.category)+'</small></div>'+
+      return '<div class="picker-item"><div><b>'+esc(p.brand+" · "+p.name)+'</b><small>'+esc(p.category)+' · '+esc(deliveryLabel(p))+'</small></div>'+
         '<button type="button" class="'+(added?"added":"")+'" data-wish="'+p.id+'" aria-pressed="'+added+'">'+(added?"✓ Added":"+ Add")+'</button></div>';
     }).join("")||'<p class="muted" style="padding:15px">No matching products found.</p>';
   }
@@ -132,7 +144,7 @@
     var name=safeAlias(el("creatorAlias").value);
     el("previewAlias").textContent=name||"Your creator name";
     el("selectedWishItems").innerHTML=selected.length?selected.map(function(id){
-      var p=byId.get(id);return p?'<div class="selected-item"><div><b>'+esc(p.brand+" · "+p.name)+'</b><small>Research candidate</small></div>'+
+      var p=byId.get(id);return p?'<div class="selected-item"><div><b>'+esc(p.brand+" · "+p.name)+'</b><small>'+esc(deliveryLabel(p))+'</small></div>'+
         '<button type="button" data-remove="'+p.id+'" aria-label="Remove '+esc(p.name)+'">×</button></div>':"";
     }).join(""):'<p class="muted">Add products to see your wishlist preview.</p>';
     el("shareLinkArea").hidden=true;
@@ -151,9 +163,9 @@
     notify(selected.includes(id)?"Added to wishlist preview.":"Removed from wishlist preview.");
   }
   function details(id){
-    var p=byId.get(id);if(!p)return;
+    var p=byId.get(id);if(!p)return;if(!destinationVisible(p)){notify(deliveryLabel(p));return;}
     el("modalBody").innerHTML='<div class="modal-visual'+(p.previewImage?" with-preview":"")+'">'+(p.previewImage?'<img src="'+esc(p.previewImage)+'" alt="'+esc(p.previewImageAlt)+'">':mark(p))+'</div><div class="modal-content"><span class="product-brand">'+esc(p.brand)+'</span>'+
-      '<h2 id="modalName">'+esc(p.name)+'</h2><p>'+esc(p.researchType)+' · '+esc(p.researchFeature)+'</p>'+
+      '<h2 id="modalName">'+esc(p.name)+'</h2><p class="delivery-label">'+esc(deliveryLabel(p))+'</p><p>'+esc(p.researchType)+' · '+esc(p.researchFeature)+'</p>'+
       '<p>'+(p.conceptImage?"This is an approved ONE HEART lookbook concept, not a manufactured product. Final fabric, sizing, colour accuracy and print quality require factory sampling.":"Explore this potential future product. Model-specific features, materials, territories and available stock must be verified before any sale.")+'</p>'+
       '<div class="modal-notice"><b>Pre-order enquiry only — not a binding order.</b><br>No payment or reservation will be taken. Prices, stock, production and delivery are unconfirmed. '+(p.conceptImage?"Image is an AI lookbook mockup, not a production-ready print file.":"Manufacturer resale and product-photo rights remain under review; abstract placeholder shown.")+'</div>'+
       '<div class="modal-controls"><button class="button button-ghost" type="button" data-fav="'+p.id+'">'+(favorites.includes(p.id)?"♥ Saved":"♡ Save")+'</button>'+
@@ -186,7 +198,7 @@
     el("giftGrid").innerHTML=data.p.map(function(id){
       var p=byId.get(id);
       return '<article class="wish-public-item"><div class="tiny-symbol">'+mark(p)+'</div><div><strong>'+esc(p.brand+" · "+p.name)+'</strong>'+
-        '<small>Preview · Not available for gifting or purchase yet</small></div></article>';
+        '<small>'+esc(deliveryLabel(p))+' · Gifting and purchase disabled</small></div></article>';
     }).join("");
   }
   function navigate(){
@@ -209,7 +221,8 @@
     el("brandSelect").innerHTML='<option value="all">All brands</option>'+brands.map(function(b){return '<option value="'+esc(b)+'">'+esc(b)+'</option>';}).join("");
     el("categorySelect").innerHTML=categories.map(function(c){return '<option value="'+esc(c)+'">'+esc(c==="All"?"All categories":c)+'</option>';}).join("");
     el("shopCategoryLinks").innerHTML=categories.map(function(c){return '<a href="#catalog" data-browse-category="'+esc(c)+'">'+esc(c==="All"?"All products":c)+'</a>';}).join("");
-    renderCatalog();renderFavorites();
+    updateDestination();
+    window.addEventListener("gim:destinationchange",updateDestination);
     el("searchInput").addEventListener("input",runGlobalSearch);
     el("storeSearchForm").addEventListener("submit",function(e){e.preventDefault();runGlobalSearch();});
     el("categorySelect").addEventListener("change",function(e){activeCategory=e.target.value;renderCatalog();});
@@ -273,11 +286,18 @@
     survey("buyerSurvey","buyer",["buyerInterest","buyerPriority"]);
     window.addEventListener("hashchange",navigate);
     navigate();
-    if(sessionStorage.getItem("gim:adult")==="yes"){el("ageGate").hidden=true;}
-    else{el("ageGate").hidden=false;el("ageYes").focus();}
-    el("ageYes").addEventListener("click",function(){sessionStorage.setItem("gim:adult","yes");el("ageGate").hidden=true;});
+    var adult=false;
+    try{adult=sessionStorage.getItem("gim:adult")==="yes";}catch(e){}
+    el("ageGate").hidden=adult;el("storeShell").inert=!adult;el("countryEntrance").inert=!adult;
+    if(!adult)el("ageYes").focus();
+    el("ageYes").addEventListener("click",function(){
+      try{sessionStorage.setItem("gim:adult","yes");}catch(e){}
+      el("ageGate").hidden=true;el("storeShell").inert=false;el("countryEntrance").inert=false;
+      if(window.GIMDestination.country())el("main").focus();else el("countryHeading").focus();
+    });
     el("ageNo").addEventListener("click",function(){location.replace("https://www.google.com/");});
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",setup);
   else setup();
 }());
+

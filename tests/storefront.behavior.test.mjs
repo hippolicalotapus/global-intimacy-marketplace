@@ -8,13 +8,15 @@ const read = path => readFile(new URL(path, root), "utf8");
 
 // Execute the real browser scripts and their event handlers against a small DOM
 // fixture. Browser QA separately checks layout, links and decoded image assets.
-async function storefront(hash = "") {
+async function storefront(hash = "", options = {}) {
+  const settings = { country: "CA", previews: true, blockedStorage: false, ...options };
   const html = await read("site/index.html");
   class Element {
     constructor(id, dataset = {}) {
       Object.assign(this, { id, dataset, value: "", innerHTML: "", textContent: "", hidden: false, open: false, listeners: {} });
       this.classList = { add() {}, remove() {}, toggle() {} };
     }
+    dispatchEvent(event) { for (const handler of this.listeners[event.type] || []) handler(event); }
     addEventListener(type, handler) { (this.listeners[type] ||= []).push(handler); }
     dispatch(type, target = this) { for (const handler of this.listeners[type] || []) handler({ target, preventDefault() {} }); }
     setAttribute() {}
@@ -39,19 +41,24 @@ async function storefront(hash = "") {
     : selector === '[data-all-products], [data-route="shop"]' ? links.filter(n => "allProducts" in n.dataset || n.dataset.route === "shop")
     : selector === "[data-route]" ? links.filter(n => n.dataset.route)
     : selector === ".page" ? [...nodes.values()].filter(n => n.id.startsWith("view-")) : [];
-  const storage = () => { const values = new Map(); return { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) }; };
+  const storage = () => { const values = new Map(settings.country ? [["gim:country",settings.country]] : []); return { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) }; };
   const location = { hash, href: "https://store.example/" + hash };
   const window = new Element("window");
   window.scrollTo = () => {};
-  const sandbox = { window, document, location, localStorage: storage(), sessionStorage: storage(), navigator: {}, URL, TextEncoder, TextDecoder,
+  const local = settings.blockedStorage ? {getItem(){throw Error("blocked");},setItem(){throw Error("blocked");}} : storage();
+  const sandbox = { window, document, location, localStorage: local, CustomEvent: class {constructor(type){this.type=type;}}, sessionStorage: storage(), navigator: {}, URL, TextEncoder, TextDecoder,
     btoa: value => Buffer.from(value, "binary").toString("base64"), atob: value => Buffer.from(value, "base64").toString("binary"),
     requestAnimationFrame: fn => fn(), setTimeout: () => 0, clearTimeout() {} };
-  for (const path of ["site/catalog.js", "site/apparel.js", "site/app.js"]) runInNewContext(await read(path), sandbox, { timeout: 1200 });
+  for (const path of ["site/catalog.js", "site/apparel.js", "site/countries.js", "site/shipping.js", "site/globe-math.js", "site/globe-3d.js", "site/globe-software.js", "site/destination.js", "site/app.js"]) {
+    if(path==="site/app.js" && settings.synthetic)window.GIM_PRODUCTS.push(settings.synthetic);
+    runInNewContext(await read(path), sandbox, { timeout: 1200 });
+  }
   document.dispatch("DOMContentLoaded");
+  if(settings.previews){ nodes.get("previewMode").checked=true; nodes.get("previewMode").dispatch("change"); }
   const click = (name, dataset) => nodes.get(name).dispatch("click", { closest: () => ({ dataset }) });
   const search = value => { nodes.get("searchInput").value = value; nodes.get("searchInput").dispatch("input"); };
   const count = () => Number(nodes.get("resultCount").textContent);
-  return { nodes, links, document, window, location, search, click, count };
+  return { nodes, links, document, window, location, search, click, count, local };
 }
 
 test("Catalogue search finds ONE HEART aliases, collection names and mixed keywords", async () => {
@@ -175,4 +182,78 @@ test("Category menu links and select controls expose the same catalogue categori
   app.nodes.get("categorySelect").dispatch("change");
   assert.equal(app.count(), 5);
   assert.ok(app.nodes.get("activeFilterText").textContent.includes("ONE HEART Hoodies"));
+});
+
+
+
+test("First visit requires a valid country and preserves direct ONE HEART routing", async () => {
+ const app = await storefront("#one-heart", {country:null,previews:false});
+ assert.equal(app.nodes.get("countryEntrance").hidden,false);
+ assert.equal(app.nodes.get("storeShell").hidden,true);
+ assert.equal(app.window.GIMDestination.enter("EU"),false);
+ assert.equal(app.window.GIMDestination.enter("CA"),true);
+ assert.equal(app.nodes.get("storeShell").hidden,false);
+ assert.equal(app.count(),0);
+ app.nodes.get("previewMode").checked=true;app.nodes.get("previewMode").dispatch("change");
+ assert.equal(app.count(),16);
+});
+
+test("Country selection never presents current research previews as delivery-confirmed", async () => {
+ const app = await storefront("", {previews:false});
+ assert.equal(app.count(),0);
+ assert.equal(app.nodes.get("countryEmpty").hidden,false);
+ assert.equal(app.nodes.get("productGrid").innerHTML,"");
+ app.nodes.get("showResearchPreviews").dispatch("click");
+ assert.equal(app.count(),103);
+ assert.match(app.nodes.get("productGrid").innerHTML,/Delivery to Canada not confirmed/);
+ app.window.GIMDestination.enter("GB");
+ assert.equal(app.count(),0, "country switch resets explicit preview opt-in");
+ assert.equal(app.nodes.get("previewMode").checked,false);
+ assert.match(app.nodes.get("countryCurrent").textContent,/United Kingdom/);
+ app.search("oneheart"); assert.equal(app.count(),0);
+ app.nodes.get("clearActiveFilters").dispatch("click");assert.equal(app.count(),0);
+ assert.equal(app.window.GIMDestination.country(),"GB");
+});
+
+test("Wishlist, shared gifts, saved items and details cannot promise unsupported delivery", async () => {
+ const app=await storefront();
+ const id=99;
+ const click=key=>app.document.dispatch("click",{closest:s=>s===`[data-${key}]`?{dataset:{[key]:String(id)}}:null});
+ click("fav");click("wish");click("detail");
+ assert.equal(app.nodes.get("productDialog").open,true);
+ app.window.GIMDestination.enter("US");
+ assert.equal(app.nodes.get("productDialog").open,false);
+ assert.equal(app.nodes.get("favoritesGrid").innerHTML,"");
+ assert.equal(app.nodes.get("wishlistPicker").innerHTML.includes('class="picker-item"'),false);
+ assert.match(app.nodes.get("selectedWishItems").innerHTML,/Delivery to United States not confirmed/);
+ click("detail");assert.equal(app.nodes.get("productDialog").open,false);
+});
+
+test("Blocked local storage and unavailable canvas retain working country-list selection", async () => {
+ const app=await storefront("",{country:null,previews:false,blockedStorage:true});
+ assert.equal(app.nodes.get("globeFallback").hidden,false);
+ assert.equal(app.window.GIMDestination.enter("NZ"),true);
+ assert.equal(app.window.GIMDestination.country(),"NZ");
+ assert.equal(app.count(),0);
+ app.nodes.get("countryCurrent").dispatch("click");
+ assert.equal(app.nodes.get("countryEntrance").hidden,false);
+ app.nodes.get("cancelCountry").dispatch("click");
+ assert.equal(app.nodes.get("storeShell").hidden,false);
+});
+
+
+test("A synthetic approved SKU is filtered consistently when the shopper changes country",async()=>{
+ const synthetic={id:999,brand:"Test fixture",name:"Synthetic test product",category:"Wellness",collection:"Everyday",researchType:"Test only",resellerApproved:true,stockVerified:true,canAcceptOrders:true,
+ deliveryRules:[{productId:999,country:"CA",status:"allowed",verified:true,countrywide:true,resaleTerritoryApproved:true,importReviewed:true,fulfillmentConfirmed:true,checkedAt:"2020-01-01",validUntil:"2099-01-01"},{country:"US",status:"blocked"}]};
+ const app=await storefront("",{previews:false,synthetic});
+ assert.equal(app.count(),1);
+ assert.match(app.nodes.get("productGrid").innerHTML,/Synthetic test product/);
+ assert.match(app.nodes.get("productGrid").innerHTML,/Delivery confirmed for Canada/);
+ assert.equal(app.nodes.get("countryEmpty").hidden,true);
+ assert.match(app.nodes.get("destinationNote").textContent,/1 products/);
+ app.window.GIMDestination.enter("US");
+ assert.equal(app.count(),0);
+ app.nodes.get("showResearchPreviews").dispatch("click");
+ assert.equal(app.count(),103, "Blocked product stays excluded even from preview results");
+ assert.ok(!app.nodes.get("productGrid").innerHTML.includes("Synthetic test product"));
 });

@@ -9,11 +9,39 @@
 <title>Global Intimacy Marketplace | Explore &amp; Connect</title>
 <link rel="icon" type="image/webp" href="assets/approved-logo.svg">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="destination.css">
 <script src="catalog.js" defer></script>
 <script src="apparel.js" defer></script>
+<script src="countries.js" defer></script>
+<script src="shipping.js" defer></script>
+<script src="globe-math.js" defer></script>
+<script src="globe-3d.js" defer></script>
+<script src="globe-software.js" defer></script>
+<script src="destination.js" defer></script>
 <script src="app.js" defer></script>
 </head>
 <body>
+
+<section id="countryEntrance" class="country-entrance" aria-labelledby="countryHeading">
+  <div class="country-top"><img src="assets/approved-logo.svg" alt="Global Intimacy Marketplace" width="300" height="100"><span>YOUR WORLD. YOUR CONNECTION.</span></div>
+  <div class="country-layout">
+    <div class="country-copy"><span class="country-eyebrow">GLOBAL INTIMACY MARKETPLACE</span><h1 id="countryHeading" tabindex="-1">Connection has <br><em>no borders.</em></h1><p class="country-intro">Your shopping experience starts with you.</p><h2>Which country are you shopping from?</h2><p class="country-explain">Choose your country to explore its delivery options. No address or account needed to browse.</p>
+      <form id="countryForm" class="country-form">
+        <label for="countrySearch">Find your country / region</label><input id="countrySearch" type="search" autocomplete="off" placeholder="Search by name or code…" aria-controls="countrySelect" aria-describedby="countryMatchCount">
+        <label class="sr-only" for="countrySelect">Choose country / region</label><select id="countrySelect" required aria-describedby="countryStatus"><option value="">Select a country / region</option></select>
+        <small id="countryMatchCount" role="status"></small>
+        <button id="enterCountry" class="button country-enter" type="submit" disabled>Choose your country</button>
+        <p id="countryStatus" role="status" aria-live="polite">Spin the globe or find your country above.</p>
+      </form>
+      <button id="cancelCountry" class="country-cancel" type="button" hidden>← Keep my current country</button>
+      <p class="country-preview-note"><strong>We're building something thoughtful.</strong> This is a research preview. Products, checkout and delivery are not live yet.</p>
+    </div>
+    <div class="country-world"><div class="globe-halo"><canvas id="countryGlobe" width="500" height="500" tabindex="0" role="img" aria-label="Interactive 3D globe. Drag to rotate and tap land to enter that country. Arrow keys rotate; use the country list for keyboard selection." aria-describedby="globeHelp"></canvas><div id="globeFallback" class="globe-fallback" hidden>Find your country using the list.</div></div><p id="globeHelp"><span aria-hidden="true">↔</span> Drag to explore · Tap a country to enter · Or use the list</p><small>Made with Natural Earth · Small countries and regions are available in the list.</small></div>
+  </div>
+  <noscript><p class="country-noscript">Please enable JavaScript to choose your country and browse. You can also contact <a href="mailto:globalintimacypartner@gmail.com">globalintimacypartner@gmail.com</a>.</p></noscript>
+</section>
+<div id="storeShell" hidden>
+
 <div class="beta-banner" role="status"><span class="banner-dot"></span><span><strong>Early-access preview</strong> — exploring products and creator gifting. No purchases or live stock yet. Pre-order enquiries are informational only.</span></div>
 <header class="site-header">
   <div class="header-inner">
@@ -29,11 +57,13 @@
   </div>
   <div class="global-search-inner"><details class="shop-menu" id="shopMenu"><summary>Categories <span aria-hidden="true">⌄</span></summary><nav id="shopCategoryLinks" aria-label="Product categories"></nav></details><form id="storeSearchForm" role="search"><label class="search-box"><span aria-hidden="true">⌕</span><span class="sr-only">Search products</span><input id="searchInput" type="search" placeholder="Search all products and collections…" autocomplete="off"></label><button type="submit" class="button button-primary">Search</button></form></div>
 </header>
+<div class="destination-bar"><button id="countryCurrent" type="button">Choose country</button><span id="destinationSummary" role="status"></span></div>
+<div class="destination-controls site-width"><p id="destinationNote"></p><label><input id="previewMode" type="checkbox"> Explore unconfirmed research previews</label></div>
 <main id="main" tabindex="-1">
   <section class="page active" id="view-shop" aria-labelledby="heroTitle">
     <div class="hero site-width">
       <div class="hero-copy"><span class="eyebrow"><span class="sparkle">✦</span> GLOBAL INTIMACY MARKETPLACE · ONE HEART</span><h1 id="heroTitle">Discover your kind<br><em>of connection.</em></h1><p>Explore wellness, connected technology, distinctive clothing and thoughtful creator gifting. Search the full marketplace or start with a category below.</p><div class="hero-buttons"><a href="#catalog" class="button button-primary" id="exploreProducts" data-all-products>Explore all products <span>↗</span></a><a href="#one-heart" class="button button-ghost" data-oneheart>ONE HEART artwear</a><a href="#creators" class="button button-ghost" data-route="creators">For creators <span>→</span></a></div><div class="hero-note"><span class="mini-avatar">♡</span> Built for adults, all identities and all kinds of connection</div></div>
-      <div class="hero-art hero-product-display" aria-label="ONE HEART clothing and mountain hoodie artwork">
+      <div data-research-content class="hero-art hero-product-display" aria-label="ONE HEART clothing and mountain hoodie artwork">
         <button type="button" class="hero-product-tile hero-product-primary" data-detail="99" aria-label="View ONE HEART Rocky Mountains hoodie"><img src="assets/one-heart/rocky-mountains.webp" width="307" height="438" alt="ONE HEART Rocky Mountains hoodie design preview" fetchpriority="high"><span>Mountain hoodies</span></button>
         <button type="button" class="hero-product-tile" data-detail="89" aria-label="View ONE HEART Cosmic Fluidity art tee"><img src="assets/one-heart/cosmic-fluidity.webp" width="301" height="344" alt="ONE HEART Cosmic Fluidity psychedelic T-shirt concept" fetchpriority="high"><span>Visionary artwear</span></button>
         <button type="button" class="hero-product-tile" data-detail="93" aria-label="View ONE HEART Melting Ruby Heart art tee"><img src="assets/one-heart/melting-ruby-heart.webp" width="499" height="517" alt="ONE HEART Melting Ruby Heart T-shirt design" loading="lazy"><span>Ruby Heart edition</span></button>
@@ -47,7 +77,7 @@
       <a href="#gay-lesbian" data-route="gay-lesbian"><span class="category-symbol symbol-community" aria-hidden="true">◈</span><strong>Gay &amp; Lesbian</strong><small>Your dedicated section</small></a>
       <a href="#creators" data-route="creators"><span class="category-symbol symbol-gifts" aria-hidden="true">✧</span><strong>Creator gifting</strong><small>Wishlists &amp; saved ideas</small></a>
     </div></section>
-    <section class="site-width photo-first-showcase" aria-labelledby="photoFirstTitle">
+    <section data-research-content class="site-width photo-first-showcase" aria-labelledby="photoFirstTitle">
       <div class="photo-first-heading"><div><span class="section-kicker">LOOKBOOK · ACTUAL DESIGN PREVIEWS</span><h2 id="photoFirstTitle">See the designs first.</h2><p>Real ONE HEART lookbook artwork, not pictures of finished stock. Browse the five mountain hoodies and our psychedelic artwear designs.</p></div><a href="#one-heart" data-oneheart class="photo-all-link">See all 16 designs →</a></div>
       <div class="photo-first-grid">
         <button type="button" class="photo-first-card" data-detail="99"><img src="assets/one-heart/rocky-mountains.webp" alt="Rocky Mountains black hoodie design" loading="lazy"><span class="photo-name">Rocky Mountains <small>Mountain hoodie</small></span></button>
@@ -66,6 +96,7 @@
     </section>
     <div class="site-width"><div class="value-row"><div><span class="value-icon">◎</span><strong>Global discovery</strong><small>Discover brands across borders</small></div><div><span class="value-icon">♡</span><strong>Creator-first gifting</strong><small>Wishlists designed with privacy in mind</small></div><div><span class="value-icon">✦</span><strong>Connected innovation</strong><small>Interactive technology and wellness</small></div></div></div>
     <div class="site-width collection-block" id="catalog">
+      <div id="countryEmpty" class="country-empty" hidden><h2>No delivery-confirmed products yet</h2><p id="countryEmptyText"></p><button id="showResearchPreviews" type="button" class="button button-primary">Explore research previews</button><p>Previews are ideas to explore, not products promised for delivery.</p></div>
       <div class="section-kicker">BROWSE ALL PRODUCTS</div>
       <div class="section-heading"><div><h2>Shop the lookbook. Explore the possibilities.</h2><p>Products with approved visual references appear first. Other supplier research entries use placeholders until we receive legitimate photo and resale permissions. All listings remain previews, not available for immediate checkout.</p></div><span class="results-pill"><span id="resultCount">0</span> discovered</span></div>
       <div class="tier-intro"><span class="section-kicker">SHOP BY COLLECTION</span><p>Explore wellness, connected innovation, companion technology and ONE HEART artwear. Collection placements are provisional research groupings, not verified price tiers.</p></div>
@@ -84,7 +115,7 @@
       <a id="communitySearchResult" class="community-search-result" href="#gay-lesbian" data-route="gay-lesbian" hidden><strong>Explore the Gay &amp; Lesbian section ↗</strong><span>Connection, wellness, clothing and gifts</span></a>
       <div id="productGrid" class="product-grid" aria-live="polite"></div><div id="emptyProducts" class="empty-state" hidden><div>⌕</div><h3>No matches yet</h3><p>Try another brand, category or keyword.</p><button type="button" id="clearFilters" class="button button-ghost">Clear filters</button></div>
       </div>
-      <section class="oneheart-feature" aria-labelledby="oneHeartTitle">
+      <section data-research-content class="oneheart-feature" aria-labelledby="oneHeartTitle">
         <div class="oneheart-feature-copy">
           <span class="oneheart-kicker">ONE HEART · NO BORDERS · ART APPAREL</span>
           <h3 id="oneHeartTitle">Wear the experience.</h3>
@@ -138,7 +169,9 @@
 <nav class="mobile-bottom" aria-label="Mobile navigation"><a href="#shop" data-route="shop"><span>⌂</span>Explore</a><a href="#one-heart" data-oneheart><span>♡</span>ONE HEART</a><a href="#favorites" data-route="favorites"><span>♡</span>Saved</a><a href="#creators" data-route="creators"><span>✧</span>Creators</a><a href="#gay-lesbian" data-route="gay-lesbian"><span>◈</span>Gay &amp; Lesbian</a></nav>
 
 <dialog id="productDialog" class="product-modal" aria-labelledby="modalName"><button type="button" class="modal-close" id="closeModal" aria-label="Close product details">×</button><div id="modalBody"></div></dialog>
+</div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <div id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageTitle"><div class="gate-card"><img src="assets/approved-logo.svg" alt="Global Intimacy Marketplace" width="250" height="84"><div class="gate-icon">18+</div><h2 id="ageTitle">Welcome to a space for adults.</h2><p>This website discusses products intended for adults. Please confirm you are at least 18, and meet the age requirements where you live.</p><button id="ageYes" class="button button-primary full" type="button">I'm an adult — enter</button><button id="ageNo" class="button button-ghost full" type="button">I'm under 18 — leave</button><small>Age self-attestation for demo navigation only. It is not identity verification.</small></div></div>
 </body>
 </html>
+
