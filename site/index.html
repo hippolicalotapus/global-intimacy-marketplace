@@ -9,6 +9,7 @@
 <title>Global Intimacy Marketplace | Explore &amp; Connect</title>
 <link rel="icon" type="image/webp" href="assets/approved-logo.svg">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="unconventional.css">
 <link rel="stylesheet" href="destination.css">
 <script src="catalog.js" defer></script>
 <script src="apparel.js" defer></script>
@@ -52,6 +53,7 @@
       <a href="#creators" data-route="creators">Creator wishlists</a>
       <a href="#favorites" data-route="favorites">Saved</a>
       <a href="#gay-lesbian" data-route="gay-lesbian">Gay &amp; Lesbian</a>
+      <a href="#freaks-weirdos-deviants" data-route="freaks-weirdos-deviants">Unconventional</a>
     </nav>
     <div class="header-actions"><button class="text-action" id="openSearchBtn" type="button" aria-label="Search products">⌕ <span>Search</span></button><a class="button button-sm button-primary" href="#early" data-route="early">Get early access <span aria-hidden="true">↗</span></a></div>
   </div>
@@ -77,6 +79,7 @@
       <a href="#gay-lesbian" data-route="gay-lesbian"><span class="category-symbol symbol-community" aria-hidden="true">◈</span><strong>Gay &amp; Lesbian</strong><small>Your dedicated section</small></a>
       <a href="#creators" data-route="creators"><span class="category-symbol symbol-gifts" aria-hidden="true">✧</span><strong>Creator gifting</strong><small>Wishlists &amp; saved ideas</small></a>
     </div></section>
+    <a href="#freaks-weirdos-deviants" data-route="freaks-weirdos-deviants" class="site-width unconventional-home"><span class="unconventional-home-symbol" aria-hidden="true">✳</span><span><small>THE UNCONVENTIONAL</small><strong>Freaks, Weirdos &amp; Deviants welcome.</strong><span>Explore your interests. No labels required.</span></span><b aria-hidden="true">↗</b></a>
     <section data-research-content class="site-width photo-first-showcase" aria-labelledby="photoFirstTitle">
       <div class="photo-first-heading"><div><span class="section-kicker">LOOKBOOK · ACTUAL DESIGN PREVIEWS</span><h2 id="photoFirstTitle">See the designs first.</h2><p>Real ONE HEART lookbook artwork, not pictures of finished stock. Browse nine mountain hoodies, six visionary art tees and three paisley tees.</p></div><a href="#one-heart" data-oneheart class="photo-all-link">See all 18 ONE HEART designs →</a></div>
       <div class="photo-first-grid">
@@ -114,6 +117,7 @@
       <div class="catalog-note"><span aria-hidden="true">ⓘ</span> Preview collection: prices and availability are unconfirmed. Pre-order links open an informational email enquiry; they do not take payment, reserve stock or confirm delivery.</div>
       <div id="activeFilterSummary" class="active-filter-summary" hidden><span id="activeFilterText"></span><button id="clearActiveFilters" type="button">Clear filters</button></div>
       <a id="communitySearchResult" class="community-search-result" href="#gay-lesbian" data-route="gay-lesbian" hidden><strong>Explore the Gay &amp; Lesbian section ↗</strong><span>Connection, wellness, clothing and gifts</span></a>
+      <a id="unconventionalSearchResult" class="community-search-result unconventional-search-result" href="#freaks-weirdos-deviants" data-route="freaks-weirdos-deviants" hidden><strong>Freaks, Weirdos &amp; Deviants ↗</strong><span>The Unconventional · kink, alternative fashion, role-play, sensory exploration and technology. Collections are in research.</span></a>
       <div id="productGrid" class="product-grid" aria-live="polite"></div><div id="emptyProducts" class="empty-state" hidden><div>⌕</div><h3>No matches yet</h3><p>Try another brand, category or keyword.</p><button type="button" id="clearFilters" class="button button-ghost">Clear filters</button></div>
       </div>
       <section data-research-content class="oneheart-feature" aria-labelledby="oneHeartTitle">
@@ -137,6 +141,32 @@
       </div>
     </div>
     <section class="creator-promo"><div class="site-width creator-promo-inner"><div><span class="eyebrow">MADE FOR THE CREATOR COMMUNITY</span><h2>Your wishlist. Your community.<br><em>Your boundaries.</em></h2><p>A complimentary wishlist program planned for eligible adult creators on all platforms—not affiliated with any of them. Try the shareable wishlist demo today.</p><a href="#creators" data-route="creators" class="button button-light">Explore creator wishlists →</a><p><a href="creator-feedback.html" class="button button-light">Help shape GIM &amp; invite creators →</a></p></div><div class="promo-art" aria-hidden="true"><span>♡</span><b>THE GIFT<br>OF CONNECTION</b></div></div></section>
+  </section>
+
+  <section class="page" id="view-freaks-weirdos-deviants" aria-labelledby="unconventionalTitle">
+    <div class="site-width page-inner unconventional-page">
+      <div class="unconventional-hero">
+        <div class="unconventional-copy"><span class="section-kicker">THE UNCONVENTIONAL · ADULTS 18+</span><h1 id="unconventionalTitle">Freaks, Weirdos<br><em>&amp; Deviants.</em></h1><p class="unconventional-lead">You're welcome here.</p><p>For curious minds, alternative tastes and people who never fitted the mould. Explore by interest, at your own pace, without choosing a label.</p><button id="unconventionalBrowse" class="button unconventional-browse" type="button">Find your kind of different ↓</button></div>
+        <div class="unconventional-art" aria-hidden="true"><span class="unconventional-orbit orbit-one"></span><span class="unconventional-orbit orbit-two"></span><span class="unconventional-star">✳</span><span class="unconventional-art-word">BE<br><em>YOU.</em></span><small>NO MOULD REQUIRED.</small></div>
+      </div>
+      <div class="unconventional-welcome"><strong>Different interests. The same respect.</strong><p>A space for legal, consensual adult exploration, with privacy, clear boundaries and respect for everyone. The names are a welcome, never labels we assign to you.</p></div>
+      <div id="unconventionalDiscoveries" class="unconventional-discoveries">
+        <div class="photo-first-heading"><div><span class="section-kicker">FOLLOW YOUR CURIOSITY</span><h2>Choose an interest.</h2></div><a href="#catalog" data-all-products class="photo-all-link">Browse the whole marketplace ↗</a></div>
+        <div id="unconventionalFilters" class="unconventional-topics" role="group" aria-label="Unconventional browsing interests">
+          <button type="button" class="unconventional-topic active" data-unconventional-group="all" aria-pressed="true"><span aria-hidden="true">✳</span><strong>All discoveries</strong><small>Explore across interests</small></button>
+          <button type="button" class="unconventional-topic" data-unconventional-group="kink" aria-pressed="false"><span aria-hidden="true">∞</span><strong>Kink &amp; BDSM</strong><small>Collection being sourced</small></button>
+          <button type="button" class="unconventional-topic" data-unconventional-group="style" aria-pressed="false"><span aria-hidden="true">✦</span><strong>Alternative fashion</strong><small>Artwear, attitude &amp; lingerie</small></button>
+          <button type="button" class="unconventional-topic" data-unconventional-group="roleplay" aria-pressed="false"><span aria-hidden="true">◇</span><strong>Role-play &amp; fantasy</strong><small>Games, style &amp; companions</small></button>
+          <button type="button" class="unconventional-topic" data-unconventional-group="sensory" aria-pressed="false"><span aria-hidden="true">≋</span><strong>Sensory exploration</strong><small>Texture, sensation &amp; care</small></button>
+          <button type="button" class="unconventional-topic" data-unconventional-group="technology" aria-pressed="false"><span aria-hidden="true">◎</span><strong>Unusual technology</strong><small>Interactive &amp; connected ideas</small></button>
+        </div>
+        <div class="unconventional-tools"><label class="search-box"><span aria-hidden="true">⌕</span><span class="sr-only">Search Freaks Weirdos and Deviants section</span><input id="unconventionalSearch" type="search" placeholder="Search a product, brand or design…" autocomplete="off"></label><p><strong id="unconventionalResultCount">0</strong> catalogue matches</p></div>
+        <p id="unconventionalAvailability" class="unconventional-availability" role="status"></p>
+        <p class="catalog-note">These are existing research candidates and clothing concepts, not approved stock. Interest groups describe browsing themes, not verified product uses or safety claims. Prices, resale permissions and delivery remain unconfirmed; no purchases or reservations are taken.</p>
+        <div id="unconventionalGrid" class="product-grid" aria-live="polite"></div>
+        <div id="unconventionalEmpty" class="empty-state unconventional-empty" hidden><span aria-hidden="true">✳</span><h3 id="unconventionalEmptyTitle">No matching discoveries yet.</h3><p id="unconventionalEmptyText">Try another interest or keyword.</p><button id="clearUnconventionalFilters" type="button" class="button button-ghost">Browse other interests</button></div>
+      </div>
+    </div>
   </section>
 
   <section class="page" id="view-gay-lesbian" aria-labelledby="communityTitle">
@@ -166,7 +196,7 @@
 
   <section class="page" id="view-about" aria-labelledby="aboutTitle"><div class="site-width page-inner"><div class="page-header"><span class="section-kicker">WHY WE EXIST</span><h1 id="aboutTitle">Connection without boundaries.<br><em>Privacy without compromise.</em></h1><p>Our mission is to make quality intimacy products, emerging connected-device technology, and thoughtful gifting easier to discover through a trusted global marketplace.</p></div><div class="values-grid"><article><span>01</span><h3>Inclusive by design</h3><p>A welcoming experience for adults of all identities, relationships and preferences.</p></article><article><span>02</span><h3>Privacy comes first</h3><p>Discreet browsing and carefully controlled gifting tools. Recipient addresses must remain protected.</p></article><article><span>03</span><h3>Suppliers with standards</h3><p>Our intended model connects authorized manufacturers and distributors to customers, without us stocking inventory.</p></article><article><span>04</span><h3>Innovation with care</h3><p>Connected devices, creator wishlists and responsible technology with clear, accurate product information.</p></article></div><div class="faq-panel"><h2>About the beta</h2><details><summary>Can I buy products today?</summary><p>Not yet. Products are unpriced research previews. Purchasing and dropshipping will be enabled only after we verify authorized suppliers, stock, image licenses and a suitable payment provider.</p></details><details><summary>Are wishlists free?</summary><p>Our plan is to provide eligible adult creators with complimentary wishlist accounts. Right now, you can try a browser-only demonstration without sharing personal delivery details.</p></details><details><summary>Is Global Intimacy Marketplace associated with a creator platform?</summary><p>No. Global Intimacy Marketplace is independent and is not an official partner of OnlyFans, Fansly, Stripchat, Chaturbate or any manufacturer.</p></details><details><summary>Where is the business based?</summary><p>We're developing this business from Alberta, Canada, with international sourcing and global market ambitions.</p></details></div></div></section>
 </main>
-<footer class="footer"><div class="site-width footer-inner"><div><img src="assets/approved-logo.svg" alt="Global Intimacy Marketplace" width="270" height="90"><p>Connecting creators, communities and innovation worldwide.</p></div><div class="footer-links"><a href="#shop" data-route="shop">Explore</a><a href="#one-heart" data-oneheart>ONE HEART apparel</a><a href="#gay-lesbian" data-route="gay-lesbian">Gay &amp; Lesbian</a><a href="#creators" data-route="creators">Creator wishlists</a><a href="creator-feedback.html">Founding Creator Circle</a><a href="#about" data-route="about">Our mission</a><a href="#early" data-route="early">Early access</a><a href="mailto:globalintimacypartner@gmail.com">Contact</a></div><div class="footer-legal">© <span id="year"></span> Global Intimacy Marketplace<br>Pre-launch demonstration · Adults 18+<br>No live sales, seller affiliations or orders</div></div></footer>
+<footer class="footer"><div class="site-width footer-inner"><div><img src="assets/approved-logo.svg" alt="Global Intimacy Marketplace" width="270" height="90"><p>Connecting creators, communities and innovation worldwide.</p></div><div class="footer-links"><a href="#freaks-weirdos-deviants" data-route="freaks-weirdos-deviants">Freaks, Weirdos &amp; Deviants</a><a href="#shop" data-route="shop">Explore</a><a href="#one-heart" data-oneheart>ONE HEART apparel</a><a href="#gay-lesbian" data-route="gay-lesbian">Gay &amp; Lesbian</a><a href="#creators" data-route="creators">Creator wishlists</a><a href="creator-feedback.html">Founding Creator Circle</a><a href="#about" data-route="about">Our mission</a><a href="#early" data-route="early">Early access</a><a href="mailto:globalintimacypartner@gmail.com">Contact</a></div><div class="footer-legal">© <span id="year"></span> Global Intimacy Marketplace<br>Pre-launch demonstration · Adults 18+<br>No live sales, seller affiliations or orders</div></div></footer>
 <nav class="mobile-bottom" aria-label="Mobile navigation"><a href="#shop" data-route="shop"><span>⌂</span>Explore</a><a href="#one-heart" data-oneheart><span>♡</span>ONE HEART</a><a href="#favorites" data-route="favorites"><span>♡</span>Saved</a><a href="#creators" data-route="creators"><span>✧</span>Creators</a><a href="#gay-lesbian" data-route="gay-lesbian"><span>◈</span>Gay &amp; Lesbian</a></nav>
 
 <dialog id="productDialog" class="product-modal" aria-labelledby="modalName"><button type="button" class="modal-close" id="closeModal" aria-label="Close product details">×</button><div id="modalBody"></div></dialog>

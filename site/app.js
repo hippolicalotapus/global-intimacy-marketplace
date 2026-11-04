@@ -11,6 +11,17 @@
   var toastTimer;
   var communityGroup="all";
   var communityGroups={all:null,connection:["Couples","Wearables","Connected devices","Interactive"],care:["Wellness","Essentials","Massage & Care"],style:["Lingerie","Games & Gifts","ONE HEART Hoodies","ONE HEART Art Tees","SARCASTABASTARD Tees"]};
+  var unconventionalGroup="all";
+  // Editorial interests reuse existing candidates; they do not approve products
+  // or assign an identity to a shopper. No BDSM-specific candidate is listed yet.
+  var unconventionalGroups={
+    all:["ONE HEART Hoodies","ONE HEART Art Tees","SARCASTABASTARD Tees","Lingerie","Games & Gifts","Wellness","Massage & Care","Wearables","Connected devices","Interactive","AI Companions","Life-Size Dolls"],
+    kink:[],
+    style:["ONE HEART Hoodies","ONE HEART Art Tees","SARCASTABASTARD Tees","Lingerie"],
+    roleplay:["Lingerie","Games & Gifts","Life-Size Dolls"],
+    sensory:["Wellness","Massage & Care","Wearables","Connected devices"],
+    technology:["Interactive","Connected devices","Wearables","AI Companions"]
+  };
 
   function el(id) {return document.getElementById(id);}
   function esc(value) {return String(value === null || value === undefined ? "" : value).replace(/[&<>"']/g,function (c) {
@@ -39,7 +50,7 @@
     el("countryEmpty").hidden = !d || d.previews() || count > 0;
     el("countryEmptyText").textContent = d ? "We have not confirmed products for delivery to " + d.name() + ". Choose another country above, or explore clearly marked research previews." : "Choose your country first.";
     document.querySelectorAll("[data-research-content]").forEach(function(n){n.hidden = !d || !d.previews();});
-    renderCatalog();renderFavorites();renderCommunity();renderPicker();renderSelection();
+    renderCatalog();renderFavorites();renderCommunity();renderUnconventional();renderPicker();renderSelection();
     if(location.hash.startsWith("#gift="))renderGift();
     if(el("productDialog").open)el("productDialog").close();
   }
@@ -92,10 +103,12 @@
     else if(sort==="az")list.sort(function(a,b){return a.name.localeCompare(b.name);});
     else if(sort==="brand")list.sort(function(a,b){return a.brand.localeCompare(b.brand)||a.name.localeCompare(b.name);});
     var sectionMatch=/(^| )(gay|lesbian|lgbt|lgbtq|queer)( |$)/.test(normalizeSearch(search));
+    var unconventionalMatch=/(^| )(freaks?|geeks?|weirdos?|deviants?|unconventional|bdsm|kinks?|fetish|fetishes|sensory|roleplay)( |$)/.test(normalizeSearch(search))||/(^| )(alternative fashion|role play)( |$)/.test(normalizeSearch(search));
     el("communitySearchResult").hidden=!sectionMatch;
-    el("resultCount").textContent=list.length+(sectionMatch?1:0);
+    el("unconventionalSearchResult").hidden=!unconventionalMatch;
+    el("resultCount").textContent=list.length+(sectionMatch?1:0)+(unconventionalMatch?1:0);
     el("productGrid").innerHTML=list.map(card).join("");
-    el("emptyProducts").hidden=!el("countryEmpty").hidden||list.length!==0||sectionMatch;
+    el("emptyProducts").hidden=!el("countryEmpty").hidden||list.length!==0||sectionMatch||unconventionalMatch;
     el("categorySelect").value=activeCategory;
     var filters=[];
     if(activeCollection!=="All")filters.push(activeCollection);
@@ -126,6 +139,25 @@
       var on=btn.dataset.communityGroup===communityGroup;btn.classList.toggle("active",on);btn.setAttribute("aria-pressed",String(on));
     });
   }
+  function renderUnconventional(){
+    var allowed=unconventionalGroups[unconventionalGroup],query=el("unconventionalSearch").value;
+    var list=products.filter(function(p){return destinationVisible(p)&&allowed.includes(p.category)&&matchesSearch(p,query);});
+    list.sort(function(a,b){return Number(!!b.previewImage)-Number(!!a.previewImage)||a.id-b.id;});
+    el("unconventionalResultCount").textContent=list.length;
+    el("unconventionalGrid").innerHTML=list.map(card).join("");
+    el("unconventionalEmpty").hidden=list.length>0;
+    var country=window.GIMDestination?window.GIMDestination.name():"your selected country";
+    var researching=!!window.GIMDestination&&window.GIMDestination.previews();
+    el("unconventionalAvailability").textContent=researching?"Research-preview mode · delivery to "+country+" is checked for each item. Unconfirmed entries stay clearly labelled.":"Shopping country: "+country+" · only delivery-confirmed entries can appear. Research previews are optional.";
+    var title=unconventionalGroup==="kink"?"This collection is being sourced.":researching?"No matching discoveries yet.":"No confirmed matches for "+country+" yet.";
+    var text=unconventionalGroup==="kink"?"We have not added BDSM-specific products to the catalogue yet. Supplier permissions, product details and country availability need to be checked first.":researching?"Try another interest or a different keyword.":"Choose another interest, or use Explore unconfirmed research previews above to browse clearly marked ideas. Selecting a country does not confirm delivery.";
+    el("unconventionalEmptyTitle").textContent=title;
+    el("unconventionalEmptyText").textContent=text;
+    el("unconventionalFilters").querySelectorAll("[data-unconventional-group]").forEach(function(btn){
+      var on=btn.dataset.unconventionalGroup===unconventionalGroup;
+      btn.classList.toggle("active",on);btn.setAttribute("aria-pressed",String(on));
+    });
+  }
   function renderFavorites(){
     var favProducts=favorites.map(function(id){return byId.get(id);}).filter(function(p){return p && destinationVisible(p);});
     el("favoritesGrid").innerHTML=favProducts.map(card).join("");
@@ -152,7 +184,7 @@
   function favorite(id) {
     if(!byId.has(id))return;
     favorites=favorites.includes(id)?favorites.filter(function(x){return x!==id;}):favorites.concat(id);
-    saveJson("gim:favorites",favorites);renderCatalog();renderFavorites();renderCommunity();
+    saveJson("gim:favorites",favorites);renderCatalog();renderFavorites();renderCommunity();renderUnconventional();
     notify(favorites.includes(id)?"Saved to your favorites.":"Removed from favorites.");
   }
   function wishlist(id){
@@ -211,25 +243,27 @@
   }
   function navigate(){
     var hash=location.hash.slice(1);
+    if(hash==="unconventional"||hash==="freaks-and-geeks")hash="freaks-weirdos-deviants";
     var view=hash.startsWith("gift=")?"gift":(hash==="catalog"||hash==="one-heart"||hash==="sarcastabastard"||hash==="results")?"shop":hash.split("?")[0];
     if(hash==="one-heart")selectCollection("ONE HEART");
     if(hash==="sarcastabastard")selectCollection("SARCASTABASTARD");
-    if(!["shop","favorites","creators","gift","early","about","gay-lesbian"].includes(view))view="shop";
+    if(!["shop","favorites","creators","gift","early","about","gay-lesbian","freaks-weirdos-deviants"].includes(view))view="shop";
     document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("active",p.id==="view-"+view);});
     document.querySelectorAll("[data-route]").forEach(function(n){var on=n.dataset.route===view;n.classList.toggle("active",on);if(on)n.setAttribute("aria-current","page");else n.removeAttribute("aria-current");});
     if(view==="favorites")renderFavorites();
     if(view==="creators"){renderPicker();renderSelection();}
     if(view==="gift")renderGift();
     if(view==="gay-lesbian")renderCommunity();
+    if(view==="freaks-weirdos-deviants")renderUnconventional();
     if(view==="shop"&&(hash==="catalog"||hash==="one-heart"||hash==="sarcastabastard"||hash==="results")){requestAnimationFrame(function(){el(hash==="results"?"catalogResults":"catalog").scrollIntoView({block:"start"});});}
     else window.scrollTo({top:0,behavior:"instant"});
-    document.title=(view==="shop"?"Explore":view==="gay-lesbian"?"Gay & Lesbian":view.charAt(0).toUpperCase()+view.slice(1))+" | Global Intimacy Marketplace";
+    document.title=(view==="shop"?"Explore":view==="gay-lesbian"?"Gay & Lesbian":view==="freaks-weirdos-deviants"?"Freaks, Weirdos & Deviants":view.charAt(0).toUpperCase()+view.slice(1))+" | Global Intimacy Marketplace";
   }
   function setup(){
     el("year").textContent=new Date().getFullYear();
     el("brandSelect").innerHTML='<option value="all">All brands</option>'+brands.map(function(b){return '<option value="'+esc(b)+'">'+esc(b)+'</option>';}).join("");
     el("categorySelect").innerHTML=categories.map(function(c){return '<option value="'+esc(c)+'">'+esc(c==="All"?"All categories":c)+'</option>';}).join("");
-    el("shopCategoryLinks").innerHTML=categories.map(function(c){return '<a href="#catalog" data-browse-category="'+esc(c)+'">'+esc(c==="All"?"All products":c)+'</a>';}).join("");
+    el("shopCategoryLinks").innerHTML=categories.map(function(c){return '<a href="#catalog" data-browse-category="'+esc(c)+'">'+esc(c==="All"?"All products":c)+'</a>';}).join("")+'<a href="#freaks-weirdos-deviants" data-route="freaks-weirdos-deviants">Freaks, Weirdos &amp; Deviants ↗</a>';
     updateDestination();
     window.addEventListener("gim:destinationchange",updateDestination);
     el("searchInput").addEventListener("input",runGlobalSearch);
@@ -254,6 +288,7 @@
       else if(detail)details(Number(detail.dataset.detail));
       else if(remove)wishlist(Number(remove.dataset.remove));
       else if(browse)browseCategory(browse.dataset.browseCategory);
+      if(e.target.closest('[data-route="freaks-weirdos-deviants"]'))el("shopMenu").open=false;
     });
     el("closeModal").addEventListener("click",function(){el("productDialog").close();});
     el("productDialog").addEventListener("click",function(e){if(e.target===el("productDialog"))el("productDialog").close();});
@@ -267,6 +302,15 @@
       }
     });
     el("clearCommunityFilters").addEventListener("click",function(){communityGroup="all";el("communitySearch").value="";renderCommunity();});
+    el("unconventionalSearch").addEventListener("input",renderUnconventional);
+    el("unconventionalBrowse").addEventListener("click",function(){el("unconventionalDiscoveries").scrollIntoView({block:"start"});el("unconventionalSearch").focus({preventScroll:true});});
+    el("unconventionalFilters").addEventListener("click",function(e){
+      var b=e.target.closest("[data-unconventional-group]");
+      if(b&&Object.prototype.hasOwnProperty.call(unconventionalGroups,b.dataset.unconventionalGroup)){
+        unconventionalGroup=b.dataset.unconventionalGroup;el("unconventionalSearch").value="";renderUnconventional();
+      }
+    });
+    el("clearUnconventionalFilters").addEventListener("click",function(){unconventionalGroup="all";el("unconventionalSearch").value="";renderUnconventional();});
     el("wishlistSearch").addEventListener("input",renderPicker);
     // Wishlist clicks are handled by the document-level delegated handler above.
     // A second picker-level listener would toggle a product on and immediately off.

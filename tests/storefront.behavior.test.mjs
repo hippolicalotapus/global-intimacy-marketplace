@@ -34,6 +34,7 @@ async function storefront(hash = "", options = {}) {
   });
   nodes.get("collectionFilters").children = [...html.matchAll(/<button[^>]*data-collection="([^"]+)"/g)].map(m => new Element("", { collection: m[1] }));
   nodes.get("communityFilters").children = [...html.matchAll(/<button[^>]*data-community-group="([^"]+)"/g)].map(m => new Element("", { communityGroup: m[1] }));
+  nodes.get("unconventionalFilters").children = [...html.matchAll(/<button[^>]*data-unconventional-group="([^"]+)"/g)].map(m => new Element("", { unconventionalGroup: m[1] }));
   const document = new Element("document");
   document.readyState = "loading";
   document.getElementById = id => { assert.ok(nodes.has(id), `Undefined DOM ID ${id}`); return nodes.get(id); };
@@ -276,4 +277,64 @@ test("Clothing details frame complete garments and link full-dimension boards",a
  assert.match(body,/No payment or reservation will be taken/);
  app.nodes.get("closeModal").dispatch("click");
  }
+});
+
+test("Unconventional direct links and earlier name aliases reach the dedicated section",async()=>{
+ for(const hash of ["#freaks-weirdos-deviants","#unconventional","#freaks-and-geeks"]){
+  const app=await storefront(hash);
+  assert.equal(app.document.title,"Freaks, Weirdos & Deviants | Global Intimacy Marketplace");
+  assert.ok(Number(app.nodes.get("unconventionalResultCount").textContent)>0);
+  assert.match(app.nodes.get("unconventionalGrid").innerHTML,/SARCASTABASTARD/);
+  assert.ok(!app.nodes.get("unconventionalGrid").innerHTML.includes("Organic Chamomile"));
+ }
+});
+
+test("Global search finds the unconventional area under its welcome wording and interests",async()=>{
+ const app=await storefront();
+ for(const query of ["freaks weirdos and deviants","Freaks & Geeks","unconventional","bdsm","kink","alternative fashion","role-play"]){
+  app.search(query);
+  assert.equal(app.nodes.get("unconventionalSearchResult").hidden,false,query);
+  assert.equal(app.count(),1,query);
+  assert.equal(app.nodes.get("emptyProducts").hidden,true,query);
+ }
+ app.search("one heart");
+ assert.equal(app.nodes.get("unconventionalSearchResult").hidden,true);
+ assert.equal(app.count(),18);
+});
+
+test("Unconventional interests filter actual candidates and disclose the unsourced BDSM collection",async()=>{
+ const app=await storefront("#freaks-weirdos-deviants");
+ app.click("unconventionalFilters",{unconventionalGroup:"style"});
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),21);
+ assert.match(app.nodes.get("unconventionalGrid").innerHTML,/Three Sisters/);
+ assert.ok(!app.nodes.get("unconventionalGrid").innerHTML.includes("Solace Pro"));
+ app.nodes.get("unconventionalSearch").value="paisley";app.nodes.get("unconventionalSearch").dispatch("input");
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),3);
+ app.click("unconventionalFilters",{unconventionalGroup:"roleplay"});
+ assert.equal(app.nodes.get("unconventionalSearch").value,"");
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),6);
+ app.click("unconventionalFilters",{unconventionalGroup:"kink"});
+ assert.equal(app.nodes.get("unconventionalGrid").innerHTML,"");
+ assert.equal(app.nodes.get("unconventionalEmpty").hidden,false);
+ assert.match(app.nodes.get("unconventionalEmptyTitle").textContent,/being sourced/);
+ assert.match(app.nodes.get("unconventionalEmptyText").textContent,/not added BDSM-specific products/);
+ app.nodes.get("clearUnconventionalFilters").dispatch("click");
+ assert.equal(app.nodes.get("unconventionalEmpty").hidden,true);
+});
+
+test("Unconventional products cannot bypass country checks or preview consent",async()=>{
+ const app=await storefront("#freaks-weirdos-deviants",{previews:false});
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),0);
+ assert.equal(app.nodes.get("unconventionalGrid").innerHTML,"");
+ assert.match(app.nodes.get("unconventionalEmptyTitle").textContent,/No confirmed matches for Canada/);
+ app.nodes.get("showResearchPreviews").dispatch("click");
+ assert.match(app.nodes.get("unconventionalGrid").innerHTML,/Delivery to Canada not confirmed/);
+ app.window.GIMDestination.enter("US");
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),0);
+ assert.equal(app.nodes.get("unconventionalGrid").innerHTML,"");
+ assert.match(app.nodes.get("unconventionalAvailability").textContent,/United States/);
+ assert.equal(app.nodes.get("previewMode").checked,false);
+ app.click("unconventionalFilters",{unconventionalGroup:"technology"});
+ app.nodes.get("clearUnconventionalFilters").dispatch("click");
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),0);
 });
