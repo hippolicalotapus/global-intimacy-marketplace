@@ -22,8 +22,8 @@ async function storefront(hash = "", options = {}) {
     setAttribute() {}
     removeAttribute() {}
     querySelectorAll() { return this.children || []; }
-    focus() {}
-    scrollIntoView() {}
+    focus(options) { this.focusOptions=options; this.focusCount=(this.focusCount||0)+1; }
+    scrollIntoView(options) { this.scrollOptions=options; this.scrollCount=(this.scrollCount||0)+1; }
     showModal() { this.open = true; }
     close() { this.open = false; }
   }
@@ -33,7 +33,6 @@ async function storefront(hash = "", options = {}) {
     return new Element("", dataset);
   });
   nodes.get("collectionFilters").children = [...html.matchAll(/<button[^>]*data-collection="([^"]+)"/g)].map(m => new Element("", { collection: m[1] }));
-  nodes.get("communityFilters").children = [...html.matchAll(/<button[^>]*data-community-group="([^"]+)"/g)].map(m => new Element("", { communityGroup: m[1] }));
   nodes.get("unconventionalFilters").children = [...html.matchAll(/<button[^>]*data-unconventional-group="([^"]+)"/g)].map(m => new Element("", { unconventionalGroup: m[1] }));
   const document = new Element("document");
   document.readyState = "loading";
@@ -126,33 +125,30 @@ test("ONE HEART details, favorites and shareable wishlist use real catalogue IDs
   assert.ok(guest.nodes.get("giftGrid").innerHTML.includes("Three Sisters"));
 });
 
-test("Gay and lesbian section has a direct route and searches existing products", async () => {
+test("Earlier community links open the combined interest area and its welcome", async () => {
   const app = await storefront("#gay-lesbian");
-  assert.equal(app.document.title, "Gay & Lesbian | Global Intimacy Marketplace");
-  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 106);
-  app.nodes.get("communitySearch").value = "oneheart";
-  app.nodes.get("communitySearch").dispatch("input");
-  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 18);
-  app.click("communityFilters", { communityGroup: "style" });
-  assert.equal(app.nodes.get("communitySearch").value, "");
-  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 22);
-  app.nodes.get("communitySearch").value = "no-such-item";
-  app.nodes.get("communitySearch").dispatch("input");
-  assert.equal(app.nodes.get("communityEmpty").hidden, false);
-  app.nodes.get("clearCommunityFilters").dispatch("click");
-  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 106);
+  assert.equal(app.document.title, "Explore Your Interests | Global Intimacy Marketplace");
+  assert.equal(app.location.hash, "explore-interests?group=community");
+  assert.equal(app.nodes.get("interestCommunityWelcome").hidden, false);
+  assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent), 106);
+  app.nodes.get("unconventionalSearch").value = "oneheart";
+  app.nodes.get("unconventionalSearch").dispatch("input");
+  assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent), 18);
+  app.nodes.get("unconventionalSearch").value = "no-such-item";
+  app.nodes.get("unconventionalSearch").dispatch("input");
+  assert.equal(app.nodes.get("unconventionalEmpty").hidden, false);
 });
 
-test("Store search finds the Gay and Lesbian section without assigning shopper identities", async () => {
+test("Community and interest search share one welcoming discovery card", async () => {
   const app = await storefront();
-  for (const query of ["gay", "lesbian", "gay and lesbian", "LGBTQ"]) {
+  for (const query of ["gay", "lesbian", "gay and lesbian", "LGBTQ", "gay kink", "explore your interests"]) {
     app.search(query);
-    assert.equal(app.nodes.get("communitySearchResult").hidden, false, query);
+    assert.equal(app.nodes.get("unconventionalSearchResult").hidden, false, query);
     assert.equal(app.count(), 1, query);
     assert.equal(app.nodes.get("emptyProducts").hidden, true, query);
   }
   app.search("one heart");
-  assert.equal(app.nodes.get("communitySearchResult").hidden, true);
+  assert.equal(app.nodes.get("unconventionalSearchResult").hidden, true);
   assert.equal(app.count(), 18);
 });
 
@@ -279,17 +275,17 @@ test("Clothing details frame complete garments and link full-dimension boards",a
  }
 });
 
-test("Unconventional direct links and earlier name aliases reach the dedicated section",async()=>{
- for(const hash of ["#freaks-weirdos-deviants","#unconventional","#freaks-and-geeks"]){
+test("Interest hub and earlier aliases reach the combined section",async()=>{
+ for(const hash of ["#explore-interests","#freaks-weirdos-deviants","#unconventional","#freaks-and-geeks"]){
   const app=await storefront(hash);
-  assert.equal(app.document.title,"Freaks, Weirdos & Deviants | Global Intimacy Marketplace");
+  assert.equal(app.document.title,"Explore Your Interests | Global Intimacy Marketplace");
   assert.ok(Number(app.nodes.get("unconventionalResultCount").textContent)>0);
   assert.match(app.nodes.get("unconventionalGrid").innerHTML,/SARCASTABASTARD/);
-  assert.ok(!app.nodes.get("unconventionalGrid").innerHTML.includes("Organic Chamomile"));
+  assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),106);
  }
 });
 
-test("Global search finds the unconventional area under its welcome wording and interests",async()=>{
+test("Global search preserves earlier interest aliases without displaying those labels",async()=>{
  const app=await storefront();
  for(const query of ["freaks weirdos and deviants","Freaks & Geeks","unconventional","bdsm","kink","alternative fashion","role-play"]){
   app.search(query);
@@ -337,4 +333,111 @@ test("Unconventional products cannot bypass country checks or preview consent",a
  app.click("unconventionalFilters",{unconventionalGroup:"technology"});
  app.nodes.get("clearUnconventionalFilters").dispatch("click");
  assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),0);
+});
+
+
+test("A specific category narrows an interest and switching interests clears stale categories",async()=>{
+ const app=await storefront("#explore-interests");
+ app.click("unconventionalFilters",{unconventionalGroup:"style"});
+ app.nodes.get("interestCategory").value="ONE HEART Hoodies";app.nodes.get("interestCategory").dispatch("change");
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),9);
+ assert.match(app.nodes.get("unconventionalGrid").innerHTML,/Three Sisters/);
+ assert.ok(!app.nodes.get("unconventionalGrid").innerHTML.includes("Paisley T-Shirt"));
+ app.click("unconventionalFilters",{unconventionalGroup:"technology"});
+ assert.equal(app.nodes.get("interestCategory").value,"all");
+ assert.ok(Number(app.nodes.get("unconventionalResultCount").textContent)>0);
+ app.click("unconventionalFilters",{unconventionalGroup:"kink"});
+ assert.equal(app.nodes.get("interestCategory").disabled,true);
+});
+
+test("Community browsing uses shared products and preserves country and preview consent",async()=>{
+ const app=await storefront("#explore-interests?group=community",{previews:false});
+ assert.equal(app.nodes.get("interestCommunityWelcome").hidden,false);
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),0);
+ app.nodes.get("showResearchPreviews").dispatch("click");
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),106);
+ app.window.GIMDestination.enter("US");
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),0);
+ assert.equal(app.nodes.get("previewMode").checked,false);
+ app.click("unconventionalFilters",{unconventionalGroup:"connection"});
+ assert.equal(app.nodes.get("interestCommunityWelcome").hidden,true);
+});
+
+test("The public interface uses one interest page and neutral wording",async()=>{
+ const html=await read("site/index.html");
+ assert.ok(!/Freaks|Weirdos|Deviants|THE UNCONVENTIONAL/.test(html));
+ assert.ok(!/data-route="gay-lesbian"|id="view-gay-lesbian"/.test(html));
+ assert.match(html,/id="view-explore-interests"/);
+ assert.match(html,/Gay &amp; Lesbian connections/);
+ assert.match(html,/Explore a more specific category/);
+});
+
+
+test("An interest tap clears narrower filters and takes focus directly to all matching products",async()=>{
+ const app=await storefront("#explore-interests");
+ app.click("unconventionalFilters",{unconventionalGroup:"style"});
+ app.nodes.get("interestCategory").value="ONE HEART Hoodies";app.nodes.get("interestCategory").dispatch("change");
+ app.nodes.get("unconventionalSearch").value="Three Sisters";app.nodes.get("unconventionalSearch").dispatch("input");
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),1);
+ const before=app.nodes.get("interestResults").scrollCount;
+ app.click("unconventionalFilters",{unconventionalGroup:"style"});
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),21);
+ assert.equal(app.nodes.get("interestCategory").value,"all");
+ assert.equal(app.nodes.get("unconventionalSearch").value,"");
+ assert.equal(app.nodes.get("interestResultsTitle").textContent,"Fashion & self-expression");
+ assert.equal(app.nodes.get("interestResults").scrollCount,before+1);
+ assert.equal(app.nodes.get("interestResultsTitle").focusOptions.preventScroll,true);
+ app.nodes.get("backToInterests").dispatch("click");
+ assert.equal(app.nodes.get("unconventionalDiscoveries").scrollOptions.block,"start");
+ assert.equal(app.nodes.get("interestChoiceTitle").focusCount,1);
+});
+
+test("Category shortcuts open the complete category list without stale brand or search filters",async()=>{
+ const app=await storefront("#creators");
+ app.search("paisley");
+ app.nodes.get("brandSelect").value="ONE HEART";app.nodes.get("brandSelect").dispatch("change");
+ app.document.dispatch("click",{closest:selector=>selector==="[data-browse-category]"?{dataset:{browseCategory:"Couples"}}:null});
+ assert.equal(app.location.hash,"#results");
+ assert.equal(app.count(),15);
+ assert.equal(app.nodes.get("brandSelect").value,"all");
+ assert.equal(app.nodes.get("searchInput").value,"");
+ assert.equal(app.nodes.get("categorySelect").value,"Couples");
+ assert.equal(app.nodes.get("catalogResults").scrollOptions.block,"start");
+});
+
+test("A direct category result keeps country checks and never opts into research previews",async()=>{
+ const app=await storefront("#explore-interests?group=style",{previews:false});
+ assert.equal(app.nodes.get("interestResultsTitle").textContent,"Fashion & self-expression");
+ assert.equal(app.nodes.get("interestResults").scrollOptions.block,"start");
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),0);
+ assert.equal(app.nodes.get("previewMode").checked,false);
+ app.click("unconventionalFilters",{unconventionalGroup:"technology"});
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),0);
+ app.nodes.get("categorySelect").value="ONE HEART Hoodies";app.nodes.get("categorySelect").dispatch("change");
+ assert.equal(app.count(),0);
+ assert.equal(app.nodes.get("previewMode").checked,false);
+});
+
+
+test("Exact design codes and common garment wording find the same catalogue entries",async()=>{
+ const app=await storefront();
+ for(const query of ["OH-H01","oh h01","OH H01"]){app.search(query);assert.equal(app.count(),1);assert.match(app.nodes.get("productGrid").innerHTML,/Three Sisters/);}
+ app.search("hoodie");const singular=app.count();app.search("hoodies");assert.equal(app.count(),singular);assert.equal(singular,9);
+ app.search("t shirt");const tees=app.count();app.search("tee");assert.equal(app.count(),tees);app.search("t-shirts");assert.equal(app.count(),tees);assert.equal(tees,10);
+});
+
+test("Applied filters can be removed one at a time while preserving the others",async()=>{
+ const app=await storefront();
+ app.search("paisley");app.nodes.get("brandSelect").value="ONE HEART";app.nodes.get("brandSelect").dispatch("change");
+ assert.equal(app.count(),3);assert.match(app.nodes.get("activeFilterChips").innerHTML,/Remove ONE HEART filter/);
+ app.click("activeFilterChips",{removeFilter:"search"});
+ assert.equal(app.count(),18);assert.equal(app.nodes.get("brandSelect").value,"ONE HEART");assert.equal(app.nodes.get("searchInput").value,"");
+ app.click("activeFilterChips",{removeFilter:"brand"});assert.equal(app.count(),106);assert.equal(app.nodes.get("activeFilterSummary").hidden,true);
+});
+
+test("Product details disclose actual design facts and leave unverified clothing specifications pending",async()=>{
+ const app=await storefront();
+ app.document.dispatch("click",{closest:selector=>selector==="[data-detail]"?{dataset:{detail:"201"}}:null});
+ assert.match(app.nodes.get("modalBody").innerHTML,/Design code/);assert.match(app.nodes.get("modalBody").innerHTML,/OH-H01/);assert.match(app.nodes.get("modalBody").innerHTML,/Size, fabric &amp; care/);assert.match(app.nodes.get("modalBody").innerHTML,/after the production sample/);
+ app.nodes.get("closeModal").dispatch("click");app.search("paisley");assert.equal(app.nodes.get("catalogResultsTitle").textContent,'Search: “paisley”');assert.match(app.nodes.get("catalogMatchCount").textContent,/3 product previews/);
 });
