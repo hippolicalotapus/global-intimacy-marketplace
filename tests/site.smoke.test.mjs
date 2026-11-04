@@ -127,27 +127,32 @@ test("Concorde research catalogue and collection tier filters remain unpriced",a
   assert.ok(!html.includes('action="/checkout"'));
 });
 
-test("ONE HEART 16 owner-approved image concepts augment the existing 87-item catalogue",async()=>{
+test("Current 19 owner-selected image concepts augment the existing 87-item catalogue",async()=>{
   const sandbox={window:{}};
   runInNewContext(await read("site/catalog.js"),sandbox,{timeout:1200});
   assert.equal(sandbox.window.GIM_PRODUCTS.length,87);
   runInNewContext(await read("site/apparel.js"),sandbox,{timeout:1200});
   const products=sandbox.window.GIM_PRODUCTS;
-  assert.equal(products.length,103);
+  assert.equal(products.length,106);
+  assert.equal(products.filter(p=>p.brand==="SARCASTABASTARD").length,1);
+  assert.ok(!products.some(p=>p.id>=94&&p.id<=103));
   const apparel=products.filter(p=>p.collection==="ONE HEART");
-  assert.equal(apparel.length,16);
-  assert.equal(apparel.filter(p=>p.category==="ONE HEART Hoodies").length,5);
-  assert.equal(apparel.filter(p=>p.category==="ONE HEART Art Tees").length,11);
-  assert.equal(new Set(products.map(p=>p.id)).size,103);
+  assert.equal(apparel.length,18);
+  assert.equal(apparel.filter(p=>p.category==="ONE HEART Hoodies").length,9);
+  assert.equal(apparel.filter(p=>p.category==="ONE HEART Art Tees").length,9);
+  assert.equal(new Set(products.map(p=>p.id)).size,106);
   for(const p of apparel){
     assert.equal(p.conceptImage,true);
     assert.equal(p.priceVerified,false);
     assert.equal(p.stockVerified,false);
     assert.equal(p.resellerApproved,false);
     assert.equal(p.preorderType,"nonbinding enquiry");
-    assert.ok(/^assets\/one-heart\/[a-z-]+\.webp$/.test(p.previewImage));
+    assert.ok(/^assets\/apparel\/cards\/[a-z0-9-]+\.webp$/.test(p.previewImage));
     assert.ok(p.previewImageAlt.includes("not a photo"));
     await access(new URL("site/"+p.previewImage,root));
+    await access(new URL("site/"+p.detailImage,root));
+    assert.equal(p.canAcceptOrders,false);
+    for(const view of p.detailViews){const [x,y,w,h]=view.box;assert.ok(x>=0&&y>=0&&w>0&&h>0&&x+w<=p.detailImageWidth&&y+h<=p.detailImageHeight,p.designId);}
   }
 });
 test("Store offers ONE HEART filters and nonbinding email enquiries, no paid pre-orders",async()=>{
@@ -168,11 +173,12 @@ test("Photo-first storefront surfaces owner-supplied imagery above old abstract 
   const research=html.indexOf('id="catalog"');
   assert.ok(gallery>0&&gallery<research,"Photo gallery must come before entire research catalogue");
   assert.ok(html.includes('class="hero-art hero-product-display"'));
-  assert.ok(html.includes('data-detail="99"'));
-  assert.ok(html.includes('data-detail="103"'));
+  assert.ok(html.includes('data-detail="201"'));
+  assert.ok(html.includes('data-detail="205"'));
   assert.ok(html.includes('data-detail="93"'));
   assert.match(js,/sort==="featured"\)list\.sort\(function\(a,b\)\{return Number\(!!b\.previewImage\)-Number\(!!a\.previewImage\)/);
   assert.ok(css.includes(".photo-first-grid"));
   assert.ok(html.includes("No purchases or live stock yet."));
 });
+
 

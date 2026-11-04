@@ -7,7 +7,7 @@
     ["One must-have feature","cf-idea"]
   ];
   const feedbackUrl=new URL("creator-feedback.html",window.location.href).href;
-  const invitation="I'm helping shape Global Intimacy Marketplace, a new adults-only shopping and creator-gifting platform. They're inviting creators to share ideas about products, privacy and better wishlists. It's a pre-launch preview, not a paid referral program. If you'd like to help, here's the questionnaire: "+feedbackUrl;
+  const invitation="Hi models and creators (18+)! We're building Global Intimacy Marketplace and would love your ideas about products, wishlists and safer gifting. Open our short questionnaire, answer what you like and click Submit feedback — no email app or account needed. Participation is voluntary, with no purchase or promised rewards. Feel free to share it with other adult creators: "+feedbackUrl;
   $("cf-link").value=feedbackUrl;
   $("cf-message").value=invitation;
   function status(id,text){$(id).textContent=text;}
@@ -24,27 +24,35 @@
       if(value)lines.push(label+": "+value);
     }
     lines.push("Interested in a personal follow-up: "+($("cf-followup").checked?"Yes":"No"));
+    if($("cf-followup").checked&&$("cf-email").value.trim())lines.push("Requested reply email: "+$("cf-email").value.trim());
     lines.push("Please do not add me to a marketing list without asking.");
     return lines.join("\n\n");
   }
   function hasAnswer(){return questions.some(([,id])=>$(id).value.trim())}
+  const readyMessage="Your answers are sent only when you click Submit feedback. You can respond without sharing contact details.";
+  function contactChoice(){
+    const wanted=$("cf-followup").checked;
+    $("cf-contact-wrap").hidden=!wanted;
+    $("cf-email").disabled=!wanted;
+    $("cf-email").required=wanted;
+  }
+  contactChoice();
+  $("cf-followup").addEventListener("change",contactChoice);
   $("cf-form").addEventListener("submit",function(e){
-    e.preventDefault();
-    if(!hasAnswer()){status("cf-answer-status","Please answer at least one question before preparing an email.");return;}
-    let link="mailto:globalintimacypartner@gmail.com?subject="+encodeURIComponent("Creator feedback — GIM development preview")+"&body="+encodeURIComponent(answerText());
-    if(link.length>5500){status("cf-answer-status","Your answers are too long for an email link. Use Copy responses instead.");return;}
-    $("cf-answer-preview").value=answerText();
-    $("cf-answer-preview-wrap").hidden=false;
-    $("cf-send-email").href=link;
-    $("cf-send-wrap").hidden=false;
-    status("cf-answer-status","Email prepared, not sent. Use the button below to open your email app and review before sending.");
+    if(!hasAnswer()){e.preventDefault();status("cf-answer-status","Please answer at least one question before submitting.");return;}
+    if(!$("cf-consent").checked){e.preventDefault();status("cf-answer-status","Please confirm that you agree to send your answers.");return;}
+    if($("cf-followup").checked&&!$("cf-email").value.trim()){e.preventDefault();status("cf-answer-status","Add an email for your requested reply, or untick the reply option.");$("cf-email").focus();return;}
+    $("cf-submit").disabled=true;
+    status("cf-answer-status","Submitting your feedback…");
+    // Allow the browser's same-origin HTML POST to Netlify Forms.
   });
+  window.addEventListener("pageshow",function(){$("cf-submit").disabled=false;status("cf-answer-status",readyMessage);});
   $("cf-copy-answers").addEventListener("click",async function(){
     if(!hasAnswer()){status("cf-answer-status","Please answer at least one question to copy.");return;}
     $("cf-answer-preview").value=answerText();
     $("cf-answer-preview-wrap").hidden=false;
     const ok=await copy(answerText(),"cf-answer-preview");
-    status("cf-answer-status",ok?"Responses copied. Paste into your email app to send.":"Clipboard permission unavailable. Please select and copy your answers manually.");
+    status("cf-answer-status",ok?"Your answers are copied. Use Submit feedback when you are ready to send.":"Clipboard permission unavailable. Select and copy your answers manually, or use Submit feedback.");
   });
   $("cf-copy-link").addEventListener("click",async function(){
     const ok=await copy(feedbackUrl,"cf-link");
@@ -52,7 +60,7 @@
   });
   $("cf-copy-message").addEventListener("click",async function(){
     const ok=await copy(invitation,"cf-message");
-    status("cf-share-status",ok?"Invitation message copied. Review before posting.":"Select and copy the invitation manually, then review before posting.");
+    status("cf-share-status",ok?"Chat message copied. Paste it into your chat and post when ready.":"Select and copy the chat message manually, then paste it into your chat.");
   });
   $("cf-native-share").addEventListener("click",async function(){
     if(typeof navigator.share==="function"){
@@ -65,3 +73,4 @@
   $("ageYes").addEventListener("click",function(){sessionStorage.setItem("gim:adult","yes");$("ageGate").hidden=true;});
   $("ageNo").addEventListener("click",function(){window.location.replace("https://www.google.com/");});
 }());
+

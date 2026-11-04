@@ -106,3 +106,20 @@
 .quick-shop{padding:8px 0 25px}.quick-shop h2{font-size:1.55rem;margin:0}.quick-shop-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:13px}.quick-shop-grid>a{display:block;min-width:0;background:white;border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:0 4px 13px #153c390b}.quick-shop-grid img,.category-symbol{display:flex;width:100%;height:140px;object-fit:cover;object-position:center 22%;align-items:center;justify-content:center}.category-symbol{font-size:3.5rem}.symbol-connected{background:radial-gradient(ellipse,#2d7389,#143444);color:#d2f4e9}.symbol-care{background:linear-gradient(145deg,#e7f2db,#b8dcce);color:#327b69}.symbol-community{background:linear-gradient(145deg,#ecd6bf,#ddd6ed,#b5dcd2);color:#315767}.symbol-gifts{background:linear-gradient(145deg,#f7e2c1,#e3c4b7);color:#835855}.quick-shop-grid strong{display:block;padding:12px 12px 0;font-size:.88rem}.quick-shop-grid small{display:block;padding:5px 12px 13px;color:var(--muted);font-size:.75rem;line-height:1.35}
 .catalog-results,.collection-block{scroll-margin-top:175px}.catalog-results .catalog-toolbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:12px}.catalog-toolbar .select-box select{width:100%;min-width:0}.active-filter-summary{display:flex;align-items:center;justify-content:space-between;gap:15px;background:#eaf4ee;border:1px solid #c7dfd3;border-radius:12px;padding:12px 15px;margin:10px 0 18px;font-size:.85rem}.active-filter-summary button{flex:none;background:#fff;border:1px solid #a4c8ba;border-radius:8px;padding:8px 11px;color:var(--teal);font-weight:700}.catalog-results+.oneheart-feature{margin-top:45px}
 @media(max-width:800px){.global-search-inner{width:calc(100% - 34px);gap:8px;padding-bottom:10px}.shop-menu summary{gap:5px;padding:9px;font-size:.75rem}.global-search-inner .search-box{padding:10px;gap:7px}.global-search-inner input{font-size:.8rem}.global-search-inner form{gap:6px}.global-search-inner form>.button{padding:10px;font-size:.75rem}.quick-shop-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.quick-shop-grid img,.category-symbol{height:104px}.quick-shop-grid strong{font-size:.76rem;padding:9px 8px 0}.quick-shop-grid small{font-size:.65rem;padding:4px 8px 10px}.catalog-results .catalog-toolbar{grid-template-columns:1fr 1fr}.catalog-results .select-box:first-child{grid-column:1/-1}.catalog-results,.collection-block{scroll-margin-top:155px}.active-filter-summary{font-size:.76rem;padding:10px}}
+
+
+/* Product details use original artwork boards; card thumbnails stay lightweight. */
+.product-modal{max-width:760px;max-height:92vh;max-height:92dvh;overscroll-behavior:contain}
+.detail-gallery{margin:0 0 25px;min-width:0}
+.detail-gallery .modal-visual.with-preview{height:clamp(310px,56vh,580px);margin:0;padding:54px 16px 16px;overflow:hidden;background:#0b2230}
+.detail-gallery svg{display:block;width:100%;height:100%;max-width:100%}
+.detail-gallery>figcaption{display:grid;gap:10px;padding:18px 27px;color:var(--muted);font-size:.8rem;line-height:1.5}
+.detail-gallery>figcaption b{color:var(--ink);font-size:.9rem}
+.detail-enlarge{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border:1px solid #9bbcb2;border-radius:10px;color:var(--teal);background:#edf6f1;font-weight:750;text-align:center}
+.detail-extra{margin:0 27px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.detail-extra>summary{padding:15px;cursor:pointer;font-size:.86rem;font-weight:700;min-height:48px}
+.detail-extra-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px;background:#f6f8f5}
+.detail-extra-grid figure{margin:0;min-width:0}
+.detail-extra-grid svg{height:240px;background:#0b2230;border-radius:8px;padding:8px}
+.detail-extra-grid figcaption{padding:9px 0 3px;font-size:.76rem;color:var(--muted)}
+@media(max-width:650px){.detail-gallery .modal-visual.with-preview{height:clamp(310px,53vh,470px)}.detail-gallery>figcaption{padding:16px 20px}.detail-extra{margin:0 20px}.detail-extra-grid{grid-template-columns:1fr}.detail-extra-grid svg{height:280px}}

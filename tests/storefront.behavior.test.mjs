@@ -63,11 +63,11 @@ async function storefront(hash = "", options = {}) {
 
 test("Catalogue search finds ONE HEART aliases, collection names and mixed keywords", async () => {
   const app = await storefront();
-  assert.equal(app.count(), 103);
+  assert.equal(app.count(), 106);
   for (const query of ["one heart", "ONE HEART", "oneheart", "one-heart", "one  heart", "one heart collection", "heart one"]) {
-    app.search(query); assert.equal(app.count(), 16, query);
+    app.search(query); assert.equal(app.count(), 18, query);
   }
-  for (const [query, expected] of [["oneheart hoodies", 5], ["mountain collection", 5], ["psychedelic expanded", 5], ["natural cream", 1], ["Rocky Mountains", 1], ["no-such-item", 0], ["", 103]]) {
+  for (const [query, expected] of [["oneheart hoodies", 9], ["mountain collection", 9], ["paisley", 3], ["natural cream", 2], ["Three Sisters", 1], ["no-such-item", 0], ["", 106]]) {
     app.search(query); assert.equal(app.count(), expected, query);
   }
 });
@@ -78,27 +78,27 @@ test("Switching collections clears incompatible category, brand and search filte
   assert.equal(app.count(), 5);
   app.search("lubrix");
   app.click("collectionFilters", { collection: "ONE HEART" });
-  assert.equal(app.count(), 16);
+  assert.equal(app.count(), 18);
   assert.equal(app.nodes.get("searchInput").value, "");
   assert.equal(app.nodes.get("brandSelect").value, "all");
   app.links.find(n => "allProducts" in n.dataset).dispatch("click");
-  assert.equal(app.count(), 103);
+  assert.equal(app.count(), 106);
 });
 
-test("Direct ONE HEART route and its navigation link show all 16 designs", async () => {
+test("Direct ONE HEART route and its navigation link show all 18 designs", async () => {
   const app = await storefront("#one-heart");
-  assert.equal(app.count(), 16);
+  assert.equal(app.count(), 18);
   app.search("missing");
   app.links.find(n => "oneheart" in n.dataset).dispatch("click");
-  assert.equal(app.count(), 16);
-  assert.equal((await storefront("#one-heart")).count(), 16);
+  assert.equal(app.count(), 18);
+  assert.equal((await storefront("#one-heart")).count(), 18);
   const html = await read("site/index.html");
   assert.ok([...html.matchAll(/<a\b([^>]*data-oneheart[^>]*)>/g)].every(m => m[1].includes('href="#one-heart"')));
 });
 
 test("Wishlist search uses the same collection and keyword search", async () => {
   const app = await storefront("#creators");
-  for (const [query, expected] of [["oneheart", 16], ["one heart hoodies", 5], ["mountain collection", 5]]) {
+  for (const [query, expected] of [["oneheart", 18], ["one heart hoodies", 9], ["mountain collection", 9]]) {
     app.nodes.get("wishlistSearch").value = query;
     app.nodes.get("wishlistSearch").dispatch("input");
     assert.equal((app.nodes.get("wishlistPicker").innerHTML.match(/class="picker-item"/g) || []).length, expected, query);
@@ -108,38 +108,38 @@ test("Wishlist search uses the same collection and keyword search", async () => 
 test("ONE HEART details, favorites and shareable wishlist use real catalogue IDs", async () => {
   const app = await storefront();
   const delegated = (key, id) => app.document.dispatch("click", { closest: selector => selector === `[data-${key}]` ? { dataset: { [key]: String(id) } } : null });
-  delegated("detail", 99);
+  delegated("detail", 201);
   assert.equal(app.nodes.get("productDialog").open, true);
-  assert.ok(app.nodes.get("modalBody").innerHTML.includes("assets/one-heart/rocky-mountains.webp"));
+  assert.ok(app.nodes.get("modalBody").innerHTML.includes("assets/apparel/references/OH_H01-H03_Mountain_Hoodies.webp"));
   assert.ok(app.nodes.get("modalBody").innerHTML.includes("mailto:globalintimacypartner@gmail.com"));
   app.nodes.get("closeModal").dispatch("click");
   assert.equal(app.nodes.get("productDialog").open, false);
-  delegated("fav", 99);
-  assert.ok(app.nodes.get("favoritesGrid").innerHTML.includes("Rocky Mountains"));
-  delegated("wish", 99);
+  delegated("fav", 201);
+  assert.ok(app.nodes.get("favoritesGrid").innerHTML.includes("Three Sisters"));
+  delegated("wish", 201);
   app.nodes.get("creatorAlias").value = "Test Studio";
   app.nodes.get("createShareLink").dispatch("click");
   const share = new URL(app.nodes.get("shareUrl").value);
   const guest = await storefront(share.hash);
   assert.equal(guest.nodes.get("giftAlias").textContent, "Test Studio");
-  assert.ok(guest.nodes.get("giftGrid").innerHTML.includes("Rocky Mountains"));
+  assert.ok(guest.nodes.get("giftGrid").innerHTML.includes("Three Sisters"));
 });
 
 test("Gay and lesbian section has a direct route and searches existing products", async () => {
   const app = await storefront("#gay-lesbian");
   assert.equal(app.document.title, "Gay & Lesbian | Global Intimacy Marketplace");
-  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 103);
+  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 106);
   app.nodes.get("communitySearch").value = "oneheart";
   app.nodes.get("communitySearch").dispatch("input");
-  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 16);
+  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 18);
   app.click("communityFilters", { communityGroup: "style" });
   assert.equal(app.nodes.get("communitySearch").value, "");
-  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 19);
+  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 22);
   app.nodes.get("communitySearch").value = "no-such-item";
   app.nodes.get("communitySearch").dispatch("input");
   assert.equal(app.nodes.get("communityEmpty").hidden, false);
   app.nodes.get("clearCommunityFilters").dispatch("click");
-  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 103);
+  assert.equal(Number(app.nodes.get("communityResultCount").textContent), 106);
 });
 
 test("Store search finds the Gay and Lesbian section without assigning shopper identities", async () => {
@@ -152,7 +152,7 @@ test("Store search finds the Gay and Lesbian section without assigning shopper i
   }
   app.search("one heart");
   assert.equal(app.nodes.get("communitySearchResult").hidden, true);
-  assert.equal(app.count(), 16);
+  assert.equal(app.count(), 18);
 });
 
 test("Header search reaches all products from another page and clears stale filters", async () => {
@@ -161,14 +161,14 @@ test("Header search reaches all products from another page and clears stale filt
   app.nodes.get("brandSelect").dispatch("change");
   app.search("oneheart");
   assert.equal(app.location.hash, "results");
-  assert.equal(app.count(), 16);
+  assert.equal(app.count(), 18);
   assert.equal(app.nodes.get("brandSelect").value, "all");
   assert.equal(app.nodes.get("activeFilterSummary").hidden, false);
   assert.ok(app.nodes.get("activeFilterText").textContent.includes("oneheart"));
   app.nodes.get("storeSearchForm").dispatch("submit");
-  assert.equal(app.count(), 16);
+  assert.equal(app.count(), 18);
   app.nodes.get("clearActiveFilters").dispatch("click");
-  assert.equal(app.count(), 103);
+  assert.equal(app.count(), 106);
   assert.equal(app.nodes.get("activeFilterSummary").hidden, true);
 });
 
@@ -180,7 +180,7 @@ test("Category menu links and select controls expose the same catalogue categori
   assert.equal(app.nodes.get("shopMenu").open, false);
   app.nodes.get("categorySelect").value = "ONE HEART Hoodies";
   app.nodes.get("categorySelect").dispatch("change");
-  assert.equal(app.count(), 5);
+  assert.equal(app.count(), 9);
   assert.ok(app.nodes.get("activeFilterText").textContent.includes("ONE HEART Hoodies"));
 });
 
@@ -195,7 +195,7 @@ test("First visit requires a valid country and preserves direct ONE HEART routin
  assert.equal(app.nodes.get("storeShell").hidden,false);
  assert.equal(app.count(),0);
  app.nodes.get("previewMode").checked=true;app.nodes.get("previewMode").dispatch("change");
- assert.equal(app.count(),16);
+ assert.equal(app.count(),18);
 });
 
 test("Country selection never presents current research previews as delivery-confirmed", async () => {
@@ -204,7 +204,7 @@ test("Country selection never presents current research previews as delivery-con
  assert.equal(app.nodes.get("countryEmpty").hidden,false);
  assert.equal(app.nodes.get("productGrid").innerHTML,"");
  app.nodes.get("showResearchPreviews").dispatch("click");
- assert.equal(app.count(),103);
+ assert.equal(app.count(),106);
  assert.match(app.nodes.get("productGrid").innerHTML,/Delivery to Canada not confirmed/);
  app.window.GIMDestination.enter("GB");
  assert.equal(app.count(),0, "country switch resets explicit preview opt-in");
@@ -217,7 +217,7 @@ test("Country selection never presents current research previews as delivery-con
 
 test("Wishlist, shared gifts, saved items and details cannot promise unsupported delivery", async () => {
  const app=await storefront();
- const id=99;
+ const id=201;
  const click=key=>app.document.dispatch("click",{closest:s=>s===`[data-${key}]`?{dataset:{[key]:String(id)}}:null});
  click("fav");click("wish");click("detail");
  assert.equal(app.nodes.get("productDialog").open,true);
@@ -254,6 +254,26 @@ test("A synthetic approved SKU is filtered consistently when the shopper changes
  app.window.GIMDestination.enter("US");
  assert.equal(app.count(),0);
  app.nodes.get("showResearchPreviews").dispatch("click");
- assert.equal(app.count(),103, "Blocked product stays excluded even from preview results");
+ assert.equal(app.count(),106, "Blocked product stays excluded even from preview results");
  assert.ok(!app.nodes.get("productGrid").innerHTML.includes("Synthetic test product"));
+});
+
+
+
+test("Current apparel routes show 18 ONE HEART designs and one SARCASTABASTARD design",async()=>{
+ const app=await storefront("#sarcastabastard");assert.equal(app.count(),1);
+ assert.match(app.nodes.get("productGrid").innerHTML,/I FUCK UP EVERYTHING/);
+ app.click("collectionFilters",{collection:"ONE HEART"});assert.equal(app.count(),18);
+ app.search("Yamnuska");assert.equal(app.count(),1);
+});
+test("Clothing details frame complete garments and link full-dimension boards",async()=>{
+ const app=await storefront();
+ for(const id of [88,93,201,209,301,302,303,401]){
+ app.document.dispatch("click",{closest:s=>s==="[data-detail]"?{dataset:{detail:String(id)}}:null});
+ const body=app.nodes.get("modalBody").innerHTML;
+ assert.match(body,/preserveAspectRatio="xMidYMid meet"/);
+ assert.match(body,/Open full-size design board/);
+ assert.match(body,/No payment or reservation will be taken/);
+ app.nodes.get("closeModal").dispatch("click");
+ }
 });

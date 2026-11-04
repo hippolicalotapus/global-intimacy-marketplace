@@ -4,13 +4,13 @@
 (function () {
   var products = Array.isArray(window.GIM_PRODUCTS) ? window.GIM_PRODUCTS : [];
   var byId = new Map(products.map(function (p) { return [p.id,p]; }));
-  var categories = ["All","ONE HEART Hoodies","ONE HEART Art Tees","Lingerie","Essentials","Massage & Care","Games & Gifts","AI Companions","Life-Size Dolls","Doll Care & Parts","Wearables","Interactive","Couples","Connected devices","Wellness"];
-  var collections = ["All","Everyday","Premium","ULTRA","ONE HEART"];
+  var categories = ["All","ONE HEART Hoodies","ONE HEART Art Tees","SARCASTABASTARD Tees","Lingerie","Essentials","Massage & Care","Games & Gifts","AI Companions","Life-Size Dolls","Doll Care & Parts","Wearables","Interactive","Couples","Connected devices","Wellness"];
+  var collections = ["All","Everyday","Premium","ULTRA","ONE HEART","SARCASTABASTARD"];
   var brands = Array.from(new Set(products.map(function (p) {return p.brand;}))).sort();
   var activeCategory = "All", activeCollection = "All", search = "", brand = "all", sort = "featured";
   var toastTimer;
   var communityGroup="all";
-  var communityGroups={all:null,connection:["Couples","Wearables","Connected devices","Interactive"],care:["Wellness","Essentials","Massage & Care"],style:["Lingerie","Games & Gifts","ONE HEART Hoodies","ONE HEART Art Tees"]};
+  var communityGroups={all:null,connection:["Couples","Wearables","Connected devices","Interactive"],care:["Wellness","Essentials","Massage & Care"],style:["Lingerie","Games & Gifts","ONE HEART Hoodies","ONE HEART Art Tees","SARCASTABASTARD Tees"]};
 
   function el(id) {return document.getElementById(id);}
   function esc(value) {return String(value === null || value === undefined ? "" : value).replace(/[&<>"']/g,function (c) {
@@ -162,11 +162,19 @@
     saveJson("gim:wishlist",selected);renderPicker();renderSelection();
     notify(selected.includes(id)?"Added to wishlist preview.":"Removed from wishlist preview.");
   }
+  function detailVisual(p,view){
+    var box=view.box, frame="detail-frame-"+p.id+"-"+box.join("-");
+    return '<svg viewBox="'+box.join(" ")+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+esc(p.name+" — "+view.label+". Concept artwork, not manufactured stock.")+'"><defs><clipPath id="'+frame+'"><rect x="'+box[0]+'" y="'+box[1]+'" width="'+box[2]+'" height="'+box[3]+'" /></clipPath></defs><image clip-path="url(#'+frame+')" href="'+esc(p.detailImage)+'" width="'+p.detailImageWidth+'" height="'+p.detailImageHeight+'" /></svg>';
+  }
+  function detailGallery(p){
+    if(!p.detailImage||!p.detailViews||!p.detailViews.length)return '<div class="modal-visual'+(p.previewImage?" with-preview":"")+'">'+(p.previewImage?'<img src="'+esc(p.previewImage)+'" alt="'+esc(p.previewImageAlt)+'">':mark(p))+'</div>';
+    return '<figure class="detail-gallery"><div class="modal-visual with-preview">'+detailVisual(p,p.detailViews[0])+'</div><figcaption><b>'+esc(p.detailViews[0].label)+'</b><a class="detail-enlarge" href="'+esc(p.detailImage)+'" target="_blank" rel="noopener">Open full-size design board ↗</a><span>Full source dimensions. Zoom in the new tab to inspect the artwork. These are concept views, not finished stock.</span></figcaption>'+(p.detailViews.length>1?'<details class="detail-extra"><summary>See more views and artwork details</summary><div class="detail-extra-grid">'+p.detailViews.slice(1).map(function(view){return '<figure>'+detailVisual(p,view)+'<figcaption>'+esc(view.label)+'</figcaption></figure>';}).join("")+'</div></details>':'')+'</figure>';
+  }
   function details(id){
     var p=byId.get(id);if(!p)return;if(!destinationVisible(p)){notify(deliveryLabel(p));return;}
-    el("modalBody").innerHTML='<div class="modal-visual'+(p.previewImage?" with-preview":"")+'">'+(p.previewImage?'<img src="'+esc(p.previewImage)+'" alt="'+esc(p.previewImageAlt)+'">':mark(p))+'</div><div class="modal-content"><span class="product-brand">'+esc(p.brand)+'</span>'+
+    el("modalBody").innerHTML=detailGallery(p)+'<div class="modal-content"><span class="product-brand">'+esc(p.brand)+'</span>'+
       '<h2 id="modalName">'+esc(p.name)+'</h2><p class="delivery-label">'+esc(deliveryLabel(p))+'</p><p>'+esc(p.researchType)+' · '+esc(p.researchFeature)+'</p>'+
-      '<p>'+(p.conceptImage?"This is an approved ONE HEART lookbook concept, not a manufactured product. Final fabric, sizing, colour accuracy and print quality require factory sampling.":"Explore this potential future product. Model-specific features, materials, territories and available stock must be verified before any sale.")+'</p>'+
+      '<p>'+(p.conceptImage?"This is an owner-selected clothing concept, not a manufactured product. Final fabric, sizing, colour accuracy and print quality require factory sampling.":"Explore this potential future product. Model-specific features, materials, territories and available stock must be verified before any sale.")+'</p>'+
       '<div class="modal-notice"><b>Pre-order enquiry only — not a binding order.</b><br>No payment or reservation will be taken. Prices, stock, production and delivery are unconfirmed. '+(p.conceptImage?"Image is an AI lookbook mockup, not a production-ready print file.":"Manufacturer resale and product-photo rights remain under review; abstract placeholder shown.")+'</div>'+
       '<div class="modal-controls"><button class="button button-ghost" type="button" data-fav="'+p.id+'">'+(favorites.includes(p.id)?"♥ Saved":"♡ Save")+'</button>'+
       '<button class="button button-ghost" type="button" data-wish="'+p.id+'">Add to wishlist demo</button>'+
@@ -203,8 +211,9 @@
   }
   function navigate(){
     var hash=location.hash.slice(1);
-    var view=hash.startsWith("gift=")?"gift":(hash==="catalog"||hash==="one-heart"||hash==="results")?"shop":hash.split("?")[0];
+    var view=hash.startsWith("gift=")?"gift":(hash==="catalog"||hash==="one-heart"||hash==="sarcastabastard"||hash==="results")?"shop":hash.split("?")[0];
     if(hash==="one-heart")selectCollection("ONE HEART");
+    if(hash==="sarcastabastard")selectCollection("SARCASTABASTARD");
     if(!["shop","favorites","creators","gift","early","about","gay-lesbian"].includes(view))view="shop";
     document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("active",p.id==="view-"+view);});
     document.querySelectorAll("[data-route]").forEach(function(n){var on=n.dataset.route===view;n.classList.toggle("active",on);if(on)n.setAttribute("aria-current","page");else n.removeAttribute("aria-current");});
@@ -212,7 +221,7 @@
     if(view==="creators"){renderPicker();renderSelection();}
     if(view==="gift")renderGift();
     if(view==="gay-lesbian")renderCommunity();
-    if(view==="shop"&&(hash==="catalog"||hash==="one-heart"||hash==="results")){requestAnimationFrame(function(){el(hash==="results"?"catalogResults":"catalog").scrollIntoView({block:"start"});});}
+    if(view==="shop"&&(hash==="catalog"||hash==="one-heart"||hash==="sarcastabastard"||hash==="results")){requestAnimationFrame(function(){el(hash==="results"?"catalogResults":"catalog").scrollIntoView({block:"start"});});}
     else window.scrollTo({top:0,behavior:"instant"});
     document.title=(view==="shop"?"Explore":view==="gay-lesbian"?"Gay & Lesbian":view.charAt(0).toUpperCase()+view.slice(1))+" | Global Intimacy Marketplace";
   }
@@ -300,4 +309,5 @@
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",setup);
   else setup();
 }());
+
 
