@@ -123,3 +123,11 @@
 .detail-extra-grid svg{height:240px;background:#0b2230;border-radius:8px;padding:8px}
 .detail-extra-grid figcaption{padding:9px 0 3px;font-size:.76rem;color:var(--muted)}
 @media(max-width:650px){.detail-gallery .modal-visual.with-preview{height:clamp(310px,53vh,470px)}.detail-gallery>figcaption{padding:16px 20px}.detail-extra{margin:0 20px}.detail-extra-grid{grid-template-columns:1fr}.detail-extra-grid svg{height:280px}}
+
+/* Current approved hoodie artwork: full silhouettes and both sides visible. */
+.product-visual img[src*="/current/"],.photo-first-card img[src*="/current/"],.quick-shop-grid img[src*="/current/"],.oneheart-feature img[src*="/current/"],.hero img[src*="/current/"]{object-fit:contain;object-position:center;background:#f3f1ea}
+.hoodie-detail-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:54px 14px 12px;background:#f3f1ea}
+.hoodie-detail-pair figure{margin:0;min-width:0}
+.hoodie-view{height:clamp(260px,48vh,470px)}
+.hoodie-detail-pair figcaption{text-align:center;font-size:.84rem;font-weight:700;padding:10px;color:#143943}
+@media(max-width:480px){.hoodie-detail-pair{grid-template-columns:1fr;padding:54px 12px 12px}.hoodie-view{height:350px}.hoodie-detail-pair figure+figure{border-top:1px solid #c8d8cf;padding-top:16px}}

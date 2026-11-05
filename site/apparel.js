@@ -354,30 +354,30 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "collection": "ONE HEART",
     "collectionGroup": "Mountain Collection",
     "researchType": "Pullover Hoodie concept",
-    "researchFeature": "Owner-selected visual reference. Forest green. Final fabric, sizing, colours and print placement require a production sample.",
+    "researchFeature": "Current approved ruby-heart emblem and tapered lettering. Forest green. Placement illustration; final garment, print dimensions and sample acceptance remain pending.",
     "colorway": "Forest green",
-    "previewImage": "assets/apparel/cards/oh-h01.webp",
-    "previewImageAlt": "ONE HEART Three Sisters design concept, not a photo of manufactured stock",
-    "detailImage": "assets/apparel/references/OH_H01-H03_Mountain_Hoodies.webp",
-    "detailImageWidth": 1536,
-    "detailImageHeight": 1024,
+    "previewImage": "assets/apparel/current/oh-h01-placement.webp",
+    "previewImageAlt": "Current ONE HEART Three Sisters — Pullover Hoodie complete front and back placement illustration, not a photo of manufactured stock",
+    "detailImage": "assets/apparel/current/oh-h01-placement.svg",
+    "detailImageWidth": 1200,
+    "detailImageHeight": 820,
     "detailViews": [
       {
         "label": "Complete hoodie — front",
         "box": [
-          85,
-          160,
-          465,
-          380
+          0,
+          80,
+          600,
+          640
         ]
       },
       {
         "label": "Complete hoodie — back",
         "box": [
-          85,
-          555,
-          465,
-          445
+          600,
+          80,
+          600,
+          640
         ]
       }
     ],
@@ -390,7 +390,8 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "canAcceptOrders": false,
     "deliveryRules": [],
     "conceptImage": true,
-    "preorderType": "nonbinding enquiry"
+    "preorderType": "nonbinding enquiry",
+    "currentArtProof": true
   },
   {
     "id": 202,
@@ -401,30 +402,30 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "collection": "ONE HEART",
     "collectionGroup": "Mountain Collection",
     "researchType": "Pullover Hoodie concept",
-    "researchFeature": "Owner-selected visual reference. Navy. Final fabric, sizing, colours and print placement require a production sample.",
+    "researchFeature": "Current approved ruby-heart emblem and tapered lettering. Navy. Placement illustration; final garment, print dimensions and sample acceptance remain pending.",
     "colorway": "Navy",
-    "previewImage": "assets/apparel/cards/oh-h02.webp",
-    "previewImageAlt": "ONE HEART Mount Rundle design concept, not a photo of manufactured stock",
-    "detailImage": "assets/apparel/references/OH_H01-H03_Mountain_Hoodies.webp",
-    "detailImageWidth": 1536,
-    "detailImageHeight": 1024,
+    "previewImage": "assets/apparel/current/oh-h02-placement.webp",
+    "previewImageAlt": "Current ONE HEART Mount Rundle — Pullover Hoodie complete front and back placement illustration, not a photo of manufactured stock",
+    "detailImage": "assets/apparel/current/oh-h02-placement.svg",
+    "detailImageWidth": 1200,
+    "detailImageHeight": 820,
     "detailViews": [
       {
         "label": "Complete hoodie — front",
         "box": [
+          0,
+          80,
           600,
-          160,
-          465,
-          380
+          640
         ]
       },
       {
         "label": "Complete hoodie — back",
         "box": [
           600,
-          555,
-          465,
-          445
+          80,
+          600,
+          640
         ]
       }
     ],
@@ -437,7 +438,8 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "canAcceptOrders": false,
     "deliveryRules": [],
     "conceptImage": true,
-    "preorderType": "nonbinding enquiry"
+    "preorderType": "nonbinding enquiry",
+    "currentArtProof": true
   },
   {
     "id": 203,
@@ -448,30 +450,30 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "collection": "ONE HEART",
     "collectionGroup": "Mountain Collection",
     "researchType": "Full-Zip Hoodie concept",
-    "researchFeature": "Owner-selected visual reference. Black. Final fabric, sizing, colours and print placement require a production sample.",
+    "researchFeature": "Current approved ruby-heart emblem and tapered lettering. Black. Placement illustration; final garment, print dimensions and sample acceptance remain pending.",
     "colorway": "Black",
-    "previewImage": "assets/apparel/cards/oh-h03.webp",
-    "previewImageAlt": "ONE HEART Castle Mountain design concept, not a photo of manufactured stock",
-    "detailImage": "assets/apparel/references/OH_H01-H03_Mountain_Hoodies.webp",
-    "detailImageWidth": 1536,
-    "detailImageHeight": 1024,
+    "previewImage": "assets/apparel/current/oh-h03-placement.webp",
+    "previewImageAlt": "Current ONE HEART Castle Mountain — Full-Zip Hoodie complete front and back placement illustration, not a photo of manufactured stock",
+    "detailImage": "assets/apparel/current/oh-h03-placement.svg",
+    "detailImageWidth": 1200,
+    "detailImageHeight": 820,
     "detailViews": [
       {
         "label": "Complete hoodie — front",
         "box": [
-          1105,
-          160,
-          380,
-          380
+          0,
+          80,
+          600,
+          640
         ]
       },
       {
         "label": "Complete hoodie — back",
         "box": [
-          1105,
-          555,
-          380,
-          445
+          600,
+          80,
+          600,
+          640
         ]
       }
     ],
@@ -484,7 +486,8 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "canAcceptOrders": false,
     "deliveryRules": [],
     "conceptImage": true,
-    "preorderType": "nonbinding enquiry"
+    "preorderType": "nonbinding enquiry",
+    "currentArtProof": true
   },
   {
     "id": 204,
@@ -495,30 +498,30 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "collection": "ONE HEART",
     "collectionGroup": "Mountain Collection",
     "researchType": "Pullover Hoodie concept",
-    "researchFeature": "Owner-selected visual reference. Navy. Final fabric, sizing, colours and print placement require a production sample.",
+    "researchFeature": "Current approved ruby-heart emblem and tapered lettering. Navy. Placement illustration; final garment, print dimensions and sample acceptance remain pending.",
     "colorway": "Navy",
-    "previewImage": "assets/apparel/cards/oh-h04.webp",
-    "previewImageAlt": "ONE HEART Mount Assiniboine design concept, not a photo of manufactured stock",
-    "detailImage": "assets/apparel/references/OH_H04-H06_Mountain_Hoodies.webp",
-    "detailImageWidth": 1536,
-    "detailImageHeight": 1024,
+    "previewImage": "assets/apparel/current/oh-h04-placement.webp",
+    "previewImageAlt": "Current ONE HEART Mount Assiniboine — Pullover Hoodie complete front and back placement illustration, not a photo of manufactured stock",
+    "detailImage": "assets/apparel/current/oh-h04-placement.svg",
+    "detailImageWidth": 1200,
+    "detailImageHeight": 820,
     "detailViews": [
       {
         "label": "Complete hoodie — front",
         "box": [
-          85,
-          160,
-          465,
-          380
+          0,
+          80,
+          600,
+          640
         ]
       },
       {
         "label": "Complete hoodie — back",
         "box": [
-          85,
-          555,
-          465,
-          445
+          600,
+          80,
+          600,
+          640
         ]
       }
     ],
@@ -531,7 +534,8 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "canAcceptOrders": false,
     "deliveryRules": [],
     "conceptImage": true,
-    "preorderType": "nonbinding enquiry"
+    "preorderType": "nonbinding enquiry",
+    "currentArtProof": true
   },
   {
     "id": 205,
@@ -542,30 +546,30 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "collection": "ONE HEART",
     "collectionGroup": "Mountain Collection",
     "researchType": "Pullover Hoodie concept",
-    "researchFeature": "Owner-selected visual reference. Natural / cream. Final fabric, sizing, colours and print placement require a production sample.",
+    "researchFeature": "Current approved ruby-heart emblem and tapered lettering. Natural / cream. Placement illustration; final garment, print dimensions and sample acceptance remain pending.",
     "colorway": "Natural / cream",
-    "previewImage": "assets/apparel/cards/oh-h05.webp",
-    "previewImageAlt": "ONE HEART Mount Temple design concept, not a photo of manufactured stock",
-    "detailImage": "assets/apparel/references/OH_H04-H06_Mountain_Hoodies.webp",
-    "detailImageWidth": 1536,
-    "detailImageHeight": 1024,
+    "previewImage": "assets/apparel/current/oh-h05-placement.webp",
+    "previewImageAlt": "Current ONE HEART Mount Temple — Pullover Hoodie complete front and back placement illustration, not a photo of manufactured stock",
+    "detailImage": "assets/apparel/current/oh-h05-placement.svg",
+    "detailImageWidth": 1200,
+    "detailImageHeight": 820,
     "detailViews": [
       {
         "label": "Complete hoodie — front",
         "box": [
+          0,
+          80,
           600,
-          160,
-          465,
-          380
+          640
         ]
       },
       {
         "label": "Complete hoodie — back",
         "box": [
           600,
-          555,
-          465,
-          445
+          80,
+          600,
+          640
         ]
       }
     ],
@@ -578,7 +582,8 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "canAcceptOrders": false,
     "deliveryRules": [],
     "conceptImage": true,
-    "preorderType": "nonbinding enquiry"
+    "preorderType": "nonbinding enquiry",
+    "currentArtProof": true
   },
   {
     "id": 206,
@@ -589,30 +594,30 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "collection": "ONE HEART",
     "collectionGroup": "Mountain Collection",
     "researchType": "Pullover Hoodie concept",
-    "researchFeature": "Owner-selected visual reference. Forest green. Final fabric, sizing, colours and print placement require a production sample.",
+    "researchFeature": "Current approved ruby-heart emblem and tapered lettering. Forest green. Placement illustration; final garment, print dimensions and sample acceptance remain pending.",
     "colorway": "Forest green",
-    "previewImage": "assets/apparel/cards/oh-h06.webp",
-    "previewImageAlt": "ONE HEART Ten Peaks design concept, not a photo of manufactured stock",
-    "detailImage": "assets/apparel/references/OH_H04-H06_Mountain_Hoodies.webp",
-    "detailImageWidth": 1536,
-    "detailImageHeight": 1024,
+    "previewImage": "assets/apparel/current/oh-h06-placement.webp",
+    "previewImageAlt": "Current ONE HEART Ten Peaks — Pullover Hoodie complete front and back placement illustration, not a photo of manufactured stock",
+    "detailImage": "assets/apparel/current/oh-h06-placement.svg",
+    "detailImageWidth": 1200,
+    "detailImageHeight": 820,
     "detailViews": [
       {
         "label": "Complete hoodie — front",
         "box": [
-          1105,
-          160,
-          380,
-          380
+          0,
+          80,
+          600,
+          640
         ]
       },
       {
         "label": "Complete hoodie — back",
         "box": [
-          1105,
-          555,
-          380,
-          445
+          600,
+          80,
+          600,
+          640
         ]
       }
     ],
@@ -625,7 +630,8 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "canAcceptOrders": false,
     "deliveryRules": [],
     "conceptImage": true,
-    "preorderType": "nonbinding enquiry"
+    "preorderType": "nonbinding enquiry",
+    "currentArtProof": true
   },
   {
     "id": 207,
@@ -636,30 +642,30 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "collection": "ONE HEART",
     "collectionGroup": "Mountain Collection",
     "researchType": "Pullover Hoodie concept",
-    "researchFeature": "Owner-selected visual reference. Black. Final fabric, sizing, colours and print placement require a production sample.",
+    "researchFeature": "Current approved ruby-heart emblem and tapered lettering. Black. Placement illustration; final garment, print dimensions and sample acceptance remain pending.",
     "colorway": "Black",
-    "previewImage": "assets/apparel/cards/oh-h07.webp",
-    "previewImageAlt": "ONE HEART Mount Edith Cavell design concept, not a photo of manufactured stock",
-    "detailImage": "assets/apparel/references/OH_H07-H09_Mountain_Hoodies.webp",
-    "detailImageWidth": 1536,
-    "detailImageHeight": 1024,
+    "previewImage": "assets/apparel/current/oh-h07-placement.webp",
+    "previewImageAlt": "Current ONE HEART Mount Edith Cavell — Pullover Hoodie complete front and back placement illustration, not a photo of manufactured stock",
+    "detailImage": "assets/apparel/current/oh-h07-placement.svg",
+    "detailImageWidth": 1200,
+    "detailImageHeight": 820,
     "detailViews": [
       {
         "label": "Complete hoodie — front",
         "box": [
-          85,
-          160,
-          465,
-          380
+          0,
+          80,
+          600,
+          640
         ]
       },
       {
         "label": "Complete hoodie — back",
         "box": [
-          85,
-          555,
-          465,
-          445
+          600,
+          80,
+          600,
+          640
         ]
       }
     ],
@@ -672,7 +678,8 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "canAcceptOrders": false,
     "deliveryRules": [],
     "conceptImage": true,
-    "preorderType": "nonbinding enquiry"
+    "preorderType": "nonbinding enquiry",
+    "currentArtProof": true
   },
   {
     "id": 208,
@@ -683,30 +690,30 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "collection": "ONE HEART",
     "collectionGroup": "Mountain Collection",
     "researchType": "Full-Zip Hoodie concept",
-    "researchFeature": "Owner-selected visual reference. Heather grey. Final fabric, sizing, colours and print placement require a production sample.",
+    "researchFeature": "Current approved ruby-heart emblem and tapered lettering. Heather grey. Placement illustration; final garment, print dimensions and sample acceptance remain pending.",
     "colorway": "Heather grey",
-    "previewImage": "assets/apparel/cards/oh-h08.webp",
-    "previewImageAlt": "ONE HEART Yamnuska design concept, not a photo of manufactured stock",
-    "detailImage": "assets/apparel/references/OH_H07-H09_Mountain_Hoodies.webp",
-    "detailImageWidth": 1536,
-    "detailImageHeight": 1024,
+    "previewImage": "assets/apparel/current/oh-h08-placement.webp",
+    "previewImageAlt": "Current ONE HEART Yamnuska — Full-Zip Hoodie complete front and back placement illustration, not a photo of manufactured stock",
+    "detailImage": "assets/apparel/current/oh-h08-placement.svg",
+    "detailImageWidth": 1200,
+    "detailImageHeight": 820,
     "detailViews": [
       {
         "label": "Complete hoodie — front",
         "box": [
+          0,
+          80,
           600,
-          160,
-          465,
-          380
+          640
         ]
       },
       {
         "label": "Complete hoodie — back",
         "box": [
           600,
-          555,
-          465,
-          445
+          80,
+          600,
+          640
         ]
       }
     ],
@@ -719,7 +726,8 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "canAcceptOrders": false,
     "deliveryRules": [],
     "conceptImage": true,
-    "preorderType": "nonbinding enquiry"
+    "preorderType": "nonbinding enquiry",
+    "currentArtProof": true
   },
   {
     "id": 209,
@@ -730,30 +738,30 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "collection": "ONE HEART",
     "collectionGroup": "Mountain Collection",
     "researchType": "Pullover Hoodie concept",
-    "researchFeature": "Owner-selected visual reference. Natural / cream. Final fabric, sizing, colours and print placement require a production sample.",
+    "researchFeature": "Current approved ruby-heart emblem and tapered lettering. Natural / cream. Placement illustration; final garment, print dimensions and sample acceptance remain pending.",
     "colorway": "Natural / cream",
-    "previewImage": "assets/apparel/cards/oh-h09.webp",
-    "previewImageAlt": "ONE HEART Crowsnest Mountain design concept, not a photo of manufactured stock",
-    "detailImage": "assets/apparel/references/OH_H07-H09_Mountain_Hoodies.webp",
-    "detailImageWidth": 1536,
-    "detailImageHeight": 1024,
+    "previewImage": "assets/apparel/current/oh-h09-placement.webp",
+    "previewImageAlt": "Current ONE HEART Crowsnest Mountain — Pullover Hoodie complete front and back placement illustration, not a photo of manufactured stock",
+    "detailImage": "assets/apparel/current/oh-h09-placement.svg",
+    "detailImageWidth": 1200,
+    "detailImageHeight": 820,
     "detailViews": [
       {
         "label": "Complete hoodie — front",
         "box": [
-          1105,
-          160,
-          380,
-          380
+          0,
+          80,
+          600,
+          640
         ]
       },
       {
         "label": "Complete hoodie — back",
         "box": [
-          1105,
-          555,
-          380,
-          445
+          600,
+          80,
+          600,
+          640
         ]
       }
     ],
@@ -766,7 +774,8 @@ window.GIM_PRODUCTS=(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]).
     "canAcceptOrders": false,
     "deliveryRules": [],
     "conceptImage": true,
-    "preorderType": "nonbinding enquiry"
+    "preorderType": "nonbinding enquiry",
+    "currentArtProof": true
   },
   {
     "id": 301,

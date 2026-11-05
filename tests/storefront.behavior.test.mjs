@@ -105,12 +105,26 @@ test("Wishlist search uses the same collection and keyword search", async () => 
   }
 });
 
+test("Every mountain hoodie exposes complete front and back without expanding hidden views", async () => {
+  const app=await storefront();
+  for(let id=201;id<=209;id++){
+    app.document.dispatch("click",{closest:selector=>selector==='[data-detail]'?{dataset:{detail:String(id)}}:null});
+    const html=app.nodes.get("modalBody").innerHTML;
+    assert.ok(html.includes('class="hoodie-detail-pair"'));
+    assert.ok(html.includes('Complete hoodie — front')&&html.includes('Complete hoodie — back'));
+    assert.ok(!html.includes('class="detail-extra"'));
+    assert.ok(html.includes('Current approved artwork shown in a placement illustration'));
+    assert.ok(html.includes('No payment or reservation will be taken'));
+    app.nodes.get("closeModal").dispatch("click");
+  }
+});
+
 test("ONE HEART details, favorites and shareable wishlist use real catalogue IDs", async () => {
   const app = await storefront();
   const delegated = (key, id) => app.document.dispatch("click", { closest: selector => selector === `[data-${key}]` ? { dataset: { [key]: String(id) } } : null });
   delegated("detail", 201);
   assert.equal(app.nodes.get("productDialog").open, true);
-  assert.ok(app.nodes.get("modalBody").innerHTML.includes("assets/apparel/references/OH_H01-H03_Mountain_Hoodies.webp"));
+  assert.ok(app.nodes.get("modalBody").innerHTML.includes("assets/apparel/current/oh-h01-placement.svg"));
   assert.ok(app.nodes.get("modalBody").innerHTML.includes("mailto:globalintimacypartner@gmail.com"));
   app.nodes.get("closeModal").dispatch("click");
   assert.equal(app.nodes.get("productDialog").open, false);

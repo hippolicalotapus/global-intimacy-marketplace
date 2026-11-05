@@ -147,7 +147,7 @@ test("Current 19 owner-selected image concepts augment the existing 87-item cata
     assert.equal(p.stockVerified,false);
     assert.equal(p.resellerApproved,false);
     assert.equal(p.preorderType,"nonbinding enquiry");
-    assert.ok(/^assets\/apparel\/cards\/[a-z0-9-]+\.webp$/.test(p.previewImage));
+    assert.ok(/^assets\/apparel\/(cards\/[a-z0-9-]+\.webp|current\/oh-h0[1-9]-placement\.webp)$/.test(p.previewImage));
     assert.ok(p.previewImageAlt.includes("not a photo"));
     await access(new URL("site/"+p.previewImage,root));
     await access(new URL("site/"+p.detailImage,root));

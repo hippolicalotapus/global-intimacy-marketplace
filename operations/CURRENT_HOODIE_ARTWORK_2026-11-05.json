@@ -1,0 +1,185 @@
+{
+  "sourceLibraryId": "libfile_8f9b6612ad9c819196f7e9693efa98ad",
+  "designs": [
+    {
+      "designId": "OH-H01",
+      "approvedBackSource": "01_Compact_7p2in_NATIVE_300ppi/OH-H01_back_7p2x6p12in_NATIVE300.png",
+      "backPngSha256": "dfb43bb8dbf7e7444e56721b1387db6b014a9b71c03736bbe66ff320ed61f0aa",
+      "backNativePixels": [
+        2160,
+        1836
+      ],
+      "chestPngSha256": "e8c24d31ce7443838eeb70e5b873e44cda8bb887efb2f8ad2dd0350a1592e66f",
+      "chestNativePixels": [
+        900,
+        900
+      ],
+      "webConversion": "Lossless WebP, unchanged RGBA pixels",
+      "status": "Placement illustration. Physical print size, garment, fit and manufacturer acceptance remain pending.",
+      "webPath": "site/assets/apparel/current/oh-h01-placement.svg",
+      "svgSha256": "4da39fc058706183cc510bd379ef9ba504c87defac45325ec5359099dd02eca6",
+      "thumbnailPath": "site/assets/apparel/current/oh-h01-placement.webp",
+      "thumbnailNote": "960-pixel rendered web preview. Open the full SVG board for native source detail."
+    },
+    {
+      "designId": "OH-H02",
+      "approvedBackSource": "01_Compact_7p2in_NATIVE_300ppi/OH-H02_back_7p2x6p12in_NATIVE300.png",
+      "backPngSha256": "3c2fde9a7aa0ef6d0416ed05ccc183b3faa5a563ec9f1e1a9d8e0fcaf9b9afe5",
+      "backNativePixels": [
+        2160,
+        1836
+      ],
+      "chestPngSha256": "e8c24d31ce7443838eeb70e5b873e44cda8bb887efb2f8ad2dd0350a1592e66f",
+      "chestNativePixels": [
+        900,
+        900
+      ],
+      "webConversion": "Lossless WebP, unchanged RGBA pixels",
+      "status": "Placement illustration. Physical print size, garment, fit and manufacturer acceptance remain pending.",
+      "webPath": "site/assets/apparel/current/oh-h02-placement.svg",
+      "svgSha256": "18046e7503ce9dd8c33a1a2eaffce53c784441024787942f203c81d3d1ab643d",
+      "thumbnailPath": "site/assets/apparel/current/oh-h02-placement.webp",
+      "thumbnailNote": "960-pixel rendered web preview. Open the full SVG board for native source detail."
+    },
+    {
+      "designId": "OH-H03",
+      "approvedBackSource": "01_Compact_7p2in_NATIVE_300ppi/OH-H03_back_7p2x6p12in_NATIVE300.png",
+      "backPngSha256": "4b7f7e094e8d75db29f0c7dd012d78b43b3fff1f7e2e40afa3fceccebbdf221c",
+      "backNativePixels": [
+        2160,
+        1836
+      ],
+      "chestPngSha256": "e8c24d31ce7443838eeb70e5b873e44cda8bb887efb2f8ad2dd0350a1592e66f",
+      "chestNativePixels": [
+        900,
+        900
+      ],
+      "webConversion": "Lossless WebP, unchanged RGBA pixels",
+      "status": "Placement illustration. Physical print size, garment, fit and manufacturer acceptance remain pending.",
+      "webPath": "site/assets/apparel/current/oh-h03-placement.svg",
+      "svgSha256": "160893fa4607fc9929b0f6b1ab413e38f81dabfaac2a5cf002e32ea47c27a9a6",
+      "thumbnailPath": "site/assets/apparel/current/oh-h03-placement.webp",
+      "thumbnailNote": "960-pixel rendered web preview. Open the full SVG board for native source detail."
+    },
+    {
+      "designId": "OH-H04",
+      "approvedBackSource": "01_Compact_7p2in_NATIVE_300ppi/OH-H04_back_7p2x6p12in_NATIVE300.png",
+      "backPngSha256": "652f1f7fd08fe3cc28195e935effe84dfb8544a7da43c70d43a370b44e603d64",
+      "backNativePixels": [
+        2160,
+        1836
+      ],
+      "chestPngSha256": "e8c24d31ce7443838eeb70e5b873e44cda8bb887efb2f8ad2dd0350a1592e66f",
+      "chestNativePixels": [
+        900,
+        900
+      ],
+      "webConversion": "Lossless WebP, unchanged RGBA pixels",
+      "status": "Placement illustration. Physical print size, garment, fit and manufacturer acceptance remain pending.",
+      "webPath": "site/assets/apparel/current/oh-h04-placement.svg",
+      "svgSha256": "ddb28c4df73d9c02a46365f26fec8bc5f44eeaeb411e1d67902b2e4f60b415f7",
+      "thumbnailPath": "site/assets/apparel/current/oh-h04-placement.webp",
+      "thumbnailNote": "960-pixel rendered web preview. Open the full SVG board for native source detail."
+    },
+    {
+      "designId": "OH-H05",
+      "approvedBackSource": "01_Compact_7p2in_NATIVE_300ppi/OH-H05_back_7p2x6p12in_NATIVE300.png",
+      "backPngSha256": "16926062b151abe0eb1f5b4e3870c937a2b7e200fb4c23056f4f8f8867e3d0b5",
+      "backNativePixels": [
+        2160,
+        1836
+      ],
+      "chestPngSha256": "f7f150dad4e0cdb0bba1215e51aa9c62f48c065c08565c9498186e4987c03938",
+      "chestNativePixels": [
+        900,
+        900
+      ],
+      "webConversion": "Lossless WebP, unchanged RGBA pixels",
+      "status": "Placement illustration. Physical print size, garment, fit and manufacturer acceptance remain pending.",
+      "webPath": "site/assets/apparel/current/oh-h05-placement.svg",
+      "svgSha256": "dd7925c21f01bdbdff89481eb000cd0e7184422b01ae6f9d11b12e715f6b1321",
+      "thumbnailPath": "site/assets/apparel/current/oh-h05-placement.webp",
+      "thumbnailNote": "960-pixel rendered web preview. Open the full SVG board for native source detail."
+    },
+    {
+      "designId": "OH-H06",
+      "approvedBackSource": "01_Compact_7p2in_NATIVE_300ppi/OH-H06_back_7p2x6p12in_NATIVE300.png",
+      "backPngSha256": "c0b4f1bd006baed88e66480ebc435bf4423a59dabed2a855e3f63b2943739c79",
+      "backNativePixels": [
+        2160,
+        1836
+      ],
+      "chestPngSha256": "e8c24d31ce7443838eeb70e5b873e44cda8bb887efb2f8ad2dd0350a1592e66f",
+      "chestNativePixels": [
+        900,
+        900
+      ],
+      "webConversion": "Lossless WebP, unchanged RGBA pixels",
+      "status": "Placement illustration. Physical print size, garment, fit and manufacturer acceptance remain pending.",
+      "webPath": "site/assets/apparel/current/oh-h06-placement.svg",
+      "svgSha256": "56cbfd94dffc7d94a3e6313785e291f0f0c471a1759ff6369e201673af74256a",
+      "thumbnailPath": "site/assets/apparel/current/oh-h06-placement.webp",
+      "thumbnailNote": "960-pixel rendered web preview. Open the full SVG board for native source detail."
+    },
+    {
+      "designId": "OH-H07",
+      "approvedBackSource": "01_Compact_7p2in_NATIVE_300ppi/OH-H07_back_7p2x6p12in_NATIVE300.png",
+      "backPngSha256": "8cf788c22ff3e5713c50f009efdefa2d941596cadf51750addd9e0a843da20d1",
+      "backNativePixels": [
+        2160,
+        1836
+      ],
+      "chestPngSha256": "e8c24d31ce7443838eeb70e5b873e44cda8bb887efb2f8ad2dd0350a1592e66f",
+      "chestNativePixels": [
+        900,
+        900
+      ],
+      "webConversion": "Lossless WebP, unchanged RGBA pixels",
+      "status": "Placement illustration. Physical print size, garment, fit and manufacturer acceptance remain pending.",
+      "webPath": "site/assets/apparel/current/oh-h07-placement.svg",
+      "svgSha256": "677eea80e99f205c2c918a1184bc08a820c1691fb00747a953b1826aff9316a7",
+      "thumbnailPath": "site/assets/apparel/current/oh-h07-placement.webp",
+      "thumbnailNote": "960-pixel rendered web preview. Open the full SVG board for native source detail."
+    },
+    {
+      "designId": "OH-H08",
+      "approvedBackSource": "01_Compact_7p2in_NATIVE_300ppi/OH-H08_back_7p2x6p12in_NATIVE300.png",
+      "backPngSha256": "e63459fca9568e015c921b58e4658b51d9baa0d360a8de389279e66fbcd392dd",
+      "backNativePixels": [
+        2160,
+        1836
+      ],
+      "chestPngSha256": "f7f150dad4e0cdb0bba1215e51aa9c62f48c065c08565c9498186e4987c03938",
+      "chestNativePixels": [
+        900,
+        900
+      ],
+      "webConversion": "Lossless WebP, unchanged RGBA pixels",
+      "status": "Placement illustration. Physical print size, garment, fit and manufacturer acceptance remain pending.",
+      "webPath": "site/assets/apparel/current/oh-h08-placement.svg",
+      "svgSha256": "7ab8f8b1f60fd0da7c05b1df04ff3789bb57b11ebc0167b8b83a50506ff86e9e",
+      "thumbnailPath": "site/assets/apparel/current/oh-h08-placement.webp",
+      "thumbnailNote": "960-pixel rendered web preview. Open the full SVG board for native source detail."
+    },
+    {
+      "designId": "OH-H09",
+      "approvedBackSource": "01_Compact_7p2in_NATIVE_300ppi/OH-H09_back_7p2x6p12in_NATIVE300.png",
+      "backPngSha256": "8eb986ebe8c166955fb60dd4c6796240877bdef428e40064d30eb491944f9a77",
+      "backNativePixels": [
+        2160,
+        1836
+      ],
+      "chestPngSha256": "f7f150dad4e0cdb0bba1215e51aa9c62f48c065c08565c9498186e4987c03938",
+      "chestNativePixels": [
+        900,
+        900
+      ],
+      "webConversion": "Lossless WebP, unchanged RGBA pixels",
+      "status": "Placement illustration. Physical print size, garment, fit and manufacturer acceptance remain pending.",
+      "webPath": "site/assets/apparel/current/oh-h09-placement.svg",
+      "svgSha256": "e9f35dd2e9107ab515633d19052e870754601aa3d82521c40548a139c0c66ce7",
+      "thumbnailPath": "site/assets/apparel/current/oh-h09-placement.webp",
+      "thumbnailNote": "960-pixel rendered web preview. Open the full SVG board for native source detail."
+    }
+  ]
+}
