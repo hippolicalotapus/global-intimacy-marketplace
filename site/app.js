@@ -376,10 +376,11 @@
     try{adult=sessionStorage.getItem("gim:adult")==="yes";}catch(e){}
     el("ageGate").hidden=adult;el("storeShell").inert=!adult;el("countryEntrance").inert=!adult;
     if(!adult)el("ageYes").focus();
+    else if(window.GIMWelcome)window.GIMWelcome.start();
     el("ageYes").addEventListener("click",function(){
       try{sessionStorage.setItem("gim:adult","yes");}catch(e){}
       el("ageGate").hidden=true;el("storeShell").inert=false;el("countryEntrance").inert=false;
-      if(window.GIMDestination.country())el("main").focus();else el("countryHeading").focus();
+      if(!(window.GIMWelcome&&window.GIMWelcome.start())){if(window.GIMDestination.country())el("main").focus();else el("countryHeading").focus();}
     });
     el("ageNo").addEventListener("click",function(){location.replace("https://www.google.com/");});
   }

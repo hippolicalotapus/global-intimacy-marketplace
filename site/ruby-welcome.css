@@ -1,0 +1,95 @@
+/* Original artwork, a shared logo/globe stage, and one bounded 1.4-second reveal. */
+.ruby-welcome{position:fixed;inset:0;z-index:80;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#235657 0,#122f3a 45%,#091d29 90%);isolation:isolate}
+.ruby-welcome[hidden]{display:none}
+body.ruby-open{overflow:hidden}
+.ruby-stage{position:relative;width:min(82vw,64svh,540px);aspect-ratio:1}
+.ruby-stage>canvas,.ruby-reveal{position:absolute;inset:0;width:100%;height:100%}
+.ruby-stage>canvas{inset:3.5%;width:93%;height:93%;opacity:0;pointer-events:none;filter:drop-shadow(0 0 36px #4abac130)}
+.ruby-reveal{padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.ruby-reveal:focus{outline:none}.ruby-reveal:focus-visible{outline:2px solid #f2d8ad;outline-offset:10px;border-radius:50%}
+.ruby-art{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 14px 24px #0006)}
+#rubyLogo{animation:ruby-breathe 3.6s ease-in-out infinite;transform-origin:50% 50%}
+#rubyFacets{visibility:hidden}
+.ruby-facet{transform-box:view-box;transform-origin:50% 57%}
+.ruby-welcome.is-bursting .ruby-stage>canvas{opacity:1;transition:opacity 280ms ease-out}
+.ruby-welcome.is-bursting #rubyLogo{visibility:hidden;animation:none}
+.ruby-welcome.is-bursting #rubyFacets{visibility:visible}
+.ruby-welcome.is-bursting .ruby-facet{animation:ruby-scatter 1120ms cubic-bezier(.15,.64,.3,1) var(--delay) both}
+.ruby-welcome.is-bursting .ruby-reveal{pointer-events:none}
+.ruby-skip{position:absolute;right:24px;top:max(20px,env(safe-area-inset-top));border:1px solid #9ac6ba;background:#173e48;color:#f7f1e6;border-radius:24px;min-height:44px;padding:9px 17px;clip-path:inset(50%);width:1px;height:1px;overflow:hidden;white-space:nowrap}
+.ruby-skip:focus-visible{clip-path:none;width:auto;height:auto;overflow:visible}
+@keyframes ruby-breathe{0%,100%{filter:drop-shadow(0 0 0 #ed155400)}50%{filter:drop-shadow(0 0 7px #ed15543b)}}
+@keyframes ruby-scatter{0%{transform:translate(0,0) rotate(0);opacity:1}15%{opacity:1}85%,100%{transform:translate(var(--dx),var(--dy)) rotate(var(--turn));opacity:0}}
+@media(prefers-reduced-motion:reduce){#rubyLogo{animation:none}.ruby-welcome.is-bursting #rubyLogo{visibility:visible;opacity:0;transition:opacity 180ms linear}.ruby-welcome.is-bursting #rubyFacets{visibility:hidden}.ruby-welcome.is-bursting .ruby-facet{animation:none}.ruby-welcome.is-bursting .ruby-stage>canvas{transition:none}}
+.ruby-facet-0{--dx:-352.7px;--dy:-408.5px;--turn:-30deg;--delay:0ms}
+.ruby-facet-1{--dx:-308.6px;--dy:-364.4px;--turn:7deg;--delay:18ms}
+.ruby-facet-2{--dx:-176.4px;--dy:-408.5px;--turn:-17deg;--delay:36ms}
+.ruby-facet-3{--dx:-220.4px;--dy:-364.4px;--turn:20deg;--delay:54ms}
+.ruby-facet-4{--dx:-88.2px;--dy:-408.5px;--turn:-4deg;--delay:72ms}
+.ruby-facet-5{--dx:-44.1px;--dy:-364.4px;--turn:-28deg;--delay:0ms}
+.ruby-facet-6{--dx:88.2px;--dy:-408.5px;--turn:9deg;--delay:18ms}
+.ruby-facet-7{--dx:44.1px;--dy:-364.4px;--turn:-15deg;--delay:36ms}
+.ruby-facet-8{--dx:176.4px;--dy:-408.5px;--turn:22deg;--delay:54ms}
+.ruby-facet-9{--dx:220.4px;--dy:-364.4px;--turn:-2deg;--delay:72ms}
+.ruby-facet-10{--dx:352.7px;--dy:-408.5px;--turn:-26deg;--delay:0ms}
+.ruby-facet-11{--dx:308.6px;--dy:-364.4px;--turn:11deg;--delay:18ms}
+.ruby-facet-12{--dx:-308.6px;--dy:-276.2px;--turn:-13deg;--delay:36ms}
+.ruby-facet-13{--dx:-352.7px;--dy:-232.2px;--turn:24deg;--delay:54ms}
+.ruby-facet-14{--dx:-220.4px;--dy:-276.2px;--turn:0deg;--delay:72ms}
+.ruby-facet-15{--dx:-176.4px;--dy:-232.2px;--turn:-24deg;--delay:0ms}
+.ruby-facet-16{--dx:-44.1px;--dy:-276.2px;--turn:13deg;--delay:18ms}
+.ruby-facet-17{--dx:-88.2px;--dy:-232.2px;--turn:-11deg;--delay:36ms}
+.ruby-facet-18{--dx:44.1px;--dy:-276.2px;--turn:26deg;--delay:54ms}
+.ruby-facet-19{--dx:88.2px;--dy:-232.2px;--turn:2deg;--delay:72ms}
+.ruby-facet-20{--dx:220.4px;--dy:-276.2px;--turn:-22deg;--delay:0ms}
+.ruby-facet-21{--dx:176.4px;--dy:-232.2px;--turn:15deg;--delay:18ms}
+.ruby-facet-22{--dx:308.6px;--dy:-276.2px;--turn:-9deg;--delay:36ms}
+.ruby-facet-23{--dx:352.7px;--dy:-232.2px;--turn:28deg;--delay:54ms}
+.ruby-facet-24{--dx:-352.7px;--dy:-144.0px;--turn:4deg;--delay:72ms}
+.ruby-facet-25{--dx:-308.6px;--dy:-99.9px;--turn:-20deg;--delay:0ms}
+.ruby-facet-26{--dx:-176.4px;--dy:-144.0px;--turn:17deg;--delay:18ms}
+.ruby-facet-27{--dx:-220.4px;--dy:-99.9px;--turn:-7deg;--delay:36ms}
+.ruby-facet-28{--dx:-88.2px;--dy:-144.0px;--turn:30deg;--delay:54ms}
+.ruby-facet-29{--dx:-44.1px;--dy:-99.9px;--turn:6deg;--delay:72ms}
+.ruby-facet-30{--dx:88.2px;--dy:-144.0px;--turn:-18deg;--delay:0ms}
+.ruby-facet-31{--dx:44.1px;--dy:-99.9px;--turn:19deg;--delay:18ms}
+.ruby-facet-32{--dx:176.4px;--dy:-144.0px;--turn:-5deg;--delay:36ms}
+.ruby-facet-33{--dx:220.4px;--dy:-99.9px;--turn:-29deg;--delay:54ms}
+.ruby-facet-34{--dx:352.7px;--dy:-144.0px;--turn:8deg;--delay:72ms}
+.ruby-facet-35{--dx:308.6px;--dy:-99.9px;--turn:-16deg;--delay:0ms}
+.ruby-facet-36{--dx:-308.6px;--dy:-11.7px;--turn:21deg;--delay:18ms}
+.ruby-facet-37{--dx:-352.7px;--dy:32.4px;--turn:-3deg;--delay:36ms}
+.ruby-facet-38{--dx:-220.4px;--dy:-11.7px;--turn:-27deg;--delay:54ms}
+.ruby-facet-39{--dx:-176.4px;--dy:32.4px;--turn:10deg;--delay:72ms}
+.ruby-facet-40{--dx:-44.1px;--dy:-11.7px;--turn:-14deg;--delay:0ms}
+.ruby-facet-41{--dx:-88.2px;--dy:32.4px;--turn:23deg;--delay:18ms}
+.ruby-facet-42{--dx:44.1px;--dy:-11.7px;--turn:-1deg;--delay:36ms}
+.ruby-facet-43{--dx:88.2px;--dy:32.4px;--turn:-25deg;--delay:54ms}
+.ruby-facet-44{--dx:220.4px;--dy:-11.7px;--turn:12deg;--delay:72ms}
+.ruby-facet-45{--dx:176.4px;--dy:32.4px;--turn:-12deg;--delay:0ms}
+.ruby-facet-46{--dx:308.6px;--dy:-11.7px;--turn:25deg;--delay:18ms}
+.ruby-facet-47{--dx:352.7px;--dy:32.4px;--turn:1deg;--delay:36ms}
+.ruby-facet-48{--dx:-352.7px;--dy:120.6px;--turn:-23deg;--delay:54ms}
+.ruby-facet-49{--dx:-308.6px;--dy:164.6px;--turn:14deg;--delay:72ms}
+.ruby-facet-50{--dx:-176.4px;--dy:120.6px;--turn:-10deg;--delay:0ms}
+.ruby-facet-51{--dx:-220.4px;--dy:164.6px;--turn:27deg;--delay:18ms}
+.ruby-facet-52{--dx:-88.2px;--dy:120.6px;--turn:3deg;--delay:36ms}
+.ruby-facet-53{--dx:-44.1px;--dy:164.6px;--turn:-21deg;--delay:54ms}
+.ruby-facet-54{--dx:88.2px;--dy:120.6px;--turn:16deg;--delay:72ms}
+.ruby-facet-55{--dx:44.1px;--dy:164.6px;--turn:-8deg;--delay:0ms}
+.ruby-facet-56{--dx:176.4px;--dy:120.6px;--turn:29deg;--delay:18ms}
+.ruby-facet-57{--dx:220.4px;--dy:164.6px;--turn:5deg;--delay:36ms}
+.ruby-facet-58{--dx:352.7px;--dy:120.6px;--turn:-19deg;--delay:54ms}
+.ruby-facet-59{--dx:308.6px;--dy:164.6px;--turn:18deg;--delay:72ms}
+.ruby-facet-60{--dx:-308.6px;--dy:252.8px;--turn:-6deg;--delay:0ms}
+.ruby-facet-61{--dx:-352.7px;--dy:296.9px;--turn:-30deg;--delay:18ms}
+.ruby-facet-62{--dx:-220.4px;--dy:252.8px;--turn:7deg;--delay:36ms}
+.ruby-facet-63{--dx:-176.4px;--dy:296.9px;--turn:-17deg;--delay:54ms}
+.ruby-facet-64{--dx:-44.1px;--dy:252.8px;--turn:20deg;--delay:72ms}
+.ruby-facet-65{--dx:-88.2px;--dy:296.9px;--turn:-4deg;--delay:0ms}
+.ruby-facet-66{--dx:44.1px;--dy:252.8px;--turn:-28deg;--delay:18ms}
+.ruby-facet-67{--dx:88.2px;--dy:296.9px;--turn:9deg;--delay:36ms}
+.ruby-facet-68{--dx:220.4px;--dy:252.8px;--turn:-15deg;--delay:54ms}
+.ruby-facet-69{--dx:176.4px;--dy:296.9px;--turn:22deg;--delay:72ms}
+.ruby-facet-70{--dx:308.6px;--dy:252.8px;--turn:-2deg;--delay:0ms}
+.ruby-facet-71{--dx:352.7px;--dy:296.9px;--turn:-26deg;--delay:18ms}

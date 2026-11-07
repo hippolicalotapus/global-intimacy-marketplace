@@ -36,6 +36,7 @@ async function storefront(hash = "", options = {}) {
   nodes.get("unconventionalFilters").children = [...html.matchAll(/<button[^>]*data-unconventional-group="([^"]+)"/g)].map(m => new Element("", { unconventionalGroup: m[1] }));
   const document = new Element("document");
   document.readyState = "loading";
+  document.body = new Element("body");
   document.getElementById = id => { assert.ok(nodes.has(id), `Undefined DOM ID ${id}`); return nodes.get(id); };
   document.querySelectorAll = selector => selector === "[data-oneheart]" ? links.filter(n => "oneheart" in n.dataset)
     : selector === '[data-all-products], [data-route="shop"]' ? links.filter(n => "allProducts" in n.dataset || n.dataset.route === "shop")
@@ -49,7 +50,7 @@ async function storefront(hash = "", options = {}) {
   const sandbox = { window, document, location, localStorage: local, CustomEvent: class {constructor(type){this.type=type;}}, sessionStorage: storage(), navigator: {}, URL, TextEncoder, TextDecoder,
     btoa: value => Buffer.from(value, "binary").toString("base64"), atob: value => Buffer.from(value, "base64").toString("binary"),
     requestAnimationFrame: fn => fn(), setTimeout: () => 0, clearTimeout() {} };
-  for (const path of ["site/catalog.js", "site/apparel.js", "site/product-drawings.js", "site/countries.js", "site/shipping.js", "site/globe-math.js", "site/globe-3d.js", "site/globe-software.js", "site/destination.js", "site/app.js"]) {
+  for (const path of ["site/catalog.js", "site/apparel.js", "site/product-drawings.js", "site/countries.js", "site/shipping.js", "site/globe-math.js", "site/globe-3d.js", "site/globe-software.js", "site/destination.js", "site/ruby-welcome.js", "site/app.js"]) {
     if(path==="site/app.js" && settings.synthetic)window.GIM_PRODUCTS.push(settings.synthetic);
     runInNewContext(await read(path), sandbox, { timeout: 1200 });
   }
