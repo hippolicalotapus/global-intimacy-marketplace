@@ -1,10 +1,7 @@
 "use strict";
 (function () {
   var active=false, completed=false, timer=0, renderer=null, bound=false;
-  var key="gim:ruby-welcome:v1";
   function el(id){return document.getElementById(id);}
-  function remembered(){try{return localStorage.getItem(key)==="done";}catch(e){return false;}}
-  function replay(){try{return new URL(location.href).searchParams.get("welcome")==="replay";}catch(e){return false;}}
   function restore(){
     el("countryEntrance").inert=false;el("storeShell").inert=false;
     if(window.GIMDestination.country())el("main").focus();else el("countryHeading").focus();
@@ -12,7 +9,6 @@
   function finish(){
     if(!active)return;
     clearTimeout(timer);timer=0;active=false;completed=true;
-    try{localStorage.setItem(key,"done");}catch(e){/* Current-page completion still works. */}
     el("rubyWelcome").hidden=true;el("rubyWelcome").classList.remove("is-bursting");
     document.body.classList.remove("ruby-open");
     if(renderer&&renderer.dispose)renderer.dispose();renderer=null;
@@ -38,7 +34,8 @@
   function start(){
     if(active)return true;
     if(!el("ageGate").hidden)return false;
-    if(completed||(!replay()&&(window.GIMDestination.country()||remembered())))return false;
+    // Show on every page load; completion only suppresses duplicate starts on this page.
+    if(completed)return false;
     if(!bound){
       el("rubyReveal").addEventListener("click",reveal);
       el("rubySkip").addEventListener("click",finish);

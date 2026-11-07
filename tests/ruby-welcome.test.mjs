@@ -32,12 +32,16 @@ test('First adult visit displays the original-logo stage and locks background co
  const w=await welcome();assert.equal(w.start(),true);assert.equal(w.rendered,1);assert.equal(w.nodes.get('countryEntrance').inert,true);assert.equal(w.nodes.get('storeShell').inert,true);assert.equal(w.nodes.get('rubyWelcome').hidden,false);
  assert.equal(w.start(),true);assert.equal(w.rendered,1);
 });
-test('Saved country or prior completion bypasses the intro',async()=>{
- for(const options of [{country:'CA'},{seen:true}]){const w=await welcome(options);assert.equal(w.start(),false);assert.equal(w.rendered,0);assert.equal(w.nodes.get('rubyWelcome').hidden,true);}
+test('Saved country and old completion markers never bypass the entrance',async()=>{
+ for(const options of [{country:'CA'},{seen:true},{country:'CA',seen:true}]){const w=await welcome(options);assert.equal(w.start(),true);assert.equal(w.rendered,1);assert.equal(w.nodes.get('rubyWelcome').hidden,false);}
 });
-test('Reveal completes once in 1400ms, remembers completion and restores country focus',async()=>{
+test('A new page load shows the heart again after an earlier completed visit',async()=>{
+ const first=await welcome({country:'CA'});first.start();first.click('rubyReveal');first.finish();assert.equal(first.start(),false);
+ const next=await welcome({country:'CA',seen:true});assert.equal(next.start(),true);next.click('rubySkip');assert.equal(next.focused,'main');assert.equal(next.window.GIMDestination.country(),'CA');
+});
+test('Reveal completes once per page in 1400ms and restores country focus',async()=>{
  const w=await welcome();w.start();w.click('rubyReveal');w.click('rubyReveal');assert.equal(w.timers.size,1);assert.equal([...w.timers.values()][0].ms,1400);w.finish();
- assert.equal(w.nodes.get('rubyWelcome').hidden,true);assert.equal(w.values.get('gim:ruby-welcome:v1'),'done');assert.equal(w.focused,'countryHeading');assert.equal(w.nodes.get('countryEntrance').inert,false);assert.equal(w.nodes.get('body').classes.has('ruby-open'),false);assert.equal(w.start(),false);
+ assert.equal(w.nodes.get('rubyWelcome').hidden,true);assert.equal(w.values.has('gim:ruby-welcome:v1'),false);assert.equal(w.focused,'countryHeading');assert.equal(w.nodes.get('countryEntrance').inert,false);assert.equal(w.nodes.get('body').classes.has('ruby-open'),false);assert.equal(w.start(),false);
 });
 test('Explicit replay preserves selected country and other URL parameters',async()=>{
  const w=await welcome({country:'CA',seen:true,replay:true});assert.equal(w.start(),true);w.click('rubySkip');assert.equal(w.focused,'main');assert.equal(w.window.GIMDestination.country(),'CA');assert.equal(w.location.href,'https://store.example/?keep=yes#one-heart');
