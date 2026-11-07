@@ -4,7 +4,7 @@
 (function () {
   var products = Array.isArray(window.GIM_PRODUCTS) ? window.GIM_PRODUCTS : [];
   var byId = new Map(products.map(function (p) { return [p.id,p]; }));
-  var categories = ["All","ONE HEART Hoodies","ONE HEART Art Tees","SARCASTABASTARD Tees","Lingerie","Essentials","Massage & Care","Games & Gifts","AI Companions","Life-Size Dolls","Doll Care & Parts","Wearables","Interactive","Couples","Connected devices","Wellness"];
+  var categories = ["All","ONE HEART Hoodies","ONE HEART Art Tees","SARCASTABASTARD Tees","Lingerie","Essentials","Massage & Care","Games & Gifts","AI Companions","Life-Size Dolls","Doll Care & Parts","Wearables","Interactive","Couples","Connected devices","Wellness","Kink & Accessories"];
   var collections = ["All","Everyday","Premium","ULTRA","ONE HEART","SARCASTABASTARD"];
   var brands = Array.from(new Set(products.map(function (p) {return p.brand;}))).sort();
   var activeCategory = "All", activeCollection = "All", search = "", brand = "all", sort = "featured";
@@ -12,13 +12,13 @@
   var unconventionalGroup="all", interestCategory="all";
   var interestLabels={all:"All interests",community:"Gay & Lesbian connections",connection:"Couples & connection",companions:"Companions & dolls",kink:"Kink & BDSM",style:"Fashion & self-expression",roleplay:"Role-play & fantasy",sensory:"Sensory & wellness",technology:"Connected technology"};
   // Editorial interests reuse existing candidates; they do not approve products
-  // or assign an identity to a shopper. No BDSM-specific candidate is listed yet.
+  // or assign an identity to a shopper.
   var unconventionalGroups={
     all:null,
     community:null,
     connection:["Couples","Games & Gifts","Wearables","Connected devices","Interactive"],
     companions:["AI Companions","Life-Size Dolls","Doll Care & Parts"],
-    kink:[],
+    kink:["Kink & Accessories"],
     style:["ONE HEART Hoodies","ONE HEART Art Tees","SARCASTABASTARD Tees","Lingerie"],
     roleplay:["Lingerie","Games & Gifts","Life-Size Dolls"],
     sensory:["Wellness","Essentials","Massage & Care","Wearables","Connected devices"],
@@ -56,14 +56,17 @@
     if(location.hash.startsWith("#gift="))renderGift();
     if(el("productDialog").open)el("productDialog").close();
   }
+  function drawingLabel(p) {
+    return p.drawingKind === "range" ? "Range drawing · model not selected" : p.drawingKind === "packaging" ? "Packaging drawing · design unverified" : p.drawingKind === "garment" ? "Garment drawing · sample pending" : "Product drawing · appearance may vary";
+  }
   function card(p) {
     var saved=favorites.includes(p.id);
     return '<article class="product-card">'+
-      '<div class="product-visual '+(p.previewImage?"visual-oneheart ":"")+visualClass(p)+'">'+
+      '<div class="product-visual '+(p.previewImage?"visual-oneheart ":"")+(p.temporaryIllustration?"visual-drawing ":"")+visualClass(p)+'">'+
       '<span class="tag">'+esc(p.category)+'</span>'+
       '<button type="button" class="fav-button'+(saved?" is-saved":"")+'" data-fav="'+p.id+'" aria-label="'+(saved?"Remove from":"Add to")+' saved items" aria-pressed="'+saved+'">'+(saved?"♥":"♡")+'</button>'+
-      '<span class="product-mark" aria-hidden="true">'+(p.previewImage?'<img class="product-preview-image" src="'+esc(p.previewImage)+'" alt="'+esc(p.previewImageAlt)+'" loading="lazy" decoding="async" width="307" height="438">' : mark(p))+'</span></div>'+
-      '<div class="product-card-body"><div class="product-brand">'+esc(p.brand)+'</div><h3>'+esc(p.name)+'</h3>'+
+      '<span class="product-mark">'+(p.previewImage?'<img class="product-preview-image" src="'+esc(p.previewImage)+'" alt="'+esc(p.previewImageAlt)+'" loading="lazy" decoding="async" width="307" height="438">' : mark(p))+'</span></div>'+
+      '<div class="product-card-body">'+(p.temporaryIllustration?'<p class="drawing-label">'+esc(drawingLabel(p))+'</p>':'')+'<div class="product-brand">'+esc(p.brand)+'</div><h3>'+esc(p.name)+'</h3>'+
       '<p class="delivery-label">'+esc(deliveryLabel(p))+'</p><p class="product-meta">'+esc(p.researchType)+' · '+esc(p.collection)+' collection</p><div class="product-footer"><span class="product-status">Preview only</span>'+
       '<button type="button" class="outline-small" data-detail="'+p.id+'">View details →</button></div>'+
       '<a class="preorder-link" href="'+esc(enquiryUrl(p))+'" aria-label="Email a nonbinding pre-order enquiry for '+esc(p.name)+'">Ask about pre-order ↗</a></div></article>';
@@ -161,8 +164,8 @@
     var country=window.GIMDestination?window.GIMDestination.name():"your selected country";
     var researching=!!window.GIMDestination&&window.GIMDestination.previews();
     el("unconventionalAvailability").textContent=researching?"Research-preview mode · delivery to "+country+" is checked for each item. Unconfirmed entries stay clearly labelled.":"Shopping country: "+country+" · only delivery-confirmed entries can appear. Research previews are optional.";
-    var title=unconventionalGroup==="kink"?"This collection is being sourced.":researching?"No matching discoveries yet.":"No confirmed matches for "+country+" yet.";
-    var text=unconventionalGroup==="kink"?"We have not added BDSM-specific products to the catalogue yet. Supplier permissions, product details and country availability need to be checked first.":researching?"Try another interest or a different keyword.":"Choose another interest, or use Explore unconfirmed research previews above to browse clearly marked ideas. Selecting a country does not confirm delivery.";
+    var title=researching?"No matching discoveries yet.":"No confirmed matches for "+country+" yet.";
+    var text=researching?"Try another interest or a different keyword.":"Choose another interest, or use Explore unconfirmed research previews above to browse clearly marked ideas. Selecting a country does not confirm delivery.";
     el("unconventionalEmptyTitle").textContent=title;
     el("unconventionalEmptyText").textContent=text;
     el("unconventionalFilters").querySelectorAll("[data-unconventional-group]").forEach(function(btn){
@@ -226,7 +229,7 @@
     el("modalBody").innerHTML=detailGallery(p)+'<div class="modal-content"><span class="product-brand">'+esc(p.brand)+'</span>'+
       '<h2 id="modalName">'+esc(p.name)+'</h2><p class="delivery-label">'+esc(deliveryLabel(p))+'</p><p>'+esc(p.researchType)+' · '+esc(p.researchFeature)+'</p>'+
       '<p>'+(p.conceptImage?"This is an owner-selected clothing concept, not a manufactured product. Final fabric, sizing, colour accuracy and print quality require factory sampling.":"Explore this potential future product. Model-specific features, materials, territories and available stock must be verified before any sale.")+'</p>'+
-      productFacts(p)+'<div class="modal-notice"><b>Pre-order enquiry only — not a binding order.</b><br>No payment or reservation will be taken. Prices, stock, production and delivery are unconfirmed. '+(p.currentArtProof?"Current artwork is shown as a placement illustration, not manufactured stock or an accepted garment template.":p.conceptImage?"Image is an AI lookbook mockup, not a production-ready print file.":"Manufacturer resale and product-photo rights remain under review; abstract placeholder shown.")+'</div>'+
+      productFacts(p)+(p.imageDisclosure?'<p class="drawing-disclosure"><b>'+esc(drawingLabel(p))+'</b><br>'+esc(p.imageDisclosure)+'</p>':'')+'<div class="modal-notice"><b>Pre-order enquiry only — not a binding order.</b><br>No payment or reservation will be taken. Prices, stock, production and delivery are unconfirmed. '+(p.currentArtProof?"Current artwork is shown as a placement illustration, not manufactured stock or an accepted garment template.":p.conceptImage?"Image is an AI lookbook mockup, not a production-ready print file.":"Manufacturer resale and product-photo rights remain under review. Original representative drawing shown; appearance is unverified.")+'</div>'+
       '<div class="modal-controls"><button class="button button-ghost" type="button" data-fav="'+p.id+'">'+(favorites.includes(p.id)?"♥ Saved":"♡ Save")+'</button>'+
       '<button class="button button-ghost" type="button" data-wish="'+p.id+'">Add to wishlist demo</button>'+
       '<a class="button button-primary" href="'+esc(enquiryUrl(p))+'">Ask about pre-order</a></div></div>';
@@ -383,5 +386,6 @@
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",setup);
   else setup();
 }());
+
 
 

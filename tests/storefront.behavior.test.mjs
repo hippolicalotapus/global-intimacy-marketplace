@@ -49,7 +49,7 @@ async function storefront(hash = "", options = {}) {
   const sandbox = { window, document, location, localStorage: local, CustomEvent: class {constructor(type){this.type=type;}}, sessionStorage: storage(), navigator: {}, URL, TextEncoder, TextDecoder,
     btoa: value => Buffer.from(value, "binary").toString("base64"), atob: value => Buffer.from(value, "base64").toString("binary"),
     requestAnimationFrame: fn => fn(), setTimeout: () => 0, clearTimeout() {} };
-  for (const path of ["site/catalog.js", "site/apparel.js", "site/countries.js", "site/shipping.js", "site/globe-math.js", "site/globe-3d.js", "site/globe-software.js", "site/destination.js", "site/app.js"]) {
+  for (const path of ["site/catalog.js", "site/apparel.js", "site/product-drawings.js", "site/countries.js", "site/shipping.js", "site/globe-math.js", "site/globe-3d.js", "site/globe-software.js", "site/destination.js", "site/app.js"]) {
     if(path==="site/app.js" && settings.synthetic)window.GIM_PRODUCTS.push(settings.synthetic);
     runInNewContext(await read(path), sandbox, { timeout: 1200 });
   }
@@ -63,11 +63,11 @@ async function storefront(hash = "", options = {}) {
 
 test("Catalogue search finds ONE HEART aliases, collection names and mixed keywords", async () => {
   const app = await storefront();
-  assert.equal(app.count(), 106);
+  assert.equal(app.count(), 110);
   for (const query of ["one heart", "ONE HEART", "oneheart", "one-heart", "one  heart", "one heart collection", "heart one"]) {
     app.search(query); assert.equal(app.count(), 18, query);
   }
-  for (const [query, expected] of [["oneheart hoodies", 9], ["mountain collection", 9], ["paisley", 3], ["natural cream", 2], ["Three Sisters", 1], ["no-such-item", 0], ["", 106]]) {
+  for (const [query, expected] of [["oneheart hoodies", 9], ["mountain collection", 9], ["paisley", 3], ["natural cream", 2], ["Three Sisters", 1], ["no-such-item", 0], ["", 110]]) {
     app.search(query); assert.equal(app.count(), expected, query);
   }
 });
@@ -82,7 +82,7 @@ test("Switching collections clears incompatible category, brand and search filte
   assert.equal(app.nodes.get("searchInput").value, "");
   assert.equal(app.nodes.get("brandSelect").value, "all");
   app.links.find(n => "allProducts" in n.dataset).dispatch("click");
-  assert.equal(app.count(), 106);
+  assert.equal(app.count(), 110);
 });
 
 test("Direct ONE HEART route and its navigation link show all 18 designs", async () => {
@@ -124,7 +124,7 @@ test("ONE HEART details, favorites and shareable wishlist use real catalogue IDs
   const delegated = (key, id) => app.document.dispatch("click", { closest: selector => selector === `[data-${key}]` ? { dataset: { [key]: String(id) } } : null });
   delegated("detail", 201);
   assert.equal(app.nodes.get("productDialog").open, true);
-  assert.ok(app.nodes.get("modalBody").innerHTML.includes("assets/apparel/current/oh-h01-placement.svg"));
+  assert.ok(app.nodes.get("modalBody").innerHTML.includes("assets/drawings/p201.webp"));
   assert.ok(app.nodes.get("modalBody").innerHTML.includes("mailto:globalintimacypartner@gmail.com"));
   app.nodes.get("closeModal").dispatch("click");
   assert.equal(app.nodes.get("productDialog").open, false);
@@ -144,7 +144,7 @@ test("Earlier community links open the combined interest area and its welcome", 
   assert.equal(app.document.title, "Explore Your Interests | Global Intimacy Marketplace");
   assert.equal(app.location.hash, "explore-interests?group=community");
   assert.equal(app.nodes.get("interestCommunityWelcome").hidden, false);
-  assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent), 106);
+  assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent), 110);
   app.nodes.get("unconventionalSearch").value = "oneheart";
   app.nodes.get("unconventionalSearch").dispatch("input");
   assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent), 18);
@@ -179,7 +179,7 @@ test("Header search reaches all products from another page and clears stale filt
   app.nodes.get("storeSearchForm").dispatch("submit");
   assert.equal(app.count(), 18);
   app.nodes.get("clearActiveFilters").dispatch("click");
-  assert.equal(app.count(), 106);
+  assert.equal(app.count(), 110);
   assert.equal(app.nodes.get("activeFilterSummary").hidden, true);
 });
 
@@ -215,7 +215,7 @@ test("Country selection never presents current research previews as delivery-con
  assert.equal(app.nodes.get("countryEmpty").hidden,false);
  assert.equal(app.nodes.get("productGrid").innerHTML,"");
  app.nodes.get("showResearchPreviews").dispatch("click");
- assert.equal(app.count(),106);
+ assert.equal(app.count(),110);
  assert.match(app.nodes.get("productGrid").innerHTML,/Delivery to Canada not confirmed/);
  app.window.GIMDestination.enter("GB");
  assert.equal(app.count(),0, "country switch resets explicit preview opt-in");
@@ -265,7 +265,7 @@ test("A synthetic approved SKU is filtered consistently when the shopper changes
  app.window.GIMDestination.enter("US");
  assert.equal(app.count(),0);
  app.nodes.get("showResearchPreviews").dispatch("click");
- assert.equal(app.count(),106, "Blocked product stays excluded even from preview results");
+ assert.equal(app.count(),110, "Blocked product stays excluded even from preview results");
  assert.ok(!app.nodes.get("productGrid").innerHTML.includes("Synthetic test product"));
 });
 
@@ -295,7 +295,7 @@ test("Interest hub and earlier aliases reach the combined section",async()=>{
   assert.equal(app.document.title,"Explore Your Interests | Global Intimacy Marketplace");
   assert.ok(Number(app.nodes.get("unconventionalResultCount").textContent)>0);
   assert.match(app.nodes.get("unconventionalGrid").innerHTML,/SARCASTABASTARD/);
-  assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),106);
+  assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),110);
  }
 });
 
@@ -304,7 +304,7 @@ test("Global search preserves earlier interest aliases without displaying those 
  for(const query of ["freaks weirdos and deviants","Freaks & Geeks","unconventional","bdsm","kink","alternative fashion","role-play"]){
   app.search(query);
   assert.equal(app.nodes.get("unconventionalSearchResult").hidden,false,query);
-  assert.equal(app.count(),1,query);
+  assert.equal(app.count(),query==="kink"?5:1,query);
   assert.equal(app.nodes.get("emptyProducts").hidden,true,query);
  }
  app.search("one heart");
@@ -312,7 +312,7 @@ test("Global search preserves earlier interest aliases without displaying those 
  assert.equal(app.count(),18);
 });
 
-test("Unconventional interests filter actual candidates and disclose the unsourced BDSM collection",async()=>{
+test("Unconventional interests include the four unconfirmed accessory drawings",async()=>{
  const app=await storefront("#freaks-weirdos-deviants");
  app.click("unconventionalFilters",{unconventionalGroup:"style"});
  assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),21);
@@ -324,10 +324,10 @@ test("Unconventional interests filter actual candidates and disclose the unsourc
  assert.equal(app.nodes.get("unconventionalSearch").value,"");
  assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),6);
  app.click("unconventionalFilters",{unconventionalGroup:"kink"});
- assert.equal(app.nodes.get("unconventionalGrid").innerHTML,"");
- assert.equal(app.nodes.get("unconventionalEmpty").hidden,false);
- assert.match(app.nodes.get("unconventionalEmptyTitle").textContent,/being sourced/);
- assert.match(app.nodes.get("unconventionalEmptyText").textContent,/not added BDSM-specific products/);
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),4);
+ assert.equal(app.nodes.get("unconventionalEmpty").hidden,true);
+ assert.match(app.nodes.get("unconventionalGrid").innerHTML,/Eyes Wide Shut/);
+ assert.match(app.nodes.get("unconventionalGrid").innerHTML,/Delivery to Canada not confirmed/);
  app.nodes.get("clearUnconventionalFilters").dispatch("click");
  assert.equal(app.nodes.get("unconventionalEmpty").hidden,true);
 });
@@ -361,7 +361,8 @@ test("A specific category narrows an interest and switching interests clears sta
  assert.equal(app.nodes.get("interestCategory").value,"all");
  assert.ok(Number(app.nodes.get("unconventionalResultCount").textContent)>0);
  app.click("unconventionalFilters",{unconventionalGroup:"kink"});
- assert.equal(app.nodes.get("interestCategory").disabled,true);
+ assert.equal(app.nodes.get("interestCategory").disabled,false);
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),4);
 });
 
 test("Community browsing uses shared products and preserves country and preview consent",async()=>{
@@ -369,7 +370,7 @@ test("Community browsing uses shared products and preserves country and preview 
  assert.equal(app.nodes.get("interestCommunityWelcome").hidden,false);
  assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),0);
  app.nodes.get("showResearchPreviews").dispatch("click");
- assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),106);
+ assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),110);
  app.window.GIMDestination.enter("US");
  assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent),0);
  assert.equal(app.nodes.get("previewMode").checked,false);
@@ -446,7 +447,7 @@ test("Applied filters can be removed one at a time while preserving the others",
  assert.equal(app.count(),3);assert.match(app.nodes.get("activeFilterChips").innerHTML,/Remove ONE HEART filter/);
  app.click("activeFilterChips",{removeFilter:"search"});
  assert.equal(app.count(),18);assert.equal(app.nodes.get("brandSelect").value,"ONE HEART");assert.equal(app.nodes.get("searchInput").value,"");
- app.click("activeFilterChips",{removeFilter:"brand"});assert.equal(app.count(),106);assert.equal(app.nodes.get("activeFilterSummary").hidden,true);
+ app.click("activeFilterChips",{removeFilter:"brand"});assert.equal(app.count(),110);assert.equal(app.nodes.get("activeFilterSummary").hidden,true);
 });
 
 test("Product details disclose actual design facts and leave unverified clothing specifications pending",async()=>{
@@ -455,3 +456,4 @@ test("Product details disclose actual design facts and leave unverified clothing
  assert.match(app.nodes.get("modalBody").innerHTML,/Design code/);assert.match(app.nodes.get("modalBody").innerHTML,/OH-H01/);assert.match(app.nodes.get("modalBody").innerHTML,/Size, fabric &amp; care/);assert.match(app.nodes.get("modalBody").innerHTML,/after the production sample/);
  app.nodes.get("closeModal").dispatch("click");app.search("paisley");assert.equal(app.nodes.get("catalogResultsTitle").textContent,'Search: “paisley”');assert.match(app.nodes.get("catalogMatchCount").textContent,/3 product previews/);
 });
+
