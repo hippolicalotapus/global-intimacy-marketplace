@@ -4,7 +4,7 @@ const source=fs.readFileSync(path.join(__dirname,"../site/cart-preview.js"),"utf
 function harness(initial,products=[{id:1,name:"Test item"},{id:2,name:"Second item"}]){
  const data=new Map();if(initial!==undefined)data.set("gim:cart-preview",initial);
  function element(){return {textContent:"",value:"",children:[],attributes:{},replaceChildren(...v){this.children=v},append(...v){this.children.push(...v)},setAttribute(k,v){this.attributes[k]=v},addEventListener(k,fn){this[k]=fn}}}
- const nodes={cartItems:element(),cartSummary:element(),clearCart:element()};
+ const nodes={cartItems:element(),cartSummary:element(),clearCart:element(),cartProduct:element(),addCartItem:element()};
  const document={getElementById:k=>nodes[k],createElement:()=>element()};
  const localStorage={getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v)};
  vm.runInNewContext(source,{window:{GIM_PRODUCTS:products},document,localStorage},{timeout:1000});
@@ -34,4 +34,19 @@ test("cart remove button deletes only selected item",()=>{
  const h=harness(JSON.stringify([{id:"1",quantity:1},{id:"2",quantity:2}]));
  const remove=h.nodes.cartItems.children[0].children[1].children[3];remove.click();
  assert.deepEqual(h.items(),[{id:"2",quantity:2}]);
+});
+
+test("preview product picker adds an item and increments quantity",()=>{
+ const h=harness("[]");
+ h.nodes.cartProduct.value="1";h.nodes.addCartItem.click();
+ assert.deepEqual(h.items(),[{id:"1",quantity:1}]);
+ h.nodes.addCartItem.click();
+ assert.deepEqual(h.items(),[{id:"1",quantity:2}]);
+});
+test("preview picker does not add unknown items or exceed quantity limit",()=>{
+ const h=harness(JSON.stringify([{id:"1",quantity:10}]));
+ h.nodes.cartProduct.value="1";h.nodes.addCartItem.click();
+ assert.deepEqual(h.items(),[{id:"1",quantity:10}]);
+ h.nodes.cartProduct.value="unknown";h.nodes.addCartItem.click();
+ assert.deepEqual(h.items(),[{id:"1",quantity:10}]);
 });
