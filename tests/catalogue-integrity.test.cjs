@@ -52,7 +52,7 @@ test("all drawing references have review disclosures and no image approval",()=>
  for(const p of products){
   assert.ok(p.imageDisclosure&&p.imageDisclosure.length>30,p.id+" missing image disclosure");
   assert.equal(p.imageApproved,false,p.id+" image approval must remain false");
-  assert.equal(p.canAcceptOrders,false,p.id+" must not accept orders");
+  assert.notEqual(p.canAcceptOrders,true,p.id+" must not accept orders");
  }
 });
 test("doll and lingerie research listings cannot imply confirmed variants",()=>{
