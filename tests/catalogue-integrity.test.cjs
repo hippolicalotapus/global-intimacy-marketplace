@@ -47,3 +47,16 @@ test("hoodie front and back views have complete crop coordinates",()=>{
  assert.ok(hoodies.length>0);
  for(const p of hoodies){assert.equal(p.detailViews.length,2,p.id+" missing front/back");for(const view of p.detailViews){assert.ok(view.box.every(Number.isFinite));assert.ok(view.box[0]>=0&&view.box[1]>=0&&view.box[0]+view.box[2]<=p.detailImageWidth&&view.box[1]+view.box[3]<=p.detailImageHeight,p.id+" crop outside image");}}
 });
+
+test("all drawing references have review disclosures and no image approval",()=>{
+ for(const p of products){
+  assert.ok(p.imageDisclosure&&p.imageDisclosure.length>30,p.id+" missing image disclosure");
+  assert.equal(p.imageApproved,false,p.id+" image approval must remain false");
+  assert.equal(p.canAcceptOrders,false,p.id+" must not accept orders");
+ }
+});
+test("doll and lingerie research listings cannot imply confirmed variants",()=>{
+ const entries=products.filter(p=>/doll|lingerie|babydoll|kimono/i.test(p.name+" "+p.category));
+ assert.ok(entries.length>=4);
+ for(const p of entries){assert.equal(p.exactLikenessVerified,false,p.id+" must not claim exact likeness");assert.equal(p.resellerApproved,false,p.id+" must not claim reseller approval")}
+});
