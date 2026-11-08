@@ -5,6 +5,7 @@
  const list=document.getElementById("cartItems"),summary=document.getElementById("cartSummary");
  const picker=document.getElementById("cartProduct"),addButton=document.getElementById("addCartItem");
  if(picker&&addButton){for(const [id,p] of byId){const option=document.createElement("option");option.value=id;option.textContent=String(p.brand||"")+" — "+String(p.name||p.title||"Preview");picker.append(option)}
+ const previewId=new URLSearchParams(window.location.search).get("preview");if(previewId&&byId.has(previewId))picker.value=previewId;
  addButton.disabled=!byId.size;addButton.addEventListener("click",()=>{const id=picker.value;if(!byId.has(id))return;const items=valid(read()),current=items.find(x=>x.id===id);if(current){if(current.quantity>=10){summary.textContent="Maximum 10 of each preview.";return}current.quantity++}else{if(items.length>=20){summary.textContent="Maximum 20 different previews.";return}items.push({id,quantity:1})}if(save(items))render()})}
 
  function read(){try{const v=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(v)?v:[]}catch(_){try{localStorage.setItem(key,"[]")}catch(__){}return []}}
