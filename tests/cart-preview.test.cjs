@@ -65,3 +65,9 @@ test("cart enforces 20 distinct products",()=>{
  assert.equal(h.items().length,20);
  assert.match(h.nodes.cartSummary.textContent,/Maximum 20/);
 });
+
+test("cart ignores oversized storage arrays beyond 1000 entries",()=>{
+ const entries=Array.from({length:1100},(_,i)=>({id:i===1050?"2":"1",quantity:1}));
+ const h=harness(JSON.stringify(entries));
+ assert.deepEqual(h.items(),[{id:"1",quantity:10}]);
+});
