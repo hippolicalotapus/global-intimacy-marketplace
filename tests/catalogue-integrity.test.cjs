@@ -16,3 +16,22 @@ test("catalogue preserves approved slogan and retired concepts remain excluded",
  const sb=products.find(p=>p.designId==="SB-T01");assert.ok(sb);
  assert.ok(!products.some(p=>/neon rave|cosmic vibes|royal paisley/i.test(p.name)));
 });
+
+test("catalogue cards link to a noncommercial cart preview with valid product IDs",()=>{
+ const app=fs.readFileSync(path.join(site,"app.js"),"utf8");
+ const cart=fs.readFileSync(path.join(site,"cart-preview.js"),"utf8");
+ const html=fs.readFileSync(path.join(site,"cart-preview.html"),"utf8");
+ assert.match(app,/cart-preview\.html\?preview=/);
+ assert.match(app,/encodeURIComponent\(String\(p\.id\)\)/);
+ assert.match(cart,/URLSearchParams\(window\.location\.search\)/);
+ assert.match(cart,/byId\.has\(previewId\)/);
+ assert.match(html,/Checkout unavailable/);
+ assert.doesNotMatch(html,/<button[^>]*>Pay now<\/button>/i);
+});
+test("mobile viewport metadata and fluid card layout exist",()=>{
+ const html=fs.readFileSync(path.join(site,"index.html"),"utf8");
+ assert.match(html,/name="viewport"[^>]*width=device-width/);
+ assert.match(html,/productGrid/);
+ const css=fs.readFileSync(path.join(site,"product-drawings.css"),"utf8");
+ assert.match(css,/product-visual/);
+});
