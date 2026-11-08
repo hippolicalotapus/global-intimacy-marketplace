@@ -3,6 +3,7 @@ const test=require("node:test"),assert=require("node:assert/strict"),fs=require(
 const site=path.resolve(__dirname,"../site"),context={window:{}};
 vm.runInNewContext(fs.readFileSync(path.join(site,"catalog.js"),"utf8"),context,{timeout:1000});
 vm.runInNewContext(fs.readFileSync(path.join(site,"apparel.js"),"utf8"),context,{timeout:1000});
+vm.runInNewContext(fs.readFileSync(path.join(site,"product-drawings.js"),"utf8"),context,{timeout:1000});
 const products=Array.from(context.window.GIM_PRODUCTS||[]);
 test("catalogue has unique valid IDs and no purchasable research candidates",()=>{
  assert.ok(products.length>=100);
@@ -34,4 +35,15 @@ test("mobile viewport metadata and fluid card layout exist",()=>{
  assert.match(html,/productGrid/);
  const css=fs.readFileSync(path.join(site,"product-drawings.css"),"utf8");
  assert.match(css,/product-visual/);
+});
+
+test("all 110 catalogue entries have individual drawing references",()=>{
+ assert.equal(products.length,110);
+ for(const p of products){assert.ok(p.previewImage,p.id+" missing drawing");assert.equal(p.temporaryIllustration,true,p.id+" not marked temporary");assert.equal(p.exactLikenessVerified,false,p.id+" misleading likeness status");}
+ assert.equal(new Set(products.map(p=>p.previewImage)).size,110,"drawings must not be reused between distinct listings");
+});
+test("hoodie front and back views have complete crop coordinates",()=>{
+ const hoodies=products.filter(p=>p.category==="ONE HEART Hoodies");
+ assert.ok(hoodies.length>0);
+ for(const p of hoodies){assert.equal(p.detailViews.length,2,p.id+" missing front/back");for(const view of p.detailViews){assert.ok(view.box.every(Number.isFinite));assert.ok(view.box[0]>=0&&view.box[1]>=0&&view.box[0]+view.box[2]<=p.detailImageWidth&&view.box[1]+view.box[3]<=p.detailImageHeight,p.id+" crop outside image");}}
 });
