@@ -1,0 +1,29 @@
+name: Checkout safety tests
+on:
+  push:
+    branches:
+      - feature/secure-checkout-foundation-20261108
+  pull_request:
+    paths:
+      - 'netlify/functions/create-checkout-session.js'
+      - 'netlify/functions/stripe-webhook.js'
+      - 'tests/checkout.test.cjs'
+      - '.github/workflows/checkout-tests.yml'
+jobs:
+  checkout-safety:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax checks
+        run: |
+          node --check netlify/functions/create-checkout-session.js
+          node --check netlify/functions/stripe-webhook.js
+          node --check tests/checkout.test.cjs
+          node --check site/cart-preview.js
+      - name: Checkout regression suite
+        run: node --test tests/checkout.test.cjs
