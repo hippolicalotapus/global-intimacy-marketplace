@@ -27,6 +27,8 @@ exports.handler = async function(event) {
   let body;
   try { body=JSON.parse(event.body || "{}"); } catch (_) { return respond(400,{error:"Invalid JSON"}); }
   if (!Array.isArray(body.items) || !body.items.length || body.items.length>20) return respond(400,{error:"Invalid cart"});
+  // Client generates one UUID per checkout attempt and reuses it on retries.
+  if (typeof body.requestId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(body.requestId)) return respond(400,{error:"Invalid checkout request ID"});
   const approved=catalog(), counts=new Map();
   for(const item of body.items) {
     if (!item || typeof item.id !== "string" || !/^[a-zA-Z0-9_-]{1,80}$/.test(item.id) ||
@@ -53,8 +55,9 @@ exports.handler = async function(event) {
     params.set(`line_items[${i}][price]`,item.price);
     params.set(`line_items[${i}][quantity]`,String(item.quantity));
   });
-  // A unique random request ID reduces accidental duplicate session creation on retries.
-  const idempotencyKey=crypto.randomUUID();
+  // Stable for retries of the same checkout attempt; never derive from cart alone.
+  // Durable order persistence is still required before accepting real payments.
+  const idempotencyKey=crypto.createHash("sha256").update(body.requestId.toLowerCase()+"\\n"+JSON.stringify(line_items)).digest("hex");
   let result;
   try {
     result=await fetch("https://api.stripe.com/v1/checkout/sessions",{
