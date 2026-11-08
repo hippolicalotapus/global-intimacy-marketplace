@@ -1,13 +1,13 @@
 "use strict";
 const test=require("node:test"),assert=require("node:assert/strict"),vm=require("node:vm"),fs=require("node:fs"),path=require("node:path");
 const source=fs.readFileSync(path.join(__dirname,"../site/cart-preview.js"),"utf8");
-function harness(initial,products=[{id:1,name:"Test item"},{id:2,name:"Second item"}],storageFails=false){
+function harness(initial,products=[{id:1,name:"Test item"},{id:2,name:"Second item"}],storageFails=false,search=""){
  const data=new Map();if(initial!==undefined)data.set("gim:cart-preview",initial);
  function element(){return {textContent:"",value:"",children:[],attributes:{},replaceChildren(...v){this.children=v},append(...v){this.children.push(...v)},setAttribute(k,v){this.attributes[k]=v},addEventListener(k,fn){this[k]=fn}}}
  const nodes={cartItems:element(),cartSummary:element(),clearCart:element(),cartProduct:element(),addCartItem:element()};
  const document={getElementById:k=>nodes[k],createElement:()=>element()};
  const localStorage={getItem:k=>data.get(k)??null,setItem:(k,v)=>{if(storageFails)throw Error("storage disabled");data.set(k,v)}};
- vm.runInNewContext(source,{window:{GIM_PRODUCTS:products,location:{search:""}},URLSearchParams,document,localStorage},{timeout:1000});
+ vm.runInNewContext(source,{window:{GIM_PRODUCTS:products,location:{search}},URLSearchParams,document,localStorage},{timeout:1000});
  return {nodes,data,items:()=>JSON.parse(data.get("gim:cart-preview")||"[]")};
 }
 test("cart handles empty state and clears selections",()=>{
@@ -70,4 +70,17 @@ test("cart ignores oversized storage arrays beyond 1000 entries",()=>{
  const entries=Array.from({length:1100},(_,i)=>({id:i===1050?"2":"1",quantity:1}));
  const h=harness(JSON.stringify(entries));
  assert.deepEqual(h.items(),[{id:"1",quantity:10}]);
+});
+
+test("catalogue deep link preselects the matching product without adding it",()=>{
+ const h=harness("[]",[{id:1,name:"Test item"},{id:2,name:"Second item"}],false,"?preview=2");
+ assert.equal(h.nodes.cartProduct.value,"2");
+ assert.deepEqual(h.items(),[]);
+ h.nodes.addCartItem.click();
+ assert.deepEqual(h.items(),[{id:"2",quantity:1}]);
+});
+test("unknown catalogue deep link cannot preselect an unlisted item",()=>{
+ const h=harness("[]",[{id:1,name:"Test item"}],false,"?preview=999");
+ assert.notEqual(h.nodes.cartProduct.value,"999");
+ assert.deepEqual(h.items(),[]);
 });
