@@ -1,6 +1,6 @@
 "use strict";
 (function(){
- const key="gim:cart-preview",products=[...(Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[]),...(Array.isArray(window.GIM_APPAREL)?window.GIM_APPAREL:[])];
+ const key="gim:cart-preview",products=Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[];
  const byId=new Map(products.filter(p=>p&&p.id!==undefined).map(p=>[String(p.id),p]));
  const list=document.getElementById("cartItems"),summary=document.getElementById("cartSummary");
  function read(){try{const v=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(v)?v:[]}catch(_){return []}}
