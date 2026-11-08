@@ -8,6 +8,8 @@ on:
       - 'netlify/functions/create-checkout-session.js'
       - 'netlify/functions/stripe-webhook.js'
       - 'tests/checkout.test.cjs'
+      - 'tests/cart-preview.test.cjs'
+      - 'site/cart-preview.js'
       - '.github/workflows/checkout-tests.yml'
 jobs:
   checkout-safety:
@@ -24,6 +26,7 @@ jobs:
           node --check netlify/functions/create-checkout-session.js
           node --check netlify/functions/stripe-webhook.js
           node --check tests/checkout.test.cjs
+          node --check tests/cart-preview.test.cjs
           node --check site/cart-preview.js
       - name: Checkout regression suite
-        run: node --test tests/checkout.test.cjs
+        run: node --test tests/checkout.test.cjs tests/cart-preview.test.cjs
