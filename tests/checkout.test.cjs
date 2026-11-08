@@ -70,3 +70,23 @@ test("checkout rejects missing or invalid idempotency request IDs",async()=>{
  assert.equal(r.statusCode,400);assert.match(r.body,/request ID/);
  }finally{for(const k of keys){if(old[k]===undefined)delete process.env[k];else process.env[k]=old[k]}}
 });
+
+test("checkout retries reuse a stable provider idempotency key",async()=>{
+ const keys=["GIM_CHECKOUT_ENABLED","STRIPE_SECRET_KEY","GIM_PUBLIC_ORIGIN","GIM_APPROVED_CHECKOUT_ITEMS"];
+ const saved=Object.fromEntries(keys.map(k=>[k,process.env[k]])),originalFetch=global.fetch;
+ Object.assign(process.env,{GIM_CHECKOUT_ENABLED:"true",STRIPE_SECRET_KEY:"sk_test_fake",GIM_PUBLIC_ORIGIN:"https://example.test",GIM_APPROVED_CHECKOUT_ITEMS:JSON.stringify({sku1:{saleApproved:true,stockVerified:true,fulfillmentApproved:true,processorApproved:true,stripePriceId:"price_ABC123"}})});
+ const calls=[];
+ global.fetch=async(url,opts)=>{calls.push({url,key:opts.headers["idempotency-key"],body:opts.body});return {ok:true,json:async()=>({url:"https://checkout.stripe.com/c/pay/cs_test"})}};
+ try{
+  const body=JSON.stringify({requestId:"123e4567-e89b-42d3-a456-426614174000",items:[{id:"sku1",quantity:1}]});
+  const event={httpMethod:"POST",headers:{origin:"https://example.test"},body};
+  assert.equal((await checkout.handler(event)).statusCode,200);
+  assert.equal((await checkout.handler(event)).statusCode,200);
+  assert.equal(calls.length,2);
+  assert.equal(calls[0].key,calls[1].key);
+  assert.match(calls[0].key,/^[0-9a-f]{64}$/);
+  const changed={...event,body:JSON.stringify({requestId:"123e4567-e89b-42d3-a456-426614174001",items:[{id:"sku1",quantity:1}]})};
+  assert.equal((await checkout.handler(changed)).statusCode,200);
+  assert.notEqual(calls[0].key,calls[2].key);
+ }finally{global.fetch=originalFetch;for(const k of keys){if(saved[k]===undefined)delete process.env[k];else process.env[k]=saved[k]}}
+});
