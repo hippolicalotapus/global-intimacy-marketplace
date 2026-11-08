@@ -40,7 +40,7 @@ test("checkout rejects wrong origin and malformed carts before contacting provid
  const vars=["GIM_CHECKOUT_ENABLED","STRIPE_SECRET_KEY","GIM_PUBLIC_ORIGIN","GIM_APPROVED_CHECKOUT_ITEMS"];
  const saved=Object.fromEntries(vars.map(k=>[k,process.env[k]]));
  Object.assign(process.env,{GIM_CHECKOUT_ENABLED:"true",STRIPE_SECRET_KEY:"sk_test_fake",GIM_PUBLIC_ORIGIN:"https://example.test",GIM_APPROVED_CHECKOUT_ITEMS:"{}"});
- const invoke=(origin,body)=>checkout.handler({httpMethod:"POST",headers:{origin},body});
+ const invoke=(origin,body)=>{let parsed;try{parsed=JSON.parse(body);parsed.requestId="123e4567-e89b-42d3-a456-426614174000";body=JSON.stringify(parsed)}catch(_){}return checkout.handler({httpMethod:"POST",headers:{origin},body})};
  try{
  assert.equal((await invoke("https://evil.test",'{"items":[{"id":"1","quantity":1}]}')).statusCode,403);
  assert.equal((await invoke("https://example.test","{")).statusCode,400);
@@ -60,4 +60,13 @@ test("webhook rejects unsigned and malformed events",async()=>{
  const sig=crypto.createHmac("sha256",process.env.STRIPE_WEBHOOK_SECRET).update(ts+"."+body).digest("hex");
  assert.equal((await webhook.handler({httpMethod:"POST",body:body+"tamper",headers:{"stripe-signature":`t=${ts},v1=${sig}`}})).statusCode,400);
  }finally{for(const k of vars){if(saved[k]===undefined)delete process.env[k];else process.env[k]=saved[k]}}
+});
+
+test("checkout rejects missing or invalid idempotency request IDs",async()=>{
+ const keys=["GIM_CHECKOUT_ENABLED","STRIPE_SECRET_KEY","GIM_PUBLIC_ORIGIN"],old=Object.fromEntries(keys.map(k=>[k,process.env[k]]));
+ Object.assign(process.env,{GIM_CHECKOUT_ENABLED:"true",STRIPE_SECRET_KEY:"sk_test_fake",GIM_PUBLIC_ORIGIN:"https://example.test"});
+ try{
+ const r=await checkout.handler({httpMethod:"POST",headers:{origin:"https://example.test"},body:'{"items":[{"id":"1","quantity":1}]}'});
+ assert.equal(r.statusCode,400);assert.match(r.body,/request ID/);
+ }finally{for(const k of keys){if(old[k]===undefined)delete process.env[k];else process.env[k]=old[k]}}
 });
