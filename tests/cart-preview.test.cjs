@@ -7,7 +7,7 @@ function harness(initial,products=[{id:1,name:"Test item"},{id:2,name:"Second it
  const nodes={cartItems:element(),cartSummary:element(),clearCart:element(),cartProduct:element(),addCartItem:element()};
  const document={getElementById:k=>nodes[k],createElement:()=>element()};
  const localStorage={getItem:k=>data.get(k)??null,setItem:(k,v)=>{if(storageFails)throw Error("storage disabled");data.set(k,v)}};
- vm.runInNewContext(source,{window:{GIM_PRODUCTS:products},document,localStorage},{timeout:1000});
+ vm.runInNewContext(source,{window:{GIM_PRODUCTS:products,location:{search:""}},URLSearchParams,document,localStorage},{timeout:1000});
  return {nodes,data,items:()=>JSON.parse(data.get("gim:cart-preview")||"[]")};
 }
 test("cart handles empty state and clears selections",()=>{
