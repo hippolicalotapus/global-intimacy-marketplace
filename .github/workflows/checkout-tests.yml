@@ -9,6 +9,9 @@ on:
       - 'netlify/functions/stripe-webhook.js'
       - 'tests/checkout.test.cjs'
       - 'tests/cart-preview.test.cjs'
+      - 'tests/catalogue-integrity.test.cjs'
+      - 'site/catalog.js'
+      - 'site/apparel.js'
       - 'site/cart-preview.js'
       - '.github/workflows/checkout-tests.yml'
 jobs:
@@ -27,6 +30,7 @@ jobs:
           node --check netlify/functions/stripe-webhook.js
           node --check tests/checkout.test.cjs
           node --check tests/cart-preview.test.cjs
+          node --check tests/catalogue-integrity.test.cjs
           node --check site/cart-preview.js
       - name: Checkout regression suite
-        run: node --test tests/checkout.test.cjs tests/cart-preview.test.cjs
+        run: node --test tests/checkout.test.cjs tests/cart-preview.test.cjs tests/catalogue-integrity.test.cjs
