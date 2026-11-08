@@ -5,7 +5,7 @@
  const list=document.getElementById("cartItems"),summary=document.getElementById("cartSummary");
  function read(){try{const v=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(v)?v:[]}catch(_){return []}}
  function save(v){try{localStorage.setItem(key,JSON.stringify(v))}catch(_){summary.textContent="Browser storage unavailable."}}
- function valid(v){return v.filter(x=>x&&typeof x.id==="string"&&byId.has(x.id)&&Number.isInteger(x.quantity)&&x.quantity>=1&&x.quantity<=10).slice(0,20)}
+ function valid(v){const counts=new Map();for(const x of v){if(!x||!Number.isInteger(x.quantity)||x.quantity<1||x.quantity>10)continue;const id=String(x.id);if(!byId.has(id))continue;const next=(counts.get(id)||0)+x.quantity;if(next<=10)counts.set(id,next)}return [...counts].slice(0,20).map(([id,quantity])=>({id,quantity}))}
  function render(){
   const items=valid(read());list.replaceChildren();
   if(!items.length){summary.textContent="Your preview cart is empty.";return}
