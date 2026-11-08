@@ -34,3 +34,11 @@ Default all vendor and product sale flags to false. No marketplace claims of app
 - Design invitation-only vendor intake questions and moderation checklist.
 - Compare unit economics including fees, fraud, returns, taxes, and support.
 - Build a separate testable onboarding prototype after payment feasibility is confirmed.
+
+## Payment underwriting research and outreach — 2026-11-08
+- Canadian regulatory consideration: Bank of Canada Retail Payment Activities Act guidance says marketplaces that receive customer funds and pay third-party vendors may perform regulated retail payment activities. Obtain qualified Canadian payments-law assessment of actual funds flow before launch; provider usage alone does not settle the issue.
+- Verotel / Bitsafe platform payout eligibility enquiry sent to sales@verotel.com; Gmail message 1a1bb7f65bcd507b. Questions: Canadian legal entity, physical adult merchandise, direct third-party vendor payouts, subscriptions, fees, reserves and integration. Await written response; no eligibility established.
+- Segpay enquiry sent to sales@segpay.com; Gmail message 1a1bb7f6be3f976d. Questions: Canadian eligibility, physical adult goods, third-party merchant vs affiliate payouts, subscriptions, fees and reserves. Await written response; no eligibility established.
+- CCBill initial pre-application enquiry was previously sent; Gmail message 1a1bb0c088cfc745. Do not resend without checking replies.
+- **BLOCKER for transactions:** no processor has provided written approval for Canadian physical adult goods + independent vendor payments. No subscription, marketplace checkout, vendor payout or merchant onboarding may be enabled.
+- **Nonblocking work:** continue catalog taxonomy, unique product research, vendor onboarding form design and cost modeling without collecting sensitive data or promising live sales.
