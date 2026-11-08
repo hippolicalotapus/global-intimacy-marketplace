@@ -1,12 +1,12 @@
 "use strict";
 const test=require("node:test"),assert=require("node:assert/strict"),vm=require("node:vm"),fs=require("node:fs"),path=require("node:path");
 const source=fs.readFileSync(path.join(__dirname,"../site/cart-preview.js"),"utf8");
-function harness(initial,products=[{id:1,name:"Test item"},{id:2,name:"Second item"}]){
+function harness(initial,products=[{id:1,name:"Test item"},{id:2,name:"Second item"}],storageFails=false){
  const data=new Map();if(initial!==undefined)data.set("gim:cart-preview",initial);
  function element(){return {textContent:"",value:"",children:[],attributes:{},replaceChildren(...v){this.children=v},append(...v){this.children.push(...v)},setAttribute(k,v){this.attributes[k]=v},addEventListener(k,fn){this[k]=fn}}}
  const nodes={cartItems:element(),cartSummary:element(),clearCart:element(),cartProduct:element(),addCartItem:element()};
  const document={getElementById:k=>nodes[k],createElement:()=>element()};
- const localStorage={getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v)};
+ const localStorage={getItem:k=>data.get(k)??null,setItem:(k,v)=>{if(storageFails)throw Error("storage disabled");data.set(k,v)}};
  vm.runInNewContext(source,{window:{GIM_PRODUCTS:products},document,localStorage},{timeout:1000});
  return {nodes,data,items:()=>JSON.parse(data.get("gim:cart-preview")||"[]")};
 }
@@ -49,4 +49,19 @@ test("preview picker does not add unknown items or exceed quantity limit",()=>{
  assert.deepEqual(h.items(),[{id:"1",quantity:10}]);
  h.nodes.cartProduct.value="unknown";h.nodes.addCartItem.click();
  assert.deepEqual(h.items(),[{id:"1",quantity:10}]);
+});
+
+test("cart does not claim successful add when storage is blocked",()=>{
+ const h=harness("[]",[{id:1,name:"Test item"}],true);
+ h.nodes.cartProduct.value="1";h.nodes.addCartItem.click();
+ assert.deepEqual(h.items(),[]);
+ assert.match(h.nodes.cartSummary.textContent,/not saved/);
+});
+test("cart enforces 20 distinct products",()=>{
+ const products=Array.from({length:21},(_,i)=>({id:i+1,name:"Product "+(i+1)}));
+ const initial=JSON.stringify(products.slice(0,20).map(p=>({id:String(p.id),quantity:1})));
+ const h=harness(initial,products);
+ h.nodes.cartProduct.value="21";h.nodes.addCartItem.click();
+ assert.equal(h.items().length,20);
+ assert.match(h.nodes.cartSummary.textContent,/Maximum 20/);
 });
