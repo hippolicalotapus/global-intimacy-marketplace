@@ -90,3 +90,20 @@ test("checkout retries reuse a stable provider idempotency key",async()=>{
   assert.notEqual(calls[0].key,calls[2].key);
  }finally{global.fetch=originalFetch;for(const k of keys){if(saved[k]===undefined)delete process.env[k];else process.env[k]=saved[k]}}
 });
+
+test("payment provider timeout and invalid response fail safely",async()=>{
+ const keys=["GIM_CHECKOUT_ENABLED","STRIPE_SECRET_KEY","GIM_PUBLIC_ORIGIN","GIM_APPROVED_CHECKOUT_ITEMS"];
+ const saved=Object.fromEntries(keys.map(k=>[k,process.env[k]])),originalFetch=global.fetch;
+ Object.assign(process.env,{GIM_CHECKOUT_ENABLED:"true",STRIPE_SECRET_KEY:"sk_test_fake",GIM_PUBLIC_ORIGIN:"https://example.test",GIM_APPROVED_CHECKOUT_ITEMS:JSON.stringify({sku1:{saleApproved:true,stockVerified:true,fulfillmentApproved:true,processorApproved:true,stripePriceId:"price_ABC123"}})});
+ const event={httpMethod:"POST",headers:{origin:"https://example.test"},body:JSON.stringify({requestId:"123e4567-e89b-42d3-a456-426614174000",items:[{id:"sku1",quantity:1}]})};
+ try{
+  global.fetch=async()=>{throw Error("timeout")};
+  let r=await checkout.handler(event);assert.equal(r.statusCode,502);assert.doesNotMatch(r.body,/sk_test_fake/);
+  global.fetch=async()=>({ok:true,json:async()=>{throw Error("bad json")}});
+  r=await checkout.handler(event);assert.equal(r.statusCode,502);
+  global.fetch=async()=>({ok:false,json:async()=>({error:{message:"private provider detail"}})});
+  r=await checkout.handler(event);assert.equal(r.statusCode,502);assert.doesNotMatch(r.body,/private provider detail/);
+  global.fetch=async()=>({ok:true,json:async()=>({url:"https://evil.example/redirect"})});
+  r=await checkout.handler(event);assert.equal(r.statusCode,502);
+ }finally{global.fetch=originalFetch;for(const k of keys){if(saved[k]===undefined)delete process.env[k];else process.env[k]=saved[k]}}
+});
