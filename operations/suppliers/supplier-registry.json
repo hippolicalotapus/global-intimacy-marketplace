@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-28",
+  "updatedAt": "2026-11-08",
   "disclaimer": "INTERNAL PLANNING METADATA. No supplier in this file has been verified as an approved reseller or live fulfillment partner. Never publish this file as a storefront asset.",
   "defaultControls": {
     "resellerApproved": false,
@@ -626,6 +626,69 @@
       },
       "orderIntegration": "unverified",
       "mediaRights": "not licensed",
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
+    },
+    {
+      "id": "punk-design",
+      "name": "Punk Design",
+      "contact": "support@punkdesign.shop",
+      "status": "initial_inquiry_sent_awaiting_reply",
+      "lastOutboundAt": "2026-11-08",
+      "gmailMessageId": "1a1bb6e669da92d5",
+      "focus": "alternative everyday, gothic, punk, steampunk, mesh",
+      "notes": [
+        "First commercial enquiry sent Nov 8 2026; avoid duplicate follow-up until reasonable response window",
+        "Canadian custom-store dropship eligibility, landed costs, fulfillment, territories, return terms and photo permissions unverified",
+        "Do not publish supplier affiliation or sell products until written approval"
+      ],
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
+    },
+    {
+      "id": "be-wicked",
+      "name": "Be Wicked",
+      "contact": "dropship@bewickedusa.com",
+      "status": "initial_inquiry_sent_awaiting_reply",
+      "lastOutboundAt": "2026-11-08",
+      "gmailMessageId": "1a1bb6e6d4687b96",
+      "focus": "lingerie, bodystockings, clubwear",
+      "notes": [
+        "First commercial enquiry sent Nov 8 2026; avoid duplicate follow-up until reasonable response window",
+        "Canadian custom-store dropship eligibility, landed costs, fulfillment, territories, return terms and photo permissions unverified",
+        "Do not publish supplier affiliation or sell products until written approval"
+      ],
+      "resellerApproved": false,
+      "commercialPhotoPermission": false,
+      "fulfillmentApproved": false,
+      "territoriesApproved": [],
+      "realInventoryConfirmed": false,
+      "canPublish": false,
+      "canAcceptOrders": false
+    },
+    {
+      "id": "wholesale-next",
+      "name": "WholesaleNext",
+      "contact": "info@wholesalenext.com",
+      "status": "initial_inquiry_sent_awaiting_reply",
+      "lastOutboundAt": "2026-11-08",
+      "gmailMessageId": "1a1bb6e7390abd68",
+      "focus": "corsets, alternative menswear, gothic outerwear",
+      "notes": [
+        "First commercial enquiry sent Nov 8 2026; avoid duplicate follow-up until reasonable response window",
+        "Canadian custom-store dropship eligibility, landed costs, fulfillment, territories, return terms and photo permissions unverified",
+        "Do not publish supplier affiliation or sell products until written approval"
+      ],
       "resellerApproved": false,
       "commercialPhotoPermission": false,
       "fulfillmentApproved": false,
