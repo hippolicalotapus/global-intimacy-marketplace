@@ -9,7 +9,7 @@
 
  function read(){try{const v=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(v)?v:[]}catch(_){try{localStorage.setItem(key,"[]")}catch(__){}return []}}
  function save(v){try{localStorage.setItem(key,JSON.stringify(v));return true}catch(_){summary.textContent="Browser storage unavailable. Your changes were not saved.";return false}}
- function valid(v){const counts=new Map();for(const x of v){if(!x||!Number.isInteger(x.quantity)||x.quantity<1||x.quantity>10)continue;const id=String(x.id);if(!byId.has(id))continue;const next=(counts.get(id)||0)+x.quantity;if(next<=10)counts.set(id,next)}return [...counts].slice(0,20).map(([id,quantity])=>({id,quantity}))}
+ function valid(v){const counts=new Map();for(const x of v.slice(0,1000)){if(!x||!Number.isInteger(x.quantity)||x.quantity<1||x.quantity>10)continue;const id=String(x.id);if(!byId.has(id))continue;const next=(counts.get(id)||0)+x.quantity;if(next<=10)counts.set(id,next)}return [...counts].slice(0,20).map(([id,quantity])=>({id,quantity}))}
  function render(){
   const raw=read(),items=valid(raw);list.replaceChildren();
   if(JSON.stringify(raw)!==JSON.stringify(items))save(items);
