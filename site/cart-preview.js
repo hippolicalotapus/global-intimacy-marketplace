@@ -3,7 +3,7 @@
  const key="gim:cart-preview",products=Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[];
  const byId=new Map(products.filter(p=>p&&p.id!==undefined).map(p=>[String(p.id),p]));
  const list=document.getElementById("cartItems"),summary=document.getElementById("cartSummary");
- function read(){try{const v=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(v)?v:[]}catch(_){return []}}
+ function read(){try{const v=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(v)?v:[]}catch(_){try{localStorage.setItem(key,"[]")}catch(__){}return []}}
  function save(v){try{localStorage.setItem(key,JSON.stringify(v))}catch(_){summary.textContent="Browser storage unavailable."}}
  function valid(v){const counts=new Map();for(const x of v){if(!x||!Number.isInteger(x.quantity)||x.quantity<1||x.quantity>10)continue;const id=String(x.id);if(!byId.has(id))continue;const next=(counts.get(id)||0)+x.quantity;if(next<=10)counts.set(id,next)}return [...counts].slice(0,20).map(([id,quantity])=>({id,quantity}))}
  function render(){
