@@ -3,6 +3,10 @@
  const key="gim:cart-preview",products=Array.isArray(window.GIM_PRODUCTS)?window.GIM_PRODUCTS:[];
  const byId=new Map(products.filter(p=>p&&p.id!==undefined).map(p=>[String(p.id),p]));
  const list=document.getElementById("cartItems"),summary=document.getElementById("cartSummary");
+ const picker=document.getElementById("cartProduct"),addButton=document.getElementById("addCartItem");
+ if(picker&&addButton){for(const [id,p] of byId){const option=document.createElement("option");option.value=id;option.textContent=String(p.brand||"")+" — "+String(p.name||p.title||"Preview");picker.append(option)}
+ addButton.disabled=!byId.size;addButton.addEventListener("click",()=>{const id=picker.value;if(!byId.has(id))return;const items=valid(read()),current=items.find(x=>x.id===id);if(current){if(current.quantity>=10){summary.textContent="Maximum 10 of each preview.";return}current.quantity++}else{if(items.length>=20){summary.textContent="Maximum 20 different previews.";return}items.push({id,quantity:1})}save(items);render()})}
+
  function read(){try{const v=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(v)?v:[]}catch(_){try{localStorage.setItem(key,"[]")}catch(__){}return []}}
  function save(v){try{localStorage.setItem(key,JSON.stringify(v))}catch(_){summary.textContent="Browser storage unavailable."}}
  function valid(v){const counts=new Map();for(const x of v){if(!x||!Number.isInteger(x.quantity)||x.quantity<1||x.quantity>10)continue;const id=String(x.id);if(!byId.has(id))continue;const next=(counts.get(id)||0)+x.quantity;if(next<=10)counts.set(id,next)}return [...counts].slice(0,20).map(([id,quantity])=>({id,quantity}))}
