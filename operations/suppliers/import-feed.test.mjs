@@ -63,3 +63,16 @@ test("Supplier ID format validation",()=>{
 test("Unclosed CSV quote is rejected rather than truncated",()=>{
   assert.throws(()=>parseCSV('SKU,Name\n1,"unterminated'),/Malformed CSV/);
 });
+
+test("Every imported item receives blocked readiness, even with positive stock",()=>{
+  const staged=stageSupplierRows("concorde-pro",[{sku:"x2",name:"Sample",stock:"99",image:"https://example.com/image.jpg"}]);
+  assert.equal(staged.products[0].readiness.publishable,false);
+  assert.equal(staged.products[0].readiness.orderable,false);
+  assert.ok(staged.products[0].readiness.publicationReasons.includes("media_license_missing"));
+  assert.equal(staged.allowPublicExport,false);
+});
+test("Supplier feed cannot inject approval flags",()=>{
+  const staged=stageSupplierRows("concorde-pro",[{sku:"x3",name:"Sample",ownerApproved:true,resellerApproved:true,commercialPhotoPermission:true,priceApproved:true}]);
+  assert.equal(staged.products[0].flags.ownerApproved,false);
+  assert.equal(staged.products[0].readiness.publishable,false);
+});
