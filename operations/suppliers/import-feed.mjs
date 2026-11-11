@@ -107,9 +107,11 @@ export function stageSupplierRows(supplierId, rows, receivedAt = new Date().toIS
     const name=text(raw.name,250);
     const gtin=text(raw.gtin,32).replace(/[\s-]/g,"");
     if(!sku || !name){quarantine.push({row:i+1,reason:"Missing name and/or supplier SKU/GTIN"});continue;}
+    // Treat case-only SKU variants as duplicates; never silently overwrite an item.
     const compound=supplierId+":"+sku;
-    if(seen.has(compound)){quarantine.push({row:i+1,reason:"Duplicate supplier SKU in feed",sku});continue;}
-    seen.add(compound);
+    const duplicateKey=compound.toUpperCase();
+    if(seen.has(duplicateKey)){quarantine.push({row:i+1,reason:"Duplicate supplier SKU in feed",sku});continue;}
+    seen.add(duplicateKey);
     const amount=nonnegQty(raw.stockQuantity);
     const imageUrl=httpsOnly(raw.imageUrl);
     const id=createHash("sha256").update(compound).digest("hex").slice(0,20);
