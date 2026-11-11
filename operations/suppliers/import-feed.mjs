@@ -8,6 +8,7 @@ import { resolve, extname, basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { evaluateProductReadiness } from "./publication-gates.mjs";
+import { validateCSVStructure } from "./feed-validation.mjs";
 
 const moduleDir = resolve(fileURLToPath(new URL(".", import.meta.url)));
 const projectRoot = resolve(moduleDir, "../..");
@@ -32,6 +33,7 @@ function countDelimiter(str, d) {
   return n;
 }
 export function parseCSV(input) {
+  validateCSVStructure(input);
   const data=String(input ?? "").replace(/^\uFEFF/,"");
   const delim=[";",",","\t","|"].sort((a,b)=>countDelimiter(data,b)-countDelimiter(data,a))[0];
   const rows=[];
