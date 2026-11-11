@@ -30,6 +30,7 @@ jobs:
           node --check operations/suppliers/*.test.mjs
           node --check operations/suppliers/publication-gates.mjs
           node --check operations/suppliers/publication-gates.test.mjs
+          node --check operations/suppliers/review-queue.mjs
       - name: Unit tests and static smoke tests
         run: node --test tests/*.test.mjs operations/suppliers/*.test.mjs
 
