@@ -76,3 +76,14 @@ test("Supplier feed cannot inject approval flags",()=>{
   assert.equal(staged.products[0].flags.ownerApproved,false);
   assert.equal(staged.products[0].readiness.publishable,false);
 });
+
+test("Duplicate normalized CSV headers fail before import",()=>{
+  assert.throws(()=>parseCSV('SKU,sku,Name\nA1,B1,Demo\n'),/duplicate CSV headers/);
+});
+test("Short and long CSV rows are rejected",()=>{
+  assert.throws(()=>parseCSV('SKU,Name\nA1\n'),/fields; expected/);
+  assert.throws(()=>parseCSV('SKU,Name\nA1,Demo,extra\n'),/fields; expected/);
+});
+test("Unexpected characters after closing quote are rejected",()=>{
+  assert.throws(()=>parseCSV('SKU,Name\nA1,"Demo"oops\n'),/Unexpected characters/);
+});
