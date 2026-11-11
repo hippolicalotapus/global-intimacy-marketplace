@@ -27,7 +27,9 @@ jobs:
           node --check site/catalog.js
           node --check site/apparel.js
           node --check operations/suppliers/import-feed.mjs
-          node --check operations/suppliers/import-feed.test.mjs
+          node --check operations/suppliers/*.test.mjs
+          node --check operations/suppliers/publication-gates.mjs
+          node --check operations/suppliers/publication-gates.test.mjs
       - name: Unit tests and static smoke tests
         run: node --test tests/*.test.mjs operations/suppliers/import-feed.test.mjs
 
