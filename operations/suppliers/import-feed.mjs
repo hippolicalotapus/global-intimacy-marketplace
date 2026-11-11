@@ -7,6 +7,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { resolve, extname, basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
+import { evaluateProductReadiness } from "./publication-gates.mjs";
 
 const moduleDir = resolve(fileURLToPath(new URL(".", import.meta.url)));
 const projectRoot = resolve(moduleDir, "../..");
@@ -114,7 +115,9 @@ export function stageSupplierRows(supplierId, rows, receivedAt = new Date().toIS
     if(!gtin)risk.push("GTIN absent; cross-supplier matching requires review");
     if(amount===null)risk.push("Stock not reported as a verified numeric quantity");
     if(raw.imageUrl&&!imageUrl)risk.push("Image URL invalid or not HTTPS");
+    const readiness=evaluateProductReadiness();
     products.push({
+      readiness,
       source:{supplierId,supplierSku:sku,gtin,receivedAt,importHash:id},
       title:name,brand:text(raw.brand,120),category:text(raw.category,120),
       description:text(raw.description,6000),
