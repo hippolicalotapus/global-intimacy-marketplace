@@ -9,6 +9,9 @@ test('end-to-end: untrusted CSV -> quarantine -> private review -> blocked check
     'SAFE-1,Duplicate,8,11.00,https://example.org/b.jpg,true\n' +
     'SAFE-2,Second,unknown,14.50,javascript:alert(1),true\n';
   const rows = parseCSV(csv);
+  assert.equal(rows.length, 3, 'CSV parser must preserve all three untrusted input rows');
+  assert.equal(rows[0].sku, 'SAFE-1');
+  assert.equal(rows[0].name, 'Sample, One');
   const batch = stageSupplierRows('concorde-pro', rows, '2026-11-11T00:00:00Z');
   assert.deepEqual(batch.metrics, { rows:3, staged:2, quarantined:1 });
   assert.equal(batch.allowPublicExport, false);
