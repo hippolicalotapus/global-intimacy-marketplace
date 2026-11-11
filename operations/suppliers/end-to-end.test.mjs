@@ -4,10 +4,10 @@ import { parseCSV, stageSupplierRows } from './import-feed.mjs';
 import { reviewStagedProduct } from './review-queue.mjs';
 
 test('end-to-end: untrusted CSV -> quarantine -> private review -> blocked checkout', () => {
-  const csv = 'SKU,Name,Stock,Wholesale Price,Image URL,Owner Approved\\n' +
-    'SAFE-1,"Sample, One",18,12.50,https://example.org/a.jpg,true\\n' +
-    'SAFE-1,Duplicate,8,11.00,https://example.org/b.jpg,true\\n' +
-    'SAFE-2,Second,unknown,14.50,javascript:alert(1),true\\n';
+  const csv = 'SKU,Name,Stock,Wholesale Price,Image URL,Owner Approved\n' +
+    'SAFE-1,"Sample, One",18,12.50,https://example.org/a.jpg,true\n' +
+    'SAFE-1,Duplicate,8,11.00,https://example.org/b.jpg,true\n' +
+    'SAFE-2,Second,unknown,14.50,javascript:alert(1),true\n';
   const rows = parseCSV(csv);
   const batch = stageSupplierRows('concorde-pro', rows, '2026-11-11T00:00:00Z');
   assert.deepEqual(batch.metrics, { rows:3, staged:2, quarantined:1 });
