@@ -87,3 +87,14 @@ test("Short and long CSV rows are rejected",()=>{
 test("Unexpected characters after closing quote are rejected",()=>{
   assert.throws(()=>parseCSV('SKU,Name\nA1,"Demo"oops\n'),/Unexpected characters/);
 });
+
+test("Case-only supplier SKU variants are quarantined instead of double-staged",()=>{
+  const staged=stageSupplierRows("concorde-pro",[
+    {sku:"ABC-1",name:"First"},
+    {sku:"abc-1",name:"Duplicate with different case"}
+  ]);
+  assert.deepEqual(staged.metrics,{rows:2,staged:1,quarantined:1});
+  assert.equal(staged.quarantine[0].reason,"Duplicate supplier SKU in feed");
+  assert.equal(staged.allowPublicExport,false);
+  assert.equal(staged.allowOrders,false);
+});
