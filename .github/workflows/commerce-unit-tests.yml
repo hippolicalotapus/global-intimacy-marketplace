@@ -1,5 +1,11 @@
 name: Commerce unit tests
 on:
+  push:
+    branches:
+      - development/commerce-foundation-20261111
+    paths:
+      - 'operations/commerce/**'
+      - '.github/workflows/commerce-unit-tests.yml'
   pull_request:
     paths:
       - 'operations/commerce/**'
