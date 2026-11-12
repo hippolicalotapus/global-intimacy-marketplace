@@ -6,6 +6,8 @@ on:
     paths:
       - 'operations/suppliers/build_unified_preview.py'
       - 'tests/test_unified_supplier_preview.py'
+      - 'tests/test_supplier_review_page.py'
+      - 'site/supplier-review.html'
       - '.github/workflows/unified-supplier-preview-tests.yml'
   workflow_dispatch:
 permissions:
@@ -20,4 +22,6 @@ jobs:
         with:
           python-version: '3.11'
       - name: Run unified supplier preview regression tests
-        run: python -m unittest discover -s tests -p 'test_unified_supplier_preview.py' -v
+        run: python -m unittest discover -s tests -p 'test_*supplier*preview*.py' -v
+      - name: Run supplier review page regression tests
+        run: python -m unittest discover -s tests -p 'test_supplier_review_page.py' -v
