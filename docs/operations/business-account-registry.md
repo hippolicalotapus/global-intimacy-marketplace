@@ -6,7 +6,7 @@ Updated: 2026-11-12. Internal operational metadata only. **Never store passwords
 | --- | --- | --- | --- | --- |
 | Concorde Pro | globalintimacypartner@gmail.com (business correspondence; verify exact login against original registration message) | Approved wholesale supplier; dealer discounts active | Dedicated browser profile exists; authenticated session not confirmed; password reset on hold | Resume session recovery later; retrieve actual CSV from logged-in homepage; test draft-only importer |
 | 1on1 Wholesale | See supplier email correspondence | Approved-account downloads described in supplier email | Not verified | Review download instructions and available product feed |
-| YXROBOT | See supplier email correspondence | Catalogue reply received | Not verified | Review catalogue and commercial terms |
+| YXROBOT | info@yxrobot.ai; catalogue https://docs.google.com/spreadsheets/d/1Dslykb38lZqvd8TOiI7OJ-VRGJMQl46JS2LDhcK5G2I/edit | Catalogue accessible; supplier partnership and public website media rights not yet confirmed | Read-only catalogue accessed; no supplier login required for this sheet | Evaluate model IDs from STPE, Silicone, Hybrid, AI Robot, Anime; request shortlisted model media and clarify website rights, dropshipping, costs and countries before publication |
 | Netlify | Existing GIM storefront | Platform in use | Not assessed here | No deployment without owner approval |
 | GitHub | hippolicalotapus/global-intimacy-marketplace | Development repository | Development branch in use | Continue tested checkpoints |
 
