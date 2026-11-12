@@ -48,3 +48,10 @@ test('does not modify source data and rejects unsupported tabs', () => {
   assert.throws(() => draftYXRobotRow('unknown',['','56','150','M Cup','x'],2));
   assert.throws(() => draftYXRobotCatalogue({STPE: []}), /Missing/);
 });
+
+test('preserves supplier body codes without inventing a numeric height', () => {
+  const x = draftYXRobotRow('STPE', ['', '53', 'B15', '/', 'B15-#53'], 48);
+  assert.equal(x.bodySizeRaw, 'B15');
+  assert.equal(x.bodyHeightCm, null);
+  assert.equal(x.published, false);
+});
