@@ -28,6 +28,7 @@ function suspendVendor(vendor, reviewer) {
 function canPublishProduct({ vendor, product, country, now = Date.now(), maxInventoryAgeMs = 30 * 60 * 1000 } = {}) {
   if (!vendor || vendor.status !== statuses.approved || !product || product.status !== 'approved') return false;
   if (product.mediaRights !== true || product.resaleAuthorized !== true) return false;
+  if (typeof country !== 'string' || !/^[A-Z]{2}$/.test(country)) return false;
   if (!Array.isArray(product.territories) || !product.territories.includes(country)) return false;
   if (!Number.isSafeInteger(product.stock) || product.stock <= 0) return false;
   if (!Number.isFinite(now) || !Number.isFinite(maxInventoryAgeMs) || maxInventoryAgeMs <= 0) return false;
