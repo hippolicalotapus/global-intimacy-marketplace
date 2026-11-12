@@ -14,12 +14,15 @@ def make_preview(yx_manifest, concorde_manifest):
         key = str(item.get("ean") or item.get("supplierReference") or item.get("storeResearchId") or "").strip()
         if not key:
             continue
+        name = str(item.get("storePreviewName") or "").strip()
+        if not name:
+            continue
         identity = ("concorde-pro", key.casefold())
         if identity in seen:
             continue
         seen.add(identity)
         rows.append({"id": "concorde-pro:" + key, "supplier": "Concorde Pro",
-                     "name": str(item.get("storePreviewName") or "").strip(),
+                     "name": name,
                      "brand": str(item.get("brand") or "").strip(),
                      "ean": str(item.get("ean") or ""), "status": "preview",
                      "purchasable": False})
