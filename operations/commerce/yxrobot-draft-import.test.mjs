@@ -55,3 +55,18 @@ test('preserves supplier body codes without inventing a numeric height', () => {
   assert.equal(x.bodyHeightCm, null);
   assert.equal(x.published, false);
 });
+
+test('rejects unsafe identifiers and missing supplier references', () => {
+  assert.throws(() => draftYXRobotRow('STPE', ['', '<script>', '150', 'M Cup', 'reference'], 2), /Incomplete/);
+  assert.throws(() => draftYXRobotRow('STPE', ['', '56', '150', 'M Cup', ''], 2), /Incomplete/);
+  assert.throws(() => draftYXRobotRow('STPE', ['', '56', '150 cm', 'M Cup', 'reference'], 2), /Incomplete/);
+});
+test('retains unusual supplier codes and avoids invented prices or permissions', () => {
+  const draft = draftYXRobotRow('STPE', ['', '53', '158S', '/', '158S-#53'], 145);
+  assert.equal(draft.bodySizeRaw, '158S');
+  assert.equal(draft.bodyHeightCm, null);
+  assert.equal(draft.wholesaleCents, null);
+  assert.equal(draft.mediaRightsVerified, false);
+  assert.equal(draft.resaleAuthorized, false);
+  assert.equal(draft.published, false);
+});
