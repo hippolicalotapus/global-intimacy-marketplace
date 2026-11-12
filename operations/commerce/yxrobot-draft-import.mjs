@@ -4,7 +4,7 @@ const TABS = Object.freeze(['STPE', 'Silicone', 'Hybrid', 'AI Robot', 'Anime']);
 const field = (v) => v == null ? '' : String(v).trim();
 const norm = (v) => field(v).normalize('NFKC').toUpperCase();
 const keyPart = (v) => encodeURIComponent(norm(v));
-const validHeight = (v) => /^\d{2,3}$/.test(field(v)) && Number(v) >= 100 && Number(v) <= 250;
+const validHeight = (v) => /^\d{2,3}$/.test(field(v)) && Number(v) >= 60 && Number(v) <= 250;
 function draftYXRobotRow(tab, cells, sourceRow) {
   if (!TABS.includes(tab)) throw new TypeError('Unknown YXROBOT tab');
   if (!Array.isArray(cells) || !Number.isSafeInteger(sourceRow) || sourceRow < 2) throw new TypeError('Invalid source row');
