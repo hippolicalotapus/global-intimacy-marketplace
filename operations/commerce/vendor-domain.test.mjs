@@ -35,6 +35,10 @@ test('publication requires rights, territory, approved status and fresh positive
 test('unknown or invalid publication inputs fail closed', () => {
   assert.equal(canPublishProduct(), false);
   assert.equal(canPublishProduct(eligible({ country: 'US' })), false);
+  assert.equal(canPublishProduct(eligible({ country: undefined })), false);
+  assert.equal(canPublishProduct(eligible({ country: null })), false);
+  assert.equal(canPublishProduct(eligible({ country: 'ca' })), false);
+  assert.equal(canPublishProduct(eligible({ country: 'CAN' })), false);
   assert.equal(canPublishProduct(eligible({ now: NaN })), false);
   assert.equal(canPublishProduct(eligible({ maxInventoryAgeMs: -1 })), false);
 });
