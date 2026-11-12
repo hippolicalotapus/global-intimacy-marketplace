@@ -1,0 +1,19 @@
+name: Commerce unit tests
+on:
+  pull_request:
+    paths:
+      - 'operations/commerce/**'
+      - '.github/workflows/commerce-unit-tests.yml'
+  workflow_dispatch:
+jobs:
+  node-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test offline commerce modules
+        run: node --test operations/commerce/*.test.mjs
