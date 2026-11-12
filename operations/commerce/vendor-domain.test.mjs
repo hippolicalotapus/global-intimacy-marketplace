@@ -38,3 +38,14 @@ test('unknown or invalid publication inputs fail closed', () => {
   assert.equal(canPublishProduct(eligible({ now: NaN })), false);
   assert.equal(canPublishProduct(eligible({ maxInventoryAgeMs: -1 })), false);
 });
+
+test('inventory freshness accepts the exact limit and rejects one millisecond beyond it', () => {
+  const maxInventoryAgeMs = 30 * 60 * 1000;
+  const now = 2 * maxInventoryAgeMs + 100000;
+  const atLimit = new Date(now - maxInventoryAgeMs).toISOString();
+  const justExpired = new Date(now - maxInventoryAgeMs - 1).toISOString();
+  assert.equal(canPublishProduct(eligible({ now, product: product({ inventoryUpdatedAt: atLimit }) })), true);
+  assert.equal(canPublishProduct(eligible({ now, product: product({ inventoryUpdatedAt: justExpired }) })), false);
+  assert.equal(canPublishProduct(eligible({ now, product: product({ inventoryUpdatedAt: new Date(now).toISOString() }) })), true);
+  assert.equal(canPublishProduct(eligible({ now, product: product({ inventoryUpdatedAt: new Date(now + 1).toISOString() }) })), false);
+});
