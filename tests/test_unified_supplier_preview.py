@@ -37,6 +37,14 @@ class UnifiedSupplierPreviewTests(unittest.TestCase):
         )
         self.assertEqual(result["items"], [])
 
+    def test_rejects_unnamed_concorde_record(self):
+        rows = preview.make_preview({"drafts": []}, {"items": [
+            {"ean": "111", "storePreviewName": "   "},
+            {"ean": "222", "storePreviewName": "Valid item", "brand": "Example"},
+        ]})["items"]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["id"], "concorde-pro:222")
+
     def test_preserves_model_codes_as_strings(self):
         rows = preview.make_preview(
             {"drafts": [{"supplier_sku": "158S", "name": "Sample"}]}, {"items": []}
