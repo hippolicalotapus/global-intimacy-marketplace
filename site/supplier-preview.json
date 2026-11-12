@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "concorde-pro:6959532363807",
+      "supplier": "Concorde Pro",
+      "name": "Hazelynn — App-Controlled Wearable",
+      "brand": "Pretty Love",
+      "ean": "6959532363807",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:6959532335569",
+      "supplier": "Concorde Pro",
+      "name": "August — Connected Couples Device",
+      "brand": "Pretty Love",
+      "ean": "6959532335569",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:6959633106549",
+      "supplier": "Concorde Pro",
+      "name": "Erica Plus — Wearable Massager",
+      "brand": "SVAKOM",
+      "ean": "6959633106549",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:5600298351522",
+      "supplier": "Concorde Pro",
+      "name": "Organic Chamomile Intimate Gel — 100 ml",
+      "brand": "Orgie",
+      "ean": "5600298351522",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:3479228001118",
+      "supplier": "Concorde Pro",
+      "name": "Nature Water-Based Lubricant — 200 ml",
+      "brand": "Lubrix",
+      "ean": "3479228001118",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:3479228001101",
+      "supplier": "Concorde Pro",
+      "name": "Nature Water-Based Lubricant — 100 ml",
+      "brand": "Lubrix",
+      "ean": "3479228001101",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:3479228004010",
+      "supplier": "Concorde Pro",
+      "name": "Toy Cleaner — 125 ml",
+      "brand": "Lubrix",
+      "ean": "3479228004010",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:3479222033788",
+      "supplier": "Concorde Pro",
+      "name": "Black Floral-Lace Babydoll & Thong",
+      "brand": "Paris Hollywood",
+      "ean": "3479222033788",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:3479222033849",
+      "supplier": "Concorde Pro",
+      "name": "Lace Kimono & Matching Thong",
+      "brand": "Paris Hollywood",
+      "ean": "3479222033849",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:8435097862552",
+      "supplier": "Concorde Pro",
+      "name": "Mission 69 — Couples Board Game",
+      "brand": "Secret Play Games",
+      "ean": "8435097862552",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:5600298351355",
+      "supplier": "Concorde Pro",
+      "name": "Acqua Croccante — Strawberry Massage Foam",
+      "brand": "Orgie",
+      "ean": "5600298351355",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:5600742917007",
+      "supplier": "Concorde Pro",
+      "name": "Acqua Croccante — Passion Fruit Massage Foam",
+      "brand": "Orgie",
+      "ean": "5600742917007",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:86",
+      "supplier": "Concorde Pro",
+      "name": "Organic Flavours Cherry — 100 ml",
+      "brand": "pjur",
+      "ean": "",
+      "status": "preview",
+      "purchasable": false
+    },
+    {
+      "id": "concorde-pro:87",
+      "supplier": "Concorde Pro",
+      "name": "Organic Flavours Caramel — 100 ml",
+      "brand": "pjur",
+      "ean": "",
+      "status": "preview",
+      "purchasable": false
+    }
+  ]
+}
