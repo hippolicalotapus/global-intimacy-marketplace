@@ -29,6 +29,9 @@ class SupplierReviewPageTests(unittest.TestCase):
         self.assertIn('["Concorde Pro","YXROBOT"].includes(x.supplier)', self.page)
         self.assertIn('Not available to purchase.', self.page)
 
+    def test_fallback_supplier_filter(self):
+        self.assertIn('(x.supplier||"Concorde Pro")===supplier.value', self.page)
+
     def test_fallback_and_privacy(self):
         self.assertIn('let items=[', self.page)
         self.assertIn('noindex,nofollow', self.page)
