@@ -18,7 +18,7 @@ class SupplierReviewTests(unittest.TestCase):
     def setUpClass(cls):
         cls.page = PAGE.read_text(encoding="utf-8")
         cls.source = json.loads(CANDIDATES.read_text(encoding="utf-8"))
-        match = re.search(r"const items=(\[.*?\]);\s*const brand=", cls.page, re.S)
+        match = re.search(r"let items=(\[.*?\]);\s*const supplier=", cls.page, re.S)
         if not match:
             raise AssertionError("Cannot find preview item fixture")
         cls.items = json.loads(match.group(1))
