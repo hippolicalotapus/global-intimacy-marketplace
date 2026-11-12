@@ -4,8 +4,8 @@ import { makeVendorApplication, reviewVendor, suspendVendor, canPublishProduct }
 
 const application = () => makeVendorApplication({ displayName: 'Sample Vendor', slug: 'sample-vendor', country: 'ca' });
 const approved = () => reviewVendor(application(), 'approved', 'admin-1');
-const product = (overrides = {}) => ({ status: 'approved', mediaRights: true, resaleAuthorized: true, territories: ['CA'], stock: 4, inventoryUpdatedAt: new Date(100000).toISOString(), ...overrides });
-const eligible = (overrides = {}) => ({ vendor: approved(), product: product(), country: 'CA', now: 110000, ...overrides });
+const product = (overrides = {}) => ({ status: 'approved', mediaRights: true, resaleAuthorized: true, territories: ['CA'], stock: 4, inventoryUpdatedAt: new Date(1990000).toISOString(), ...overrides });
+const eligible = (overrides = {}) => ({ vendor: approved(), product: product(), country: 'CA', now: 2000000, ...overrides });
 
 test('new vendors remain pending and are immutable', () => {
   const v = application();
@@ -28,7 +28,7 @@ test('publication requires rights, territory, approved status and fresh positive
   for (const change of [
     { status: 'draft' }, { mediaRights: false }, { resaleAuthorized: false },
     { territories: ['US'] }, { stock: 0 }, { stock: -1 }, { stock: 1.5 },
-    { inventoryUpdatedAt: 'bad-date' }, { inventoryUpdatedAt: new Date(110001).toISOString() },
+    { inventoryUpdatedAt: 'bad-date' }, { inventoryUpdatedAt: new Date(2000001).toISOString() },
     { inventoryUpdatedAt: new Date(0).toISOString() }
   ]) assert.equal(canPublishProduct(eligible({ product: product(change) })), false, JSON.stringify(change));
 });
