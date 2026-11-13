@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "created": "2026-11-13",
+  "status": "research concepts only; no artwork, cleared rights, supplier specs or sale-ready products",
+  "research": [
+    {
+      "url": "https://www.etsy.com/seller-handbook/article/seller-trend-report-fall-and-winter-2026/1521255894814",
+      "note": "Personalized gifts and pets: directional marketplace search signals, not apparel sales"
+    },
+    {
+      "url": "https://help.erank.com/blog/top-etsy-searches-q3-2026/",
+      "note": "shirt/tshirt search interest, not proof of profit"
+    },
+    {
+      "url": "https://www.printful.com/ca/blog/t-shirt-niches",
+      "note": "niche hypotheses, not verified conversions"
+    }
+  ],
+  "requirements": {
+    "sayings": "Common sayings allowed only after commercial trademark/copyright screening",
+    "graphics": "Create original artwork or document suitable commercial licence",
+    "printReady": "Must pass supplier-specific size, DPI, colour, transparency, exact wording and placement preflight",
+    "release": "No publishing, live transactions or supplier submission without approval"
+  },
+  "designs": [
+    {
+      "id": "concept-001",
+      "category": "humour",
+      "brand": "Sarcastabastard",
+      "saying": "Not My Circus, Not My Monkeys",
+      "artDirection": "Original circus tent with three escaping monkeys",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-002",
+      "category": "humour",
+      "brand": "Sarcastabastard",
+      "saying": "Coffee First",
+      "artDirection": "Original sleepy raven on steaming coffee mug",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-003",
+      "category": "humour",
+      "brand": "Sarcastabastard",
+      "saying": "Hold My Beer",
+      "artDirection": "Original raccoon wearing oversized safety goggles",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-004",
+      "category": "personalized",
+      "brand": "ONE HEART",
+      "saying": "Home Is Where the Heart Is",
+      "artDirection": "Faceted ruby heart around a tiny house",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-005",
+      "category": "personalized",
+      "brand": "ONE HEART",
+      "saying": "Best Friends",
+      "artDirection": "Two interlocking wildflower wreaths with editable initials",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-006",
+      "category": "pets",
+      "brand": "ONE HEART",
+      "saying": "Life Is Better With Dogs",
+      "artDirection": "Original dog and forest-trail silhouette",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-007",
+      "category": "pets",
+      "brand": "ONE HEART",
+      "saying": "Rescue Is My Favorite Breed",
+      "artDirection": "Original dog-and-cat constellation",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-008",
+      "category": "trades",
+      "brand": "Sarcastabastard",
+      "saying": "Measure Twice, Cut Once",
+      "artDirection": "Original carpenter-square and sawdust spiral",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-009",
+      "category": "trades",
+      "brand": "Sarcastabastard",
+      "saying": "Built Different",
+      "artDirection": "Original gear-and-wrench crest",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-010",
+      "category": "outdoors",
+      "brand": "ONE HEART",
+      "saying": "I'd Rather Be Fishing",
+      "artDirection": "Original trout leaping through winding river",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-011",
+      "category": "retro",
+      "brand": "Sarcastabastard",
+      "saying": "Stay Weird",
+      "artDirection": "Original moonlit mushroom scene",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-012",
+      "category": "romance",
+      "brand": "ONE HEART",
+      "saying": "Love Grows Here",
+      "artDirection": "Original ruby-heart botanical vine",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-013",
+      "category": "gothic",
+      "brand": "Sarcastabastard",
+      "saying": "Night Owl",
+      "artDirection": "Original owl beneath a crescent moon",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    },
+    {
+      "id": "concept-014",
+      "category": "seasonal",
+      "brand": "ONE HEART",
+      "saying": "Cozy Season",
+      "artDirection": "Original scarf and autumn leaf composition",
+      "artworkStatus": "concept-only",
+      "rightsStatus": "manual-review-required",
+      "productionStatus": "not-print-ready"
+    }
+  ]
+}
