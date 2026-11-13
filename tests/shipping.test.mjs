@@ -19,3 +19,12 @@ test("Country eligibility cannot override unapproved resale, stock or order gate
  for(const gate of ["resellerApproved","stockVerified","canAcceptOrders"]){const p=fixture();p[gate]=false;assert.equal(shipping.status(p,"CA",now),"unknown",gate);}
  assert.equal(shipping.status({id:1},"CA",now),"unknown");
 });
+
+test("Malformed supplier delivery evidence fails closed without throwing",()=>{
+ assert.equal(shipping.status(null,"CA",now),"unknown");
+ assert.equal(shipping.status(undefined,"CA",now),"unknown");
+ const p=fixture();p.deliveryRules=[null,undefined,42];
+ assert.equal(shipping.status(p,"CA",now),"unknown");
+ const invalid=fixture();invalid.deliveryRules[0].checkedAt={toString(){throw Error("untrusted supplier field");}};
+ assert.equal(shipping.status(invalid,"CA",now),"unknown");
+});
