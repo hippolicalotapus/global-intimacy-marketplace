@@ -35,7 +35,12 @@ function quote({product, country, postal, size = "regular", shippingQuote, taxCe
   if (!Number.isSafeInteger(taxCents) || taxCents < 0) return {status: "quote_required", reason: "tax"};
   const baseCents = PRODUCTS[product].price;
   const sizeCents = size === "2XL+" ? 350 : 0;
-  const shippingCents = Math.max(0, shippingQuote.chargeCents - shippingQuote.includedAllowanceCents);
+  // Refuse overflow rather than presenting an inaccurate monetary total.
+  const excessShipping = shippingQuote.chargeCents - shippingQuote.includedAllowanceCents;
+  if (!Number.isSafeInteger(excessShipping)) return {status: "quote_required", reason: "shipping_amount"};
+  const shippingCents = Math.max(0, excessShipping);
+  const totalCents = baseCents + sizeCents + shippingCents + taxCents;
+  if (!Number.isSafeInteger(totalCents)) return {status: "quote_required", reason: "amount_overflow"};
   return Object.freeze({
     status: "preview_only",
     checkoutEnabled: false,
@@ -43,7 +48,7 @@ function quote({product, country, postal, size = "regular", shippingQuote, taxCe
     postalCode: normalized,
     serviceClass: shippingQuote.serviceClass,
     baseCents, sizeCents, shippingCents, taxCents,
-    totalCents: baseCents + sizeCents + shippingCents + taxCents
+    totalCents
   });
 }
 module.exports = {postalCode, quote};
