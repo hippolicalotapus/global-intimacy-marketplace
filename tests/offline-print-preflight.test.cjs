@@ -1,0 +1,11 @@
+"use strict";
+const assert=require("node:assert/strict");
+const test=require("node:test");
+const {PROFILES,preflight,createOfflineManifest}=require("../production/offline-print-preflight.cjs");
+const job={saying:"Coffee First",rightsStatus:"cleared",artworkStatus:"approved-original",exactWordingChecked:true,placement:"front",artwork:{format:"png",transparent:true,widthPx:3600,heightPx:4800,qualityChecked:true}};
+test("concept artwork cannot pass preflight",()=>{assert.equal(preflight({...job,artworkStatus:"concept-only"}).ok,false)});
+test("unverified supplier profile blocks production",()=>{assert.equal(preflight(job).ok,false)});
+test("insufficient pixels are rejected",()=>{assert.ok(preflight({...job,artwork:{...job.artwork,widthPx:1200}}).errors.includes("Insufficient pixel width"))});
+test("exact wording and rights required",()=>{assert.equal(preflight({...job,rightsStatus:"manual-review-required",exactWordingChecked:false}).ok,false)});
+test("verified profile and checked artwork pass technical gate",()=>{assert.equal(preflight(job,{...PROFILES.sample_dtf_12x16,verified:true}).ok,true)});
+test("offline manifest never creates an order or sends to printer",()=>{const m=createOfflineManifest(job);assert.equal(m.offlineOnly,true);assert.equal(m.orderCreated,false);assert.equal(m.printerSubmission,false);assert.equal(m.productionApproved,false)});
