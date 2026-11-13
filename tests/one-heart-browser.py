@@ -3,12 +3,17 @@ Requires playwright Python package and an installed Chromium browser. No network
 """
 import json
 import sys
+import shutil
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 html = Path(sys.argv[1]).read_text(encoding="utf-8")
 with sync_playwright() as playwright:
-    browser = playwright.chromium.launch(headless=True)
+    browser_path = shutil.which('chromium') or shutil.which('chromium-browser')
+    options = {'headless': True}
+    if browser_path:
+        options.update(executable_path=browser_path, args=['--no-sandbox', '--disable-dev-shm-usage', '--no-zygote', '--single-process'])
+    browser = playwright.chromium.launch(**options)
     page = browser.new_page()
     page.set_content(html, wait_until="load")
     results = page.evaluate(r"""() => {
