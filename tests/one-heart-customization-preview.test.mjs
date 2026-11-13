@@ -13,3 +13,8 @@ test("browser preview validates controls with printable regex escapes",()=>{
  assert.ok(html.includes(String.raw`/[\x00-\x1f\x7f]/`));
  assert.ok(html.includes("v.text.length<=24"));
 });
+
+test("editing selections invalidates the previously prepared quote",()=>{
+ assert.ok(html.includes('Selections changed. Prepare a new offline quote request.'));
+ assert.ok(html.includes('e.addEventListener("input",function()'));
+});
