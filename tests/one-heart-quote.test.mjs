@@ -31,3 +31,18 @@ test("tax, destination, size and product validation never permit payment",()=>{
  assert.equal(quote({product:"standard",country:"CA",postal:destination,size:"invalid",shippingQuote:carrier(),taxCents:0}).status,"unavailable");
  assert.equal(quote({product:"unknown",country:"CA",postal:destination,shippingQuote:carrier(),taxCents:0}).status,"unavailable");
 });
+
+test("unsafe monetary totals never become an actionable quote",()=>{
+ const max=Number.MAX_SAFE_INTEGER;
+ const cases=[
+  {shippingQuote:{...carrier(),chargeCents:max,includedAllowanceCents:0},taxCents:0},
+  {shippingQuote:{...carrier(),chargeCents:max,includedAllowanceCents:0},taxCents:max},
+  {shippingQuote:{...carrier(),chargeCents:0,includedAllowanceCents:max},taxCents:0}
+ ];
+ for(const input of cases){
+  const result=quote({product:"standard",country:"CA",postal:destination,...input});
+  assert.equal(result.status,"quote_required");
+  assert.equal(result.totalCents,undefined);
+  assert.notEqual(result.checkoutEnabled,true);
+ }
+});
