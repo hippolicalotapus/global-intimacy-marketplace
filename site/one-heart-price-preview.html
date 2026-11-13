@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>ONE HEART | Price preview (not for sale)</title>
+<style>body{margin:0;background:#10212b;color:#f5f3ef;font:16px system-ui,sans-serif}main{max-width:620px;margin:5vh auto;padding:28px}h1{font-size:2rem}label{display:block;margin:18px 0 7px}select,input{font:inherit;padding:12px;width:100%;box-sizing:border-box;border-radius:8px}section{background:#203541;border-radius:12px;padding:20px;margin-top:24px}strong{font-size:1.5rem}.muted{color:#d6d7d7}a{color:#f4d7a0}</style></head>
+<body><main><p>ONE HEART · PRIVATE DEVELOPMENT PREVIEW</p><h1>Hoodie price preview</h1>
+<p>Concept pricing only. No orders, reservations, payments or shipping promises.</p>
+<label for="hoodie">Choose a hoodie</label><select id="hoodie"><option value="7499">Standard hoodie — $74.99 CAD</option><option value="8499">Premium heavyweight — $84.99 CAD</option></select>
+<label for="size">Choose size group</label><select id="size"><option value="0">Regular sizes</option><option value="350">2XL or larger (+$3.50)</option></select>
+<label for="postal">Canadian postal code (optional)</label><input id="postal" maxlength="7" autocomplete="off" placeholder="A1A 1A1" aria-describedby="postalHelp">
+<p id="postalHelp" class="muted">Postal codes are checked for format only, not delivery availability. Nothing is submitted or stored.</p>
+<section aria-live="polite"><p>Proposed garment subtotal</p><strong id="subtotal">$74.99 CAD</strong><p id="shipping">Shipping: verification required. Standard Canadian shipping is intended to be included where eligible; remote areas and PO boxes may incur a surcharge.</p><p>Taxes: to be calculated when verified.</p><p><b>Final payable total: not available.</b></p></section>
+<p class="muted">This is an unlaunched, non-transactional development preview. Supplier/carrier verification and owner approval are required before checkout.</p>
+</main><script>
+(function(){"use strict";var hoodie=document.getElementById("hoodie"),size=document.getElementById("size"),postal=document.getElementById("postal"),subtotal=document.getElementById("subtotal"),shipping=document.getElementById("shipping");
+function update(){var cents=Number(hoodie.value)+Number(size.value);subtotal.textContent="$"+(cents/100).toFixed(2)+" CAD";var code=postal.value.trim().toUpperCase().replace(/\s/g,"");var valid=/^[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z][0-9][ABCEGHJ-NPRSTV-Z][0-9]$/.test(code);shipping.textContent=code&&!valid?"Enter a valid Canadian postal code. Shipping quote unavailable.":valid?"Postal code format valid. Carrier verification required; remote and PO box surcharges may apply.":"Shipping: verification required. Standard Canadian shipping is intended to be included where eligible; remote areas and PO boxes may incur a surcharge."}
+[hoodie,size,postal].forEach(function(el){el.addEventListener("input",update)});update()})();
+</script></body></html>
