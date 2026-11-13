@@ -69,6 +69,7 @@
       '<div class="product-card-body">'+(p.temporaryIllustration?'<p class="drawing-label">'+esc(drawingLabel(p))+'</p>':'')+'<div class="product-brand">'+esc(p.brand)+'</div><h3>'+esc(p.name)+'</h3>'+
       '<p class="delivery-label">'+esc(deliveryLabel(p))+'</p><p class="product-meta">'+esc(p.researchType)+' · '+esc(p.collection)+' collection</p><div class="product-footer"><span class="product-status">Preview only</span>'+
       '<button type="button" class="outline-small" data-detail="'+p.id+'">View details →</button></div>'+
+      '<a class="preorder-link" href="cart-preview.html?preview='+encodeURIComponent(String(p.id))+'">Add to preview cart ↗</a>'+ 
       '<a class="preorder-link" href="'+esc(enquiryUrl(p))+'" aria-label="Email a nonbinding pre-order enquiry for '+esc(p.name)+'">Ask about pre-order ↗</a></div></article>';
   }
   function renderCollections(){

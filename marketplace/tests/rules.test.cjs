@@ -1,0 +1,14 @@
+'use strict';
+const assert=require('node:assert/strict');
+const test=require('node:test');
+const {canListProduct,transitionOrder,eligibleForSupplierRouting,moneyMinor}=require('../core/rules.cjs');
+const vendor={id:'v1',status:'approved',legal_verified:true,processor_approved:true};
+const product={vendor_id:'v1',status:'approved',resale_rights_verified:true,media_rights_verified:true,territory_reviewed:true,price_minor:9000,inventory_count:2,allowed_shipping_countries:['CA','US']};
+test('approved item visible only in allowed country',()=>{assert.equal(canListProduct(vendor,product,'CA'),true);assert.equal(canListProduct(vendor,product,'GB'),false)});
+test('unapproved vendor blocked',()=>assert.equal(canListProduct({...vendor,processor_approved:false},product,'CA'),false));
+test('missing resale rights blocked',()=>assert.equal(canListProduct(vendor,{...product,resale_rights_verified:false},'CA'),false));
+test('out of stock blocked',()=>assert.equal(canListProduct(vendor,{...product,inventory_count:0},'CA'),false));
+test('invalid order transition rejected',()=>assert.throws(()=>transitionOrder('pending','fulfilled'),/INVALID_ORDER_TRANSITION/));
+test('paid order transition allowed',()=>assert.equal(transitionOrder('authorized','paid'),'paid'));
+test('routing requires processor payment and supplier approval',()=>{const item={fulfillment_status:'held',vendor_approved:true,supplier_approved:true,shipping_allowed:true,quantity:1};assert.equal(eligibleForSupplierRouting({status:'paid',processor_payment_id:'pay_1'},[item]),true);assert.equal(eligibleForSupplierRouting({status:'paid'},[item]),false);assert.equal(eligibleForSupplierRouting({status:'paid',processor_payment_id:'pay_1'},[{...item,supplier_approved:false}]),false)});
+test('money amounts are integer minor units',()=>{assert.deepEqual(moneyMinor(100,'CAD'),{amount:100,currency:'CAD'});assert.throws(()=>moneyMinor(1.2,'CAD'),/INVALID_MONEY/)});
