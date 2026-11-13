@@ -2,7 +2,7 @@ name: Marketplace beta checks
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'milestone/**']
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -27,7 +27,10 @@ jobs:
           node --check site/catalog.js
           node --check site/apparel.js
           node --check operations/suppliers/import-feed.mjs
-          node --check operations/suppliers/import-feed.test.mjs
+          node --check operations/suppliers/*.test.mjs
+          node --check operations/suppliers/publication-gates.mjs
+          node --check operations/suppliers/publication-gates.test.mjs
+          node --check operations/suppliers/review-queue.mjs
       - name: Unit tests and static smoke tests
-        run: node --test tests/*.test.mjs operations/suppliers/import-feed.test.mjs
+        run: node --test tests/*.test.mjs operations/suppliers/*.test.mjs
 

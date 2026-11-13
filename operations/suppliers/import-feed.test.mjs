@@ -63,3 +63,38 @@ test("Supplier ID format validation",()=>{
 test("Unclosed CSV quote is rejected rather than truncated",()=>{
   assert.throws(()=>parseCSV('SKU,Name\n1,"unterminated'),/Malformed CSV/);
 });
+
+test("Every imported item receives blocked readiness, even with positive stock",()=>{
+  const staged=stageSupplierRows("concorde-pro",[{sku:"x2",name:"Sample",stock:"99",image:"https://example.com/image.jpg"}]);
+  assert.equal(staged.products[0].readiness.publishable,false);
+  assert.equal(staged.products[0].readiness.orderable,false);
+  assert.ok(staged.products[0].readiness.publicationReasons.includes("media_license_missing"));
+  assert.equal(staged.allowPublicExport,false);
+});
+test("Supplier feed cannot inject approval flags",()=>{
+  const staged=stageSupplierRows("concorde-pro",[{sku:"x3",name:"Sample",ownerApproved:true,resellerApproved:true,commercialPhotoPermission:true,priceApproved:true}]);
+  assert.equal(staged.products[0].flags.ownerApproved,false);
+  assert.equal(staged.products[0].readiness.publishable,false);
+});
+
+test("Duplicate normalized CSV headers fail before import",()=>{
+  assert.throws(()=>parseCSV('SKU,sku,Name\nA1,B1,Demo\n'),/duplicate CSV headers/);
+});
+test("Short and long CSV rows are rejected",()=>{
+  assert.throws(()=>parseCSV('SKU,Name\nA1\n'),/fields; expected/);
+  assert.throws(()=>parseCSV('SKU,Name\nA1,Demo,extra\n'),/fields; expected/);
+});
+test("Unexpected characters after closing quote are rejected",()=>{
+  assert.throws(()=>parseCSV('SKU,Name\nA1,"Demo"oops\n'),/Unexpected characters/);
+});
+
+test("Case-only supplier SKU variants are quarantined instead of double-staged",()=>{
+  const staged=stageSupplierRows("concorde-pro",[
+    {sku:"ABC-1",name:"First"},
+    {sku:"abc-1",name:"Duplicate with different case"}
+  ]);
+  assert.deepEqual(staged.metrics,{rows:2,staged:1,quarantined:1});
+  assert.equal(staged.quarantine[0].reason,"Duplicate supplier SKU in feed");
+  assert.equal(staged.allowPublicExport,false);
+  assert.equal(staged.allowOrders,false);
+});

@@ -7,6 +7,8 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { resolve, extname, basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
+import { evaluateProductReadiness } from "./publication-gates.mjs";
+import { validateCSVStructure } from "./feed-validation.mjs";
 
 const moduleDir = resolve(fileURLToPath(new URL(".", import.meta.url)));
 const projectRoot = resolve(moduleDir, "../..");
@@ -31,6 +33,7 @@ function countDelimiter(str, d) {
   return n;
 }
 export function parseCSV(input) {
+  validateCSVStructure(input);
   const data=String(input ?? "").replace(/^\uFEFF/,"");
   const delim=[";",",","\t","|"].sort((a,b)=>countDelimiter(data,b)-countDelimiter(data,a))[0];
   const rows=[];
@@ -104,9 +107,11 @@ export function stageSupplierRows(supplierId, rows, receivedAt = new Date().toIS
     const name=text(raw.name,250);
     const gtin=text(raw.gtin,32).replace(/[\s-]/g,"");
     if(!sku || !name){quarantine.push({row:i+1,reason:"Missing name and/or supplier SKU/GTIN"});continue;}
+    // Treat case-only SKU variants as duplicates; never silently overwrite an item.
     const compound=supplierId+":"+sku;
-    if(seen.has(compound)){quarantine.push({row:i+1,reason:"Duplicate supplier SKU in feed",sku});continue;}
-    seen.add(compound);
+    const duplicateKey=compound.toUpperCase();
+    if(seen.has(duplicateKey)){quarantine.push({row:i+1,reason:"Duplicate supplier SKU in feed",sku});continue;}
+    seen.add(duplicateKey);
     const amount=nonnegQty(raw.stockQuantity);
     const imageUrl=httpsOnly(raw.imageUrl);
     const id=createHash("sha256").update(compound).digest("hex").slice(0,20);
@@ -114,7 +119,9 @@ export function stageSupplierRows(supplierId, rows, receivedAt = new Date().toIS
     if(!gtin)risk.push("GTIN absent; cross-supplier matching requires review");
     if(amount===null)risk.push("Stock not reported as a verified numeric quantity");
     if(raw.imageUrl&&!imageUrl)risk.push("Image URL invalid or not HTTPS");
+    const readiness=evaluateProductReadiness();
     products.push({
+      readiness,
       source:{supplierId,supplierSku:sku,gtin,receivedAt,importHash:id},
       title:name,brand:text(raw.brand,120),category:text(raw.category,120),
       description:text(raw.description,6000),
