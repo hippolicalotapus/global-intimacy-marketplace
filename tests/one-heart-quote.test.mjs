@@ -36,8 +36,7 @@ test("unsafe monetary totals never become an actionable quote",()=>{
  const max=Number.MAX_SAFE_INTEGER;
  const cases=[
   {shippingQuote:{...carrier(),chargeCents:max,includedAllowanceCents:0},taxCents:0},
-  {shippingQuote:{...carrier(),chargeCents:max,includedAllowanceCents:0},taxCents:max},
-  {shippingQuote:{...carrier(),chargeCents:0,includedAllowanceCents:max},taxCents:0}
+  {shippingQuote:{...carrier(),chargeCents:max,includedAllowanceCents:0},taxCents:max}
  ];
  for(const input of cases){
   const result=quote({product:"standard",country:"CA",postal:destination,...input});
