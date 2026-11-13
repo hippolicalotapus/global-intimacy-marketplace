@@ -1,0 +1,18 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict');
+const {METHODS,validate,offlineManifest}=require('../production/printer-adaptive-adapter.cjs');
+const base={master:{id:'original-001'},saying:'Coffee First',proofreadSaying:'Coffee First',rightsStatus:'cleared',artworkStatus:'approved-original',placement:'front',artwork:{format:'png',transparent:true,mirrored:false,widthPx:3600,heightPx:4800,colorWorkflowVerified:true,qualityChecked:true}};
+const profile={verified:true,supplierId:'test-supplier',machineId:'test-machine',method:'dtg',placements:['front'],colorWorkflow:'supplier-approved',widthIn:12,heightIn:16,dpi:300};
+test('DTG approved job passes',()=>assert.equal(validate(base,profile).ok,true));
+test('DTF requires explicit supplier mirror policy',()=>assert.ok(validate(base,{...profile,method:'dtf'}).errors.includes('Unverified mirroring')));
+test('DTF passes with verified mirror policy',()=>assert.equal(validate(base,{...profile,method:'dtf',mirror:false}).ok,true));
+test('sublimation requires matching mirroring and format',()=>assert.equal(validate({...base,artwork:{...base.artwork,transparent:false,mirrored:true}},{...profile,method:'sublimation',mirror:true}).ok,true));
+test('unverified supplier blocked',()=>assert.equal(validate(base,{...profile,verified:false}).ok,false));
+test('insufficient resolution blocked',()=>assert.equal(validate({...base,artwork:{...base.artwork,widthPx:1000}},profile).ok,false));
+test('exact wording blocked when changed',()=>assert.equal(validate({...base,proofreadSaying:'Coffee Later'},profile).ok,false));
+test('embroidery restricted to small placements',()=>assert.ok(validate(base,{...profile,method:'embroidery'}).errors.includes('Embroidery restricted to small placements')));
+test('screen requires separations',()=>assert.ok(validate(base,{...profile,method:'screen'}).errors.includes('Spot separations not verified')));
+test('vinyl requires cut paths',()=>assert.ok(validate(base,{...profile,method:'vinyl'}).errors.includes('Cut paths not verified')));
+test('allover requires template and bleed',()=>assert.ok(validate(base,{...profile,method:'allover'}).errors.includes('Garment template/bleed not verified')));
+test('offline manifest never places orders',()=>{const m=offlineManifest(base,profile);assert.equal(m.productionApproved,true);assert.equal(m.orderCreated,false);assert.equal(m.printerSubmission,false)});
+test('all eight methods defined',()=>assert.equal(Object.keys(METHODS).length,8));
