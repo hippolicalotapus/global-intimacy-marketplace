@@ -1,0 +1,26 @@
+name: GIM fictional checkout accounts cart shipping checks
+on:
+  push:
+    branches:
+      - 'automation/gim-checkout-accounts-cart-*'
+    paths:
+      - 'operations/commerce/**'
+      - '.github/workflows/commerce-sandbox-automation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-simulation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax check mock modules
+        run: |
+          node --check operations/commerce/mock-customer-cart.mjs
+          node --check operations/commerce/mock-customer-cart.test.mjs
+      - name: Offline commerce regression tests
+        run: node --test operations/commerce/*.test.mjs tests/checkout-*.test.mjs
