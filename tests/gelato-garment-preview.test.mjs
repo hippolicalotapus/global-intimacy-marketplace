@@ -1,4 +1,4 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {renderFictionalGarmentPreview} from '../operations/gelato/garment-preview.mjs';
-const good={fictional:true,paymentStatus:'simulated',orderId:'DEMO-VISUAL-001',brand:'ONE HEART',garment:'tee',color:'ruby',size:'M',placement:'front',text:'<script>alert(1)</script>'};
+const good={fictional:true,paymentStatus:'simulated',orderId:'DEMO-VISUAL-001',brand:'ONE HEART',garment:'tee',color:'ruby',size:'M',placement:'front',text:'<script>x</script>'};
 test('offline visual markup escapes personalization and retains watermark',()=>{const html=renderFictionalGarmentPreview(good);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);assert.match(html,/NOT FOR PRODUCTION/);assert.match(html,/data-color="ruby"/)});
 test('real payment and personal data are rejected',()=>{assert.throws(()=>renderFictionalGarmentPreview({...good,paymentStatus:'paid'}));assert.throws(()=>renderFictionalGarmentPreview({...good,customerEmail:'person@example.org'}))});
