@@ -26,14 +26,15 @@ async function startFixture() {
 async function chromeSession(url) {
   const dir = await mkdtemp(join(tmpdir(), 'gim-chrome-'));
   const chrome = spawn(process.env.CHROME_BIN || 'google-chrome', [
-    '--headless', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
+    '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
+    '--disable-background-networking', '--disable-extensions', '--no-zygote',
     '--no-first-run', '--remote-debugging-port=0', '--user-data-dir=' + dir, 'about:blank'
   ], { stdio: ['ignore', 'ignore', 'pipe'] });
   let diagnostics = '';
   chrome.stderr?.on('data', chunk => { diagnostics = (diagnostics + chunk.toString()).slice(-3000); });
   try {
     let port;
-    for (let i = 0; i < 70; i++) {
+    for (let i = 0; i < 160; i++) {
       if (chrome.exitCode !== null) throw Error('Chrome exited before startup: ' + diagnostics);
       try { port = Number((await readFile(join(dir, 'DevToolsActivePort'), 'utf8')).split('\n')[0]); } catch {}
       if (port) break;
