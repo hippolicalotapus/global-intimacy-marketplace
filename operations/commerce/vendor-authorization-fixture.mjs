@@ -45,22 +45,45 @@ function createFixtureAuthorizationAdapter({users=[], sessions=[], vendors=[], m
     fail(savedState && Number.isSafeInteger(savedState.sequence) && savedState.sequence >= 0 &&
       Array.isArray(savedState.records) && Array.isArray(savedState.history), 'Invalid saved state');
     const seen=new Set();
+    const expectedKeys=['id','reviewedBy','status','submittedBy','title','type','vendorSlug'];
     for(const record of savedState.records) {
-      fail(validId(record?.id) && validSlug(record.vendorSlug) && tenants.has(record.vendorSlug) &&
+      fail(record && typeof record === 'object' && !Array.isArray(record) &&
+        Object.keys(record).sort().join(',') === expectedKeys.join(',') &&
+        validId(record.id) && validSlug(record.vendorSlug) && tenants.has(record.vendorSlug) &&
         ['storefront','listing'].includes(record.type) && validId(record.submittedBy) &&
-        ['pending','approved','rejected'].includes(record.status) &&
-        cleanText(record.title) && !seen.has(record.id), 'Invalid saved record');
+        identities.has(record.submittedBy) && ['pending','approved','rejected'].includes(record.status) &&
+        cleanText(record.title) && record.title === record.title.trim() && !seen.has(record.id), 'Invalid saved record');
+      const membership=access.get(record.vendorSlug+':'+record.submittedBy);
+      fail(membership && ['owner','manager'].includes(membership.role), 'Invalid saved submitter');
       fail(record.status === 'pending' ? record.reviewedBy === null :
-        validId(record.reviewedBy) && record.reviewedBy !== record.submittedBy &&
+        validId(record.reviewedBy) && identities.get(record.reviewedBy)?.role === 'platform_moderator' &&
+        record.reviewedBy !== record.submittedBy &&
         record.reviewedBy !== tenants.get(record.vendorSlug).ownerId, 'Invalid review provenance');
       seen.add(record.id); records.set(record.id, Object.freeze(clone(record)));
     }
-    for(const event of savedState.history) {
-      fail(validId(event?.recordId) && seen.has(event.recordId) && validId(event.actorId) &&
+    const eventsByRecord=new Map();
+    for(let i=0;i<savedState.history.length;i++) {
+      const event=savedState.history[i];
+      fail(event && typeof event === 'object' && !Array.isArray(event) &&
+        Object.keys(event).sort().join(',') === 'action,actorId,recordId,sequence' &&
+        Number.isSafeInteger(event.sequence) && event.sequence === i+1 &&
+        validId(event.recordId) && seen.has(event.recordId) && validId(event.actorId) &&
         ['submitted','approved','rejected'].includes(event.action), 'Invalid audit fixture');
+      const prior=eventsByRecord.get(event.recordId) || [];
+      const record=records.get(event.recordId);
+      fail(prior.length === 0 ? event.action === 'submitted' && event.actorId === record.submittedBy :
+        prior.length === 1 && event.action === record.status && event.actorId === record.reviewedBy,
+        'Contradictory audit transition');
+      prior.push(event.action);
+      eventsByRecord.set(event.recordId,prior);
       history.push(Object.freeze(clone(event)));
     }
-    fail(savedState.sequence === history.length, 'Invalid audit sequence');
+    fail(savedState.sequence === history.length && eventsByRecord.size === records.size, 'Invalid audit sequence');
+    for(const record of records.values()) {
+      const events=eventsByRecord.get(record.id);
+      fail(events && events.length === (record.status === 'pending' ? 1 : 2) &&
+        (record.status === 'pending' || events[1] === record.status), 'Incomplete audit state');
+    }
     sequence=savedState.sequence;
   }
   const identity = sessionId => {
