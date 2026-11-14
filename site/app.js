@@ -280,7 +280,8 @@
     if(hash==="sarcastabastard")selectCollection("SARCASTABASTARD");
     if(!["shop","favorites","creators","gift","early","about","explore-interests"].includes(view))view="shop";
     document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("active",p.id==="view-"+view);});
-    document.querySelectorAll("[data-route]").forEach(function(n){var on=n.dataset.route===view;n.classList.toggle("active",on);if(on)n.setAttribute("aria-current","page");else n.removeAttribute("aria-current");});
+    document.querySelectorAll("[data-route]").forEach(function(n){var on=n.dataset.route===view&&!(view==="shop"&&(hash==="one-heart"||hash==="sarcastabastard"));n.classList.toggle("active",on);if(on)n.setAttribute("aria-current","page");else n.removeAttribute("aria-current");});
+    document.querySelectorAll("[data-nav-collection]").forEach(function(n){var on=n.dataset.navCollection===hash;n.classList.toggle("active",on);if(on)n.setAttribute("aria-current","page");else n.removeAttribute("aria-current");});
     if(view==="favorites")renderFavorites();
     if(view==="creators"){renderPicker();renderSelection();}
     if(view==="gift")renderGift();
@@ -320,6 +321,8 @@
     });
     el("clearFilters").addEventListener("click",function(){selectCollection("All");});
     el("openSearchBtn").addEventListener("click",function(){el("searchInput").focus();});
+    el("skipMain").addEventListener("click",function(e){e.preventDefault();el("main").focus();el("main").scrollIntoView({block:"start"});});
+    el("shopMenu").addEventListener("keydown",function(e){if(e.key==="Escape"&&el("shopMenu").open){e.preventDefault();el("shopMenu").open=false;el("shopMenu").querySelector("summary").focus();}});
     document.addEventListener("click",function(e){
       var fav=e.target.closest("[data-fav]"),wish=e.target.closest("[data-wish]"),detail=e.target.closest("[data-detail]"),remove=e.target.closest("[data-remove]"),browse=e.target.closest("[data-browse-category]");
       if(fav){favorite(Number(fav.dataset.fav));if(el("productDialog").open)details(Number(fav.dataset.fav));}
