@@ -101,3 +101,50 @@ test('returned records cannot mutate trusted fixture state',()=>{
   assert.equal(store.recordFor({sessionId:'session_owner',id:copy.id}).status,'pending');
   assert.equal(store.snapshot().history.length,1);
 });
+
+test('restoration rejects missing audit transitions and forged approvals',()=>{
+  const store=createFixtureAuthorizationAdapter(config());
+  draft(store);
+  store.review({sessionId:'session_mod',id:'entry_001',decision:'approved',evidence});
+  const original=store.snapshot();
+  for(const mutated of [
+    {...original,history:original.history.slice(0,1),sequence:1},
+    {...original,history:[original.history[1],original.history[0]]},
+    {...original,records:[{...original.records[0],status:'rejected'}]},
+    {...original,records:[{...original.records[0],reviewedBy:'owner_001'}]},
+    {...original,history:[original.history[0],{...original.history[1],actorId:'owner_001'}]},
+    {...original,history:[original.history[0],{...original.history[1],action:'rejected'}]},
+    {...original,history:[original.history[0],{...original.history[1],sequence:1}]}
+  ]) assert.throws(()=>createFixtureAuthorizationAdapter({...config(),savedState:mutated}));
+});
+test('restoration rejects duplicate, missing and unrelated audit entries',()=>{
+  const store=createFixtureAuthorizationAdapter(config());
+  draft(store);
+  const original=store.snapshot();
+  for(const mutated of [
+    {...original,records:[]},
+    {...original,records:[original.records[0],original.records[0]]},
+    {...original,history:[{...original.history[0],recordId:'other_001'}]},
+    {...original,history:[{...original.history[0],actorId:'owner_002'}]},
+    {...original,history:[{...original.history[0],action:'approved'}]},
+    {...original,history:[{...original.history[0],sequence:2}]}
+  ]) assert.throws(()=>createFixtureAuthorizationAdapter({...config(),savedState:mutated}));
+});
+test('failed review does not append an audit event or consume a transition',()=>{
+  const store=createFixtureAuthorizationAdapter(config());
+  draft(store);
+  const before=store.snapshot();
+  assert.throws(()=>store.review({sessionId:'session_mod',id:'entry_001',decision:'approved',evidence:{identityVerified:true}}));
+  assert.throws(()=>store.review({sessionId:'session_owner',id:'entry_001',decision:'approved',evidence}));
+  assert.deepEqual(store.snapshot(),before);
+  assert.equal(store.review({sessionId:'session_mod',id:'entry_001',decision:'approved',evidence}).status,'approved');
+  assert.equal(store.snapshot().sequence,before.sequence+1);
+});
+test('duplicate submissions across tenants fail without altering recorded history',()=>{
+  const store=createFixtureAuthorizationAdapter(config());
+  draft(store,'entry_001');
+  const before=store.snapshot();
+  assert.throws(()=>store.submit({sessionId:'session_other',vendorSlug:'other-vendor',id:'entry_001',type:'listing',title:'Different tenant item'}));
+  assert.deepEqual(store.snapshot(),before);
+  assert.equal(store.submit({sessionId:'session_other',vendorSlug:'other-vendor',id:'entry_002',type:'listing',title:'Different tenant item'}).vendorSlug,'other-vendor');
+});
