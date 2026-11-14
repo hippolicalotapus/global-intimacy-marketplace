@@ -1,0 +1,231 @@
+{
+  "sourceCommit": "b63bfe7419ecd85fbbf44fc14c957662b444b5b5",
+  "description": "Pinned apparel WebP images and SVG placement previews needed by GIM storefront tests; same immutable commit as core 19-file manifest.",
+  "files": [
+    {
+      "path": "site/assets/apparel/cards/oh-a01.webp",
+      "sha": "68bb29f0f814c0ab6a2f5e69c8cfb0ca01e8889e",
+      "size": 69366
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-a02.webp",
+      "sha": "5bac06d927ce2fd6fbe05579d9c0a672a8e6275e",
+      "size": 67496
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-a03.webp",
+      "sha": "ec98dec41b89075b3e6c49a8da678da5f964c372",
+      "size": 64552
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-a04.webp",
+      "sha": "ad23b72bc6b51fcf629f46f37de6b486d6d6035d",
+      "size": 64002
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-a05.webp",
+      "sha": "44ccae882faf4c2b9e02983035eca3c576eb63bf",
+      "size": 61808
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-a06.webp",
+      "sha": "b92cfe463a944e355d0116a81291ffa652dbee74",
+      "size": 124388
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-h01.webp",
+      "sha": "0646e5c3d02fd1728f2213e214452549abe2440e",
+      "size": 15702
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-h02.webp",
+      "sha": "23febf09d65a62254f6e104db98b7cea34addd11",
+      "size": 16154
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-h03.webp",
+      "sha": "92e066f2bbaa961fd8425b576aef642d6452b574",
+      "size": 12068
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-h04.webp",
+      "sha": "0fe504cfb4d0b48f7dc14d37086697e39fc229a9",
+      "size": 16940
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-h05.webp",
+      "sha": "990a8de430288cac3383351fab08ac4f4c87acb6",
+      "size": 16268
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-h06.webp",
+      "sha": "e076c116f32940d7180e7c52fc3d3030853cc983",
+      "size": 13634
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-h07.webp",
+      "sha": "91890f5e721afdfb2cf91877064ca95ad8fbbe2f",
+      "size": 13358
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-h08.webp",
+      "sha": "5b78fbb1fa0e3009a2a533d6141b7cb8c2610d5a",
+      "size": 31980
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-h09.webp",
+      "sha": "9d1d1cc08aa5cd87bd3efb0dbc97de3284c9e3b0",
+      "size": 13452
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-p01.webp",
+      "sha": "82c56f76cbc00e1e3c8b12f73d47d35fe90d6537",
+      "size": 126460
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-p02.webp",
+      "sha": "48f784b8d7c0299a2d1937ba121b1fc08593b531",
+      "size": 51170
+    },
+    {
+      "path": "site/assets/apparel/cards/oh-p03.webp",
+      "sha": "7e174aa58405ede48e08cc6e3d1461b45afe670a",
+      "size": 56874
+    },
+    {
+      "path": "site/assets/apparel/cards/sb-t01.webp",
+      "sha": "6b9ea37a30c591373170072978ad5afa7483bb56",
+      "size": 57598
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h01-placement.svg",
+      "sha": "c8c12fe17898e3ccc04b1774287c1d4614b0f7b8",
+      "size": 106551
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h01-placement.webp",
+      "sha": "ef3ad975a28a043bd6d0406f1a48c2b8e7867a7a",
+      "size": 79724
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h02-placement.svg",
+      "sha": "e0cc4d266a36ec735d5bb49352133ad68982b7ec",
+      "size": 110619
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h02-placement.webp",
+      "sha": "d88ed4d36c77aeb90a313a7c3d5c128a2c53cc4d",
+      "size": 82774
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h03-placement.svg",
+      "sha": "3e85dc855361b2e8771605e6b6b111b1fa37c6d9",
+      "size": 107367
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h03-placement.webp",
+      "sha": "b90ae50c553fb51179adc9fba04e5a61dfaa5755",
+      "size": 80336
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h04-placement.svg",
+      "sha": "91ee2a9bbc2601a474866879b837f50cb8e42abd",
+      "size": 111499
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h04-placement.webp",
+      "sha": "a692d863866988fad05af183b193ead4d39c969c",
+      "size": 83436
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h05-placement.svg",
+      "sha": "a5bca4a69dc3ccc7c2e7d18408f0f6fb947b6f01",
+      "size": 93619
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h05-placement.webp",
+      "sha": "40d2992124e6e6d97565ca4b1875673ebb7ec268",
+      "size": 70026
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h06-placement.svg",
+      "sha": "5ec2e3266b7457b43f502eadcdaff54a2eed6c81",
+      "size": 112483
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h06-placement.webp",
+      "sha": "1db86643956dabc0912ab02e61115c7ff47f9b8b",
+      "size": 84174
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h07-placement.svg",
+      "sha": "866666deefb07400a5377f167413ebe1f9083c70",
+      "size": 110603
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h07-placement.webp",
+      "sha": "167f15d6e12ba57c2f2c9bbc4791d749abc15ebd",
+      "size": 82764
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h08-placement.svg",
+      "sha": "af4547411643619de3d6a70480d00c3aa5797830",
+      "size": 99627
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h08-placement.webp",
+      "sha": "a2c3a770072791cf38669215e2f45ee51bb0deb9",
+      "size": 74532
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h09-placement.svg",
+      "sha": "7d951286bb9d60fdf62c8826bb345a9b28be8c1e",
+      "size": 94035
+    },
+    {
+      "path": "site/assets/apparel/current/oh-h09-placement.webp",
+      "sha": "239b286ee314ca387c5c12964cd01e7075c036b1",
+      "size": 70338
+    },
+    {
+      "path": "site/assets/apparel/references/OH_A01-A05_Art_Tees.webp",
+      "sha": "a3e74b15849331a962c6be74eac4c09bff9e3cf4",
+      "size": 877608
+    },
+    {
+      "path": "site/assets/apparel/references/OH_A06_Melting_Ruby_Heart.webp",
+      "sha": "f586e9b3988381f4a77b016a86366bf277a8b61a",
+      "size": 755038
+    },
+    {
+      "path": "site/assets/apparel/references/OH_H01-H03_Mountain_Hoodies.webp",
+      "sha": "21c369dd6e64d35be557330948221edddebae294",
+      "size": 221448
+    },
+    {
+      "path": "site/assets/apparel/references/OH_H04-H06_Mountain_Hoodies.webp",
+      "sha": "3f3b2cfa6b883e0f58480dcc74a65a6117bf15a6",
+      "size": 237396
+    },
+    {
+      "path": "site/assets/apparel/references/OH_H07-H09_Mountain_Hoodies.webp",
+      "sha": "9b2678852f5428d1e6b25840638627ebcbe9e8de",
+      "size": 284708
+    },
+    {
+      "path": "site/assets/apparel/references/OH_P01_Teal_Copper_Ivory.webp",
+      "sha": "b6a2bb1e88310568dd3ed6f92f80347de7c365ab",
+      "size": 592294
+    },
+    {
+      "path": "site/assets/apparel/references/OH_P02-P03_Midnight_Luxe_Daydream.webp",
+      "sha": "7d299c327d982a58fc4e2d0837bd1152693bf50e",
+      "size": 197136
+    },
+    {
+      "path": "site/assets/apparel/references/SB_T01_I_Fuck_Up_Everything.webp",
+      "sha": "81bc22b8478099a4a8ef87f26fadcaf714a55358",
+      "size": 504512
+    }
+  ]
+}
