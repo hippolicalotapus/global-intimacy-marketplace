@@ -85,7 +85,7 @@ async function chromeSession(url) {
     }
     return { evaluate, send, close: async () => {
       socket.close(); chrome.kill('SIGKILL'); chrome.stderr?.destroy();
-      await rm(dir, { recursive: true, force: true });
+      await rm(dir, { recursive: true, force: true, maxRetries: 12, retryDelay: 150 });
     } };
   } catch (error) {
     chrome.kill('SIGKILL'); chrome.stderr?.destroy();
