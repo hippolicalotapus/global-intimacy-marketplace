@@ -42,6 +42,13 @@ function mountFixtureDashboard(root,model){
     if(nextTab!==null&&tabs.includes(nextTab))tab=nextTab;
     if(nextFilter!==null&&['all','pending','approved','rejected'].includes(nextFilter))filter=nextFilter;
     repaint();
+    // Replacing the panel detaches the clicked button. Restore focus to its
+    // equivalent control so keyboard users do not lose their place.
+    if(nextTab!==null&&tabs.includes(nextTab)){
+      root.querySelector?.('button[data-tab="'+nextTab+'"]')?.focus?.();
+    }else if(nextFilter!==null&&['all','pending','approved','rejected'].includes(nextFilter)){
+      root.querySelector?.('button[data-filter="'+nextFilter+'"]')?.focus?.();
+    }
   };
   root.addEventListener('click',click);
   repaint();
