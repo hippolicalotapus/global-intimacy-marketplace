@@ -1,0 +1,64 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createParallelSessions,switchParallelShopper,addParallelTee,saveParallelSnapshot,
+  recoverParallelSnapshot,startParallelReview,restartParallelSlot,describeParallelSlot} from './mock-parallel-sessions.mjs';
+
+test('two fictional shoppers retain independent carts and history while switching',()=>{
+  let store=createParallelSessions();
+  store=saveParallelSnapshot(store);
+  store=startParallelReview(store);
+  assert.equal(describeParallelSlot(store).cartCount,1);
+  assert.equal(describeParallelSlot(store).events,1);
+  const original=store;
+  store=switchParallelShopper(store,'guest');
+  assert.equal(describeParallelSlot(store).cartCount,0);
+  assert.equal(describeParallelSlot(store).events,0);
+  assert.equal(describeParallelSlot(store).hasSnapshot,false);
+  assert.throws(()=>recoverParallelSnapshot(store),/No snapshot/);
+  store=addParallelTee(store);
+  store=addParallelTee(store);
+  store=startParallelReview(store);
+  store=saveParallelSnapshot(store);
+  assert.equal(describeParallelSlot(store).cartCount,2);
+  assert.equal(describeParallelSlot(store).events,1);
+  store=switchParallelShopper(store,'returning');
+  assert.equal(describeParallelSlot(store).cartCount,1);
+  assert.equal(describeParallelSlot(store).events,1);
+  store=addParallelTee(store);
+  store=recoverParallelSnapshot(store);
+  assert.equal(describeParallelSlot(store).cartCount,1);
+  store=switchParallelShopper(store,'guest');
+  assert.equal(describeParallelSlot(store).cartCount,2);
+  assert.equal(describeParallelSlot(store).events,1);
+  assert.equal(original.slots.guest.customer.cart.lines.length,0);
+  assert.equal(describeParallelSlot(store).paymentEnabled,false);
+});
+test('restart clears only active session and old cart snapshots cannot cross sessions',()=>{
+  let store=createParallelSessions();
+  store=saveParallelSnapshot(store);
+  store=startParallelReview(store);
+  const old=store.slots.returning.snapshot;
+  store=switchParallelShopper(store,'guest');
+  store=addParallelTee(store);
+  store=startParallelReview(store);
+  const guestId=describeParallelSlot(store).sessionId;
+  store=switchParallelShopper(store,'returning');
+  store=restartParallelSlot(store);
+  assert.equal(describeParallelSlot(store).cartCount,0);
+  assert.equal(describeParallelSlot(store).events,0);
+  assert.equal(describeParallelSlot(store).hasSnapshot,false);
+  assert.throws(()=>recoverParallelSnapshot(store));
+  const oldInjected={...store,slots:{...store.slots,returning:{...store.slots.returning,snapshot:old}}};
+  assert.throws(()=>recoverParallelSnapshot(oldInjected));
+  store=switchParallelShopper(store,'guest');
+  assert.equal(describeParallelSlot(store).cartCount,1);
+  assert.equal(describeParallelSlot(store).events,1);
+  assert.equal(describeParallelSlot(store).sessionId,guestId);
+  assert.equal(describeParallelSlot(store).orderSubmitted,false);
+});
+test('tampered shopper slot and invalid switching fail without changing other shopper',()=>{
+  const store=createParallelSessions();
+  assert.throws(()=>switchParallelShopper(store,'unknown'));
+  assert.throws(()=>describeParallelSlot({...store,slots:{...store.slots,returning:store.slots.guest}}));
+  assert.equal(describeParallelSlot(store).shopper,'returning');
+});

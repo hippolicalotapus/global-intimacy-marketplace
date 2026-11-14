@@ -503,6 +503,24 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('#history-events').children.length"),0);
       assert.match(await evaluate("document.querySelector('#history-detail').textContent"),/Select a fictional history/);
     });
+    await t.test('parallel fictional sessions keep carts, snapshots and checkout history isolated',async()=>{
+      await navigateFixture();
+      assert.match(await evaluate("document.querySelector('#parallel-summary').textContent"),/returning fictional session: 1 cart items; 0 history events/);
+      await evaluate("document.querySelector('#parallel-save').click();document.querySelector('#parallel-review').click()");
+      assert.match(await evaluate("document.querySelector('#parallel-summary').textContent"),/1 history events; snapshot saved/);
+      await evaluate("document.querySelector('#parallel-guest').click()");
+      assert.match(await evaluate("document.querySelector('#parallel-summary').textContent"),/guest fictional session: 0 cart items; 0 history events; no snapshot/);
+      assert.equal(await evaluate("document.querySelector('#parallel-restore').disabled"),true);
+      await evaluate("document.querySelector('#parallel-add-tee').click();document.querySelector('#parallel-add-tee').click();document.querySelector('#parallel-review').click()");
+      assert.match(await evaluate("document.querySelector('#parallel-summary').textContent"),/guest fictional session: 2 cart items; 1 history events/);
+      await evaluate("document.querySelector('#parallel-returning').click()");
+      assert.match(await evaluate("document.querySelector('#parallel-summary').textContent"),/returning fictional session: 1 cart items; 1 history events; snapshot saved/);
+      await evaluate("document.querySelector('#parallel-restart').click()");
+      assert.match(await evaluate("document.querySelector('#parallel-summary').textContent"),/returning fictional session: 0 cart items; 0 history events; no snapshot/);
+      await evaluate("document.querySelector('#parallel-guest').click()");
+      assert.match(await evaluate("document.querySelector('#parallel-summary').textContent"),/guest fictional session: 2 cart items; 1 history events/);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });
