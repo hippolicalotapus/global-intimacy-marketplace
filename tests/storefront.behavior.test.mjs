@@ -556,3 +556,14 @@ test("Detail modal accurately reflects wishlist membership before toggling", asy
   delegated("detail", 201);
   assert.match(app.nodes.get("modalBody").innerHTML, /data-wish="201" aria-label="Add Three Sisters[^"]* to demo wishlist" aria-pressed="false">Add to wishlist demo/);
 });
+
+test("Detail modal favorites show named accessible pressed state", async () => {
+  const app = await storefront();
+  const delegated = (key, id) => app.document.dispatch("click", { closest: selector => selector === "[data-"+key+"]" ? { dataset: { [key]: String(id) } } : null });
+  delegated("detail", 201);
+  assert.match(app.nodes.get("modalBody").innerHTML, /data-fav="201" aria-label="Add Three Sisters[^"]* to saved items" aria-pressed="false">/);
+  delegated("fav", 201);
+  assert.match(app.nodes.get("modalBody").innerHTML, /data-fav="201" aria-label="Remove Three Sisters[^"]* from saved items" aria-pressed="true">/);
+  delegated("fav", 201);
+  assert.match(app.nodes.get("modalBody").innerHTML, /data-fav="201" aria-label="Add Three Sisters[^"]* to saved items" aria-pressed="false">/);
+});
