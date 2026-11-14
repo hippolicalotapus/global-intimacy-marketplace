@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createDemoCustomer,changeDemoCountry } from './mock-customer-ui.mjs';
-import { beginFictionalJourney,progressFictionalJourney,describeFictionalJourney } from './mock-checkout-lifecycle.mjs';
+import { beginFictionalJourney,progressFictionalJourney,retryDeclinedFictionalJourney,describeFictionalJourney } from './mock-checkout-lifecycle.mjs';
 
 test('fictional checkout starts as unpaid draft and never activates ordering',()=>{
   const j=beginFictionalJourney(createDemoCustomer());
@@ -80,4 +80,33 @@ test('simulated payment decline is distinct from cancellation and never charges 
   const cancelled=progressFictionalJourney(pending,'cancel');
   assert.equal(cancelled.outcome,'cancelled');
   assert.doesNotMatch(describeFictionalJourney(cancelled),/declined/);
+});
+
+test('decline retry opens fresh fictional draft and is bounded to three attempts',()=>{
+  let j=beginFictionalJourney(createDemoCustomer());
+  for(let attempt=1;attempt<=3;attempt++){
+    assert.equal(j.attemptNumber,attempt);
+    const pending=progressFictionalJourney(j,'pending');
+    const declined=progressFictionalJourney(pending,'decline');
+    assert.equal(declined.state,'cancelled');
+    assert.equal(declined.outcome,'declined');
+    assert.equal(declined.orderSubmitted,false);
+    assert.equal(declined.realPaymentProcessed,false);
+    assert.equal(declined.paymentEnabled,false);
+    if(attempt<3){
+      j=retryDeclinedFictionalJourney(declined,createDemoCustomer());
+      assert.equal(j.state,'draft');
+      assert.equal(j.order.processedEvents.length,0);
+      assert.match(describeFictionalJourney(j),new RegExp('Attempt '+(attempt+1)+' of 3'));
+    }else{
+      assert.throws(()=>retryDeclinedFictionalJourney(declined,createDemoCustomer()),/retry limit/);
+    }
+  }
+});
+test('only same fictional shopper cart and shipping may retry declined scenario',()=>{
+  const declined=progressFictionalJourney(progressFictionalJourney(beginFictionalJourney(createDemoCustomer()),'pending'),'decline');
+  assert.throws(()=>retryDeclinedFictionalJourney(declined,createDemoCustomer({shopper:'guest'})));
+  assert.throws(()=>retryDeclinedFictionalJourney(declined,changeDemoCountry(createDemoCustomer(),'US')));
+  assert.throws(()=>retryDeclinedFictionalJourney(beginFictionalJourney(createDemoCustomer()),createDemoCustomer()));
+  assert.equal(declined.state,'cancelled');
 });

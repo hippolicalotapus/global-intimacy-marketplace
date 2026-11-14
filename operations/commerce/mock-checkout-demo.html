@@ -65,6 +65,7 @@ button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:
 <button id="journey-pending" disabled>Simulate payment pending</button>
 <button id="journey-confirm" disabled>Simulate confirmation (no charge)</button>
 <button id="journey-decline" disabled>Simulate payment decline (no charge)</button>
+<button id="journey-retry" disabled>Retry declined fictional checkout</button>
 <button id="journey-cancel" disabled>Cancel fictional checkout</button>
 </div>
 </section>
@@ -76,7 +77,7 @@ import {
   saveDemoCart,restoreDemoCart,previewDemo
 } from './mock-customer-ui.mjs';
 import { assessFictionalCheckout } from './mock-checkout-review.mjs';
-import { beginFictionalJourney,progressFictionalJourney,describeFictionalJourney } from './mock-checkout-lifecycle.mjs';
+import { beginFictionalJourney,progressFictionalJourney,retryDeclinedFictionalJourney,describeFictionalJourney } from './mock-checkout-lifecycle.mjs';
 let state=createDemoCustomer(), snapshot=null, journey=null;
 const byId=id=>document.getElementById(id);
 function money(minor){return '$'+(minor/100).toFixed(2)+' CAD (fictional)'}
@@ -133,6 +134,7 @@ function render(){
   byId('journey-start').disabled=readiness.totalBeforeTaxMinor===null;
   byId('journey-pending').disabled=stage!=='draft';
   byId('journey-confirm').disabled=stage!=='awaiting_payment';
+  byId('journey-retry').disabled=!(stage==='cancelled'&&journey?.outcome==='declined'&&journey.attemptNumber<3);
   byId('journey-decline').disabled=stage!=='awaiting_payment';
   byId('journey-cancel').disabled=!['draft','awaiting_payment'].includes(stage);
   byId('estimate').textContent=p.checkout
@@ -186,6 +188,10 @@ function advanceJourney(event){
 byId('journey-start').addEventListener('click',()=>advanceJourney('start'));
 byId('journey-pending').addEventListener('click',()=>advanceJourney('pending'));
 byId('journey-confirm').addEventListener('click',()=>advanceJourney('confirm'));
+byId('journey-retry').addEventListener('click',()=>{
+  try{journey=retryDeclinedFictionalJourney(journey,state);render();report(describeFictionalJourney(journey))}
+  catch(error){report('Fictional retry rejected: '+error.message,'error')}
+});
 byId('journey-decline').addEventListener('click',()=>advanceJourney('decline'));
 byId('journey-cancel').addEventListener('click',()=>advanceJourney('cancel'));
 byId('recover').setAttribute('aria-description','Restores only a fictional snapshot held in this page');

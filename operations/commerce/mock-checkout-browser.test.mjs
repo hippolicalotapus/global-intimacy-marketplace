@@ -403,6 +403,20 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('#journey-start').disabled"),true);
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
+    await t.test('declined fictional payment allows fresh retry but never enables transactions',async()=>{
+      await navigateFixture();
+      await evaluate("document.querySelector('#journey-start').click();document.querySelector('#journey-pending').click();document.querySelector('#journey-decline').click()");
+      assert.equal(await evaluate("document.querySelector('#journey-retry').disabled"),false);
+      await evaluate("document.querySelector('#journey-retry').focus();document.activeElement.click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/Attempt 2 of 3/);
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/Fictional review draft/);
+      assert.equal(await evaluate("document.activeElement.id"),'journey-retry');
+      await evaluate("document.querySelector('#journey-pending').click();document.querySelector('#journey-decline').click();document.querySelector('#journey-retry').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/Attempt 3 of 3/);
+      await evaluate("document.querySelector('#journey-pending').click();document.querySelector('#journey-decline').click()");
+      assert.equal(await evaluate("document.querySelector('#journey-retry').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });

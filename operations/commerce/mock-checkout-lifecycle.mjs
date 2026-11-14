@@ -11,7 +11,9 @@ const statuses=Object.freeze({
 function requireJourney(journey){
   if(!journey || journey.mockOnly!==true || journey.order?.state!==journey.state ||
       !Object.hasOwn(statuses,journey.state) || journey.paymentEnabled!==false ||
-      journey.orderSubmitted!==false || journey.shipmentBooked!==false) {
+      journey.orderSubmitted!==false || journey.shipmentBooked!==false ||
+      journey.realPaymentProcessed!==false || journey.receiptIssued!==false ||
+      !Number.isSafeInteger(journey.attemptNumber) || journey.attemptNumber<1 || journey.attemptNumber>3) {
     throw new TypeError('Invalid fictional checkout journey');
   }
 }
@@ -26,7 +28,7 @@ function beginFictionalJourney(state){
   return Object.freeze({
     order,state:order.state,review,shopper:state.shopper,country:state.country,
     mockOnly:true,paymentEnabled:false,orderSubmitted:false,shipmentBooked:false,
-    realPaymentProcessed:false,receiptIssued:false,outcome:'none'
+    realPaymentProcessed:false,receiptIssued:false,outcome:'none',attemptNumber:1
   });
 }
 function progressFictionalJourney(journey,event){
@@ -42,12 +44,26 @@ function progressFictionalJourney(journey,event){
   const outcome=event==='decline'?'declined':event==='cancel'?'cancelled':event==='confirm'?'confirmed':journey.outcome;
   return Object.freeze({...journey,order,state:order.state,outcome});
 }
+function retryDeclinedFictionalJourney(previous,state){
+  requireJourney(previous);
+  if(previous.state!=='cancelled' || previous.outcome!=='declined') {
+    throw new Error('Only a declined fictional checkout can be retried');
+  }
+  if(previous.attemptNumber>=3)throw new Error('Fictional retry limit reached');
+  const next=beginFictionalJourney(state);
+  if(previous.shopper!==next.shopper || previous.country!==next.country ||
+    previous.review.subtotalMinor!==next.review.subtotalMinor ||
+    previous.review.itemCount!==next.review.itemCount) {
+    throw new Error('Fictional cart or shopper changed; start a new review');
+  }
+  return Object.freeze({...next,attemptNumber:previous.attemptNumber+1});
+}
 function describeFictionalJourney(journey){
   if(journey===null)return 'No fictional checkout review started.';
   requireJourney(journey);
   const label=journey.state==='cancelled' && journey.outcome==='declined'
     ? 'Simulated payment declined (no charge)' : statuses[journey.state];
-  return label+'. No real payment, order, receipt or delivery.';
+  return label+'. Attempt '+journey.attemptNumber+' of 3. No real payment, order, receipt or delivery.';
 }
-export { beginFictionalJourney,progressFictionalJourney,describeFictionalJourney };
+export { beginFictionalJourney,progressFictionalJourney,retryDeclinedFictionalJourney,describeFictionalJourney };
 
