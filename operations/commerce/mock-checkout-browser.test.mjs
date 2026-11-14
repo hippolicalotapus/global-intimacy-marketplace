@@ -100,6 +100,22 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
   try {
     browser = await chromeSession(url);
     const { evaluate, send } = browser;
+    let navigationSequence=0;
+    async function navigateFixture(targetUrl=url){
+      const destination=new URL(targetUrl);
+      destination.searchParams.set('qaNavigation',String(++navigationSequence));
+      await send('Page.navigate',{url:destination.href});
+      for(let i=0;i<80;i++){
+        try{
+          // A ready old document is not evidence that the requested reload completed.
+          if(await evaluate(`location.href===${JSON.stringify(destination.href)} && document.readyState==='complete' && document.querySelector('#items')?.children.length>0`))return;
+        }catch(error){
+          if(!/execution context|cannot find context|target navigated/i.test(error.message))throw error;
+        }
+        await delay(50);
+      }
+      throw Error('Fresh checkout fixture did not finish loading');
+    }
     await t.test('safe returning shopper estimate, disabled payment and recovery', async () => {
       assert.equal(await evaluate("document.querySelector('#items').textContent.includes('fictional_tee')"), true);
       assert.equal(await evaluate("document.querySelector('#estimate').textContent.includes('$29.50')"), true);
@@ -264,7 +280,7 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
     await t.test('invalid fictional snapshot rejects recovery, retains cart and announces error', async () => {
-      await send('Page.navigate',{url:url+'?fixtureErrors=1'});
+      await navigateFixture(url+'?fixtureErrors=1');
       for(let i=0;i<40;i++){
         if(await evaluate("document.querySelector('#items')?.children.length>0 && !!window.__gimLocalFixtureErrors"))break;
         await delay(50);
@@ -300,7 +316,7 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
     await t.test('keyboard Tab and Shift+Tab traverse fictional shopper and cart controls', async () => {
-      await send('Page.navigate',{url});
+      await navigateFixture();
       for(let i=0;i<40;i++){
         if(await evaluate("document.querySelector('#items')?.children.length>0 && !window.__gimLocalFixtureErrors"))break;
         await delay(50);
@@ -326,7 +342,7 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
     await t.test('fictional checkout review reflects cart, country and disabled production gates',async()=>{
-      await send('Page.navigate',{url});
+      await navigateFixture();
       for(let i=0;i<40;i++){if(await evaluate("document.querySelector('#review-gates')?.children.length===6"))break;await delay(50)}
       assert.match(await evaluate("document.querySelector('#review-summary').textContent"),/estimated before tax/);
       assert.equal(await evaluate("document.querySelector('#review-gates').children.length"),6);
@@ -341,7 +357,7 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
     await t.test('customer-facing fictional order lifecycle honors draft, pending, confirmation and cancellation',async()=>{
-      await send('Page.navigate',{url});
+      await navigateFixture();
       for(let i=0;i<40;i++){if(await evaluate("document.querySelector('#journey-start') && !document.querySelector('#journey-start').disabled"))break;await delay(50)}
       assert.equal(await evaluate("document.querySelector('#journey-confirm').disabled"),true);
       await evaluate("document.querySelector('#journey-start').click()");
@@ -390,3 +406,4 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
     await new Promise(ok => server.close(ok));
   }
 });
+
