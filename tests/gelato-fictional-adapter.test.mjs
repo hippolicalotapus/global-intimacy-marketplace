@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildFictionalGelatoPreview } from '../operations/gelato/fictional-adapter.mjs';
-const valid = {fictional:true,paymentStatus:'simulated',orderId:'DEMO-GIM-001',quantity:1};
+import { buildFictionalGelatoPreview, reserveFictionalPreview, resetFictionalPreviewReservationsForTests } from '../operations/gelato/fictional-adapter.mjs';
+const valid = {fictional:true,paymentStatus:'simulated',orderId:'DEMO-GIM-001',quantity:1,shippingVerified:true,shippingCountry:'US',shippingMethod:'express',shippingQuoteFictional:true};
 test('builds offline Gelato-compatible fictional payload',()=>{
  const result=buildFictionalGelatoPreview(valid);
  assert.equal(result.networkAllowed,false);
@@ -15,4 +15,15 @@ test('rejects real or unconfirmed payments',()=>{
 });
 test('rejects non-demo identifiers and unexpected artwork or SKUs',()=>{
  for(const patch of [{orderId:'REAL-123'},{artworkUrl:'https://example.com/private.png'},{productUid:'unknown'},{quantity:0},{quantity:11},{quantity:1.5}]) assert.throws(()=>buildFictionalGelatoPreview({...valid,...patch}));
+});
+
+test('fails closed on unverified shipping or incompatible country',()=>{
+ for(const patch of [{shippingVerified:false},{shippingCountry:'CA'},{shippingMethod:'standard'},{shippingQuoteFictional:false}])
+  assert.throws(()=>buildFictionalGelatoPreview({...valid,...patch}));
+});
+test('duplicate demo order reservations are rejected',()=>{
+ resetFictionalPreviewReservationsForTests();
+ assert.equal(reserveFictionalPreview(valid).networkAllowed,false);
+ assert.throws(()=>reserveFictionalPreview(valid),/Duplicate/);
+ assert.equal(reserveFictionalPreview({...valid,orderId:'DEMO-GIM-002'}).networkAllowed,false);
 });
