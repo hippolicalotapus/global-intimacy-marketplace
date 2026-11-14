@@ -82,8 +82,9 @@ function fromInputRow(row) {
   return out;
 }
 function nonnegQty(raw) {
-  const value=text(raw,40).replace(/[, ]/g,"");
-  if(!value || !/^\d+$/.test(value))return null;
+  // A separator may be a decimal or a malformed thousands group. Never guess stock.
+  const value=text(raw,40);
+  if(!/^\d+$/.test(value))return null;
   const quantity=Number(value);
   return Number.isSafeInteger(quantity)?quantity:null;
 }
