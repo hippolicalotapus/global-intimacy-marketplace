@@ -19,3 +19,9 @@ test("Country eligibility cannot override unapproved resale, stock or order gate
  for(const gate of ["resellerApproved","stockVerified","canAcceptOrders"]){const p=fixture();p[gate]=false;assert.equal(shipping.status(p,"CA",now),"unknown",gate);}
  assert.equal(shipping.status({id:1},"CA",now),"unknown");
 });
+
+test("Missing or malformed product records fail closed without throwing",()=>{
+ for(const product of [null,undefined,false,0,"",[]]){
+  assert.equal(shipping.status(product,"CA",now),"unknown");
+ }
+});
