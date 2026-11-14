@@ -44,10 +44,13 @@ async function chromeSession(url) {
     const target = targets.find(x => x.type === 'page');
     if (!target) throw Error('Chrome tab unavailable');
     const socket = new WebSocket(target.webSocketDebuggerUrl);
-    await new Promise((ok, reject) => {
-      socket.addEventListener('open', ok, { once: true });
-      socket.addEventListener('error', reject, { once: true });
-    });
+    await Promise.race([
+      new Promise((ok, reject) => {
+        socket.addEventListener('open', ok, { once: true });
+        socket.addEventListener('error', reject, { once: true });
+      }),
+      delay(5000).then(() => { throw Error('Chrome WebSocket connection timed out'); })
+    ]);
     let seq = 0;
     const pending = new Map();
     socket.addEventListener('message', message => {
@@ -58,11 +61,14 @@ async function chromeSession(url) {
       data.error ? promise.reject(Error(data.error.message)) : promise.resolve(data.result);
     });
     function send(method, params = {}) {
-      return new Promise((resolve, reject) => {
-        const id = ++seq;
-        pending.set(id, { resolve, reject });
-        socket.send(JSON.stringify({ id, method, params }));
-      });
+      return Promise.race([
+        new Promise((resolve, reject) => {
+          const id = ++seq;
+          pending.set(id, { resolve, reject });
+          socket.send(JSON.stringify({ id, method, params }));
+        }),
+        delay(5000).then(() => { throw Error('Chrome DevTools command timed out: ' + method); })
+      ]);
     }
     async function evaluate(expression) {
       const out = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
@@ -78,10 +84,12 @@ async function chromeSession(url) {
       await delay(100);
     }
     return { evaluate, send, close: async () => {
-      socket.close(); chrome.kill(); await rm(dir, { recursive: true, force: true });
+      socket.close(); chrome.kill('SIGKILL'); chrome.stderr?.destroy();
+      await rm(dir, { recursive: true, force: true });
     } };
   } catch (error) {
-    chrome.kill(); await rm(dir, { recursive: true, force: true });
+    chrome.kill('SIGKILL'); chrome.stderr?.destroy();
+    await rm(dir, { recursive: true, force: true });
     throw error;
   }
 }
@@ -124,6 +132,7 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
     });
   } finally {
     if (browser) await browser.close();
+    server.closeAllConnections();
     await new Promise(ok => server.close(ok));
   }
 });

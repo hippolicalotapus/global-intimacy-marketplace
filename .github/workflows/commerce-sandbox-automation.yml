@@ -28,4 +28,4 @@ jobs:
       - name: Chromium browser interactions and mobile layout
         run: |
           google-chrome --version
-          node --test operations/commerce/mock-checkout-browser.test.mjs
+          timeout 50s node --test operations/commerce/mock-checkout-browser.test.mjs
