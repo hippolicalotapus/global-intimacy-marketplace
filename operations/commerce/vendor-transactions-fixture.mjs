@@ -13,7 +13,13 @@ function createFixtureTransactionStore({users=[],sessions=[],vendors=[],membersh
     'Invalid session revocations');
   const revoked=new Set(revokedSessionIds);
   const activeSessions=sessions.filter(session=>!revoked.has(session.id));
-  const fixtures={users,sessions:activeSessions,vendors,memberships};
+  // Freeze trusted fixture values at creation; outside callers cannot silently grant access.
+  const fixtures={
+    users:users.map(user=>({...user})),
+    sessions:activeSessions.map(session=>({...session})),
+    vendors:vendors.map(vendor=>({...vendor})),
+    memberships:memberships.map(membership=>({...membership}))
+  };
   fail(Number.isSafeInteger(minimumRevision)&&minimumRevision>=0,'Invalid trusted revision floor');
   const create=state=>createFixturePersistenceContract({...fixtures,...(state===undefined?{}:{savedState:state}),minimumRevision:state===undefined?0:minimumRevision});
   let state,receipts;
