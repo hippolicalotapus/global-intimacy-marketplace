@@ -72,3 +72,43 @@ test('approval gate refuses stale or unauthorized display even after review',()=
   assert.equal(publicStorefront(vendor,profile,[{...stocked,mediaRights:false}],'CA',2000000).products.length,0);
   assert.equal(publicStorefront(vendor,profile,[{...stocked,inventoryUpdatedAt:new Date(0).toISOString()}],'CA',2000000).products.length,0);
 });
+
+test('vendor owner cannot moderate own storefront or listing through a moderator role',()=>{
+  const ownerModerator={id:actor.id,role:'platform_moderator',active:true};
+  const manager={id:'manager_001',active:true};
+  const managerMember={userId:manager.id,vendorSlug:vendor.slug,active:true,role:'manager'};
+  const otherDraft=draftStorefront(vendor,manager,managerMember,'Manager-created draft');
+  const otherListing=submitListing(vendor,manager,managerMember,{...input,id:'sku_002'});
+  assert.throws(()=>moderateStorefront(vendor,otherDraft,ownerModerator,'approved'));
+  assert.throws(()=>moderateListing(vendor,otherListing,ownerModerator,'approved',{mediaRights:true,resaleRights:true,compliance:true,territories:['CA']}));
+  assert.equal(moderateStorefront(vendor,otherDraft,reviewer,'approved').status,'approved');
+  assert.equal(moderateListing(vendor,otherListing,reviewer,'approved',{mediaRights:true,resaleRights:true,compliance:true,territories:['CA']}).status,'approved');
+});
+
+test('moderation is one-way and cannot approve rejected or already reviewed records',()=>{
+  const draft=draftStorefront(vendor,actor,membership,'Once only');
+  const listingDraft=submitListing(vendor,actor,membership,{...input,id:'sku_003'});
+  const evidence={mediaRights:true,resaleRights:true,compliance:true,territories:['CA']};
+  for (const decision of ['approved','rejected']) {
+    const reviewedStorefront=moderateStorefront(vendor,draft,reviewer,decision);
+    const reviewedListing=moderateListing(vendor,listingDraft,reviewer,decision,evidence);
+    assert.throws(()=>moderateStorefront(vendor,reviewedStorefront,reviewer,'approved'));
+    assert.throws(()=>moderateListing(vendor,reviewedListing,reviewer,'approved',evidence));
+  }
+  const application=applyVendor({ownerId:'owner_001',displayName:'Once Vendor',slug:'once-vendor',country:'CA'});
+  const reviewed=moderateVendor(application,reviewer,'rejected');
+  assert.throws(()=>moderateVendor(reviewed,reviewer,'approved',{legalEntity:true,eligibility:true,terms:true}));
+});
+
+test('cross-tenant drafts and inactive moderators cannot authorize approvals',()=>{
+  const otherVendor=moderateVendor(applyVendor({ownerId:'owner_002',displayName:'Other Vendor',slug:'other-vendor',country:'CA'}),reviewer,'approved',{legalEntity:true,eligibility:true,terms:true});
+  const draft=draftStorefront(vendor,actor,membership,'Current tenant');
+  const item=submitListing(vendor,actor,membership,{...input,id:'sku_004'});
+  const evidence={mediaRights:true,resaleRights:true,compliance:true,territories:['CA']};
+  assert.throws(()=>moderateStorefront(otherVendor,draft,reviewer,'approved'));
+  assert.throws(()=>moderateListing(otherVendor,item,reviewer,'approved',evidence));
+  assert.throws(()=>moderateStorefront(vendor,draft,{...reviewer,active:false},'approved'));
+  assert.throws(()=>moderateListing(vendor,item,{...reviewer,active:false},'approved',evidence));
+  assert.throws(()=>moderateStorefront(vendor,draft,{...reviewer,role:'vendor_manager'},'approved'));
+  assert.throws(()=>moderateListing(vendor,item,{...reviewer,role:'vendor_manager'},'approved',evidence));
+});
