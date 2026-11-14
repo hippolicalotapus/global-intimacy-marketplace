@@ -28,7 +28,7 @@ function quote(input) {
       !Number.isSafeInteger(shippingQuote.includedAllowanceCents) ||
       shippingQuote.includedAllowanceCents < 0 ||
       !["standard", "remote", "po_box"].includes(shippingQuote.serviceClass) ||
-      shippingQuote.expiresAt === undefined ||
+      typeof shippingQuote.expiresAt !== "string" ||
       !Number.isFinite(Date.parse(shippingQuote.expiresAt)) ||
       Date.parse(shippingQuote.expiresAt) <= Date.now()) {
     return {status: "quote_required", reason: "verified_shipping"};
