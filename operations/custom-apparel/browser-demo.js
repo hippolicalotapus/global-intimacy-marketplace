@@ -17,9 +17,23 @@
   function clearPreview() {
     front.textContent = "";
     back.textContent = "";
+    front.style.fontSize = "";
+    back.style.fontSize = "";
     frontStage.dataset.ready = "false";
     backStage.dataset.ready = "false";
     confirm.disabled = true;
+  }
+  // Reject lettering that would be silently cropped on the selected garment.
+  function fitPrintableText(node) {
+    node.style.fontSize = "";
+    if (!node.textContent) return true;
+    if (!Number.isFinite(node.clientHeight) || !Number.isFinite(node.scrollHeight)) return false;
+    for (let size = 16; size >= 9; size -= 1) {
+      node.style.fontSize = size + "px";
+      if (node.scrollHeight <= node.clientHeight + 1 &&
+          node.scrollWidth <= node.clientWidth + 1) return true;
+    }
+    return false;
   }
   function updateChoices() {
     const choices = window.GIMMockApparel.GARMENTS[garment.value];
@@ -67,6 +81,12 @@
       stage.dataset.garment = result.design.garment;
       stage.dataset.color = result.design.color;
       stage.dataset.ready = "true";
+    }
+    if (!fitPrintableText(front) || !fitPrintableText(back)) {
+      session.invalidate();
+      clearPreview();
+      message("The selected print area cannot display all lettering. Shorten your text or choose centre placement before reviewing again.");
+      return;
     }
     confirm.disabled = false;
     message("Mock preview ready. Pricing and delivery are unverified; no real order can be placed.");

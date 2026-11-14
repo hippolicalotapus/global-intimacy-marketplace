@@ -103,7 +103,8 @@ test("browser form previews shirt and hoodie, rejects invalid edits, and issues 
   const browserSrc=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
   const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement"];
   const elems=Object.fromEntries(ids.map(id=>[id,{
-    value:"",textContent:"",disabled:false,listeners:{},dataset:{},
+    value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
+    clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
     addEventListener(event,callback){this.listeners[event]=callback;},
     replaceChildren(...options){this.options=options;this.value=options[0]?.value||"";}
   }]));
@@ -159,4 +160,35 @@ test("left-chest print zone has enough width for common two-word artwork", async
   const html=await readFile(new URL("../operations/custom-apparel/index.html",import.meta.url),"utf8");
   assert.match(html,/\.print-text\[data-placement="left-chest"\]\{[^}]*width:28%/);
   assert.match(html,/\.stage\[data-ready="false"\] \.print-text\{display:none\}/);
+});
+
+test("browser preview rejects overflow and never issues fictional receipt for clipped text", async () => {
+  const {runInNewContext} = await import("node:vm");
+  const source = await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement"];
+  const nodes=Object.fromEntries(ids.map(id=>[id,{
+    value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
+    clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
+    addEventListener(type,fn){this.listeners[type]=fn;},
+    replaceChildren(...values){this.options=values;this.value=values[0]?.value||"";}
+  }]));
+  const document={getElementById:id=>nodes[id],createElement:()=>({value:"",textContent:""})};
+  nodes.garment.value="tshirt";nodes.frontPlacement.value="left-chest";
+  runInNewContext(source,{document,window:{GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")}});
+  const fire=(id,name)=>nodes[id].listeners[name]({preventDefault(){}});
+  nodes.frontText.value="Supercalifragilisticexpialidocious";
+  nodes.quantity.value="1";
+  nodes.frontMock.scrollHeight=95;
+  fire("customForm","input");fire("customForm","submit");
+  assert.equal(nodes.mockConfirm.disabled,true);
+  assert.equal(nodes.frontStage.dataset.ready,"false");
+  assert.match(nodes.status.textContent,/cannot display all lettering/);
+  fire("mockConfirm","click");
+  assert.equal(nodes.receipt.textContent,"");
+  nodes.frontMock.scrollHeight=40;
+  fire("customForm","input");fire("customForm","submit");
+  assert.equal(nodes.mockConfirm.disabled,false);
+  assert.equal(nodes.frontStage.dataset.ready,"true");
+  fire("mockConfirm","click");
+  assert.match(nodes.receipt.textContent,/MOCK-0001/);
 });

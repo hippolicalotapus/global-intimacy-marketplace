@@ -26,10 +26,11 @@ button:disabled{opacity:.5;cursor:not-allowed}.mock{border:2px dashed #b3bec9;bo
 .stage[data-color="cream"]{--cloth:#e8dfce;--outline:#a9a094;--ink:#202632}
 .stage[data-color="navy"]{--cloth:#253e60;--outline:#18263c}
 .stage[data-color="forest"]{--cloth:#315244;--outline:#1e362b}
-.print-text{position:absolute;top:42%;left:28%;width:44%;transform:translateY(-50%);text-align:center;color:var(--ink);font-size:clamp(10px,1.4vw,16px);font-weight:750;line-height:1.15;white-space:pre-wrap;overflow-wrap:anywhere;max-height:30%;overflow:hidden}
-.print-text[data-placement="left-chest"]{top:34%;left:27%;width:28%;font-size:clamp(8px,.8vw,11px)}
+.print-text{position:absolute;top:42%;left:28%;width:44%;transform:translateY(-50%);text-align:center;color:var(--ink);font-size:16px;font-weight:750;line-height:1.15;white-space:pre-wrap;overflow-wrap:normal;word-break:normal;max-height:30%;overflow:hidden}
+.print-text[data-placement="left-chest"]{top:34%;left:27%;width:28%;font-size:11px}
 .stage[data-ready="false"] .print-text{display:none}
-@media(max-width:420px){.preview-grid{gap:5px}.print-text{font-size:10px}}
+@media(max-width:420px){.preview-grid{gap:5px}}
+@media(max-width:350px){.preview-grid{grid-template-columns:1fr}.stage{max-width:220px;margin:0 auto}}
 
 @media(max-width:700px){main{grid-template-columns:1fr}}
 </style>
@@ -50,8 +51,8 @@ button:disabled{opacity:.5;cursor:not-allowed}.mock{border:2px dashed #b3bec9;bo
 <button type="submit">Review mock preview</button>
 </form>
 <section class="preview" aria-live="polite">
-<h2>Text placement preview</h2>
-<p>Illustrative front/back garment silhouettes and print placement. Not a photograph, supplier proof or exact scale.</p><div class="preview-grid"><div class="mock-panel"><strong>Front</strong><div id="frontStage" class="stage" data-garment="tshirt" data-color="black" data-ready="false">
+<h2>Front &amp; back garment preview</h2>
+<p>Illustrative front/back garment silhouettes and print placement. Lettering that cannot fit will be rejected rather than cut off. Not a photograph, supplier proof or exact scale.</p><div class="preview-grid"><div class="mock-panel"><strong>Front</strong><div id="frontStage" class="stage" data-garment="tshirt" data-color="black" data-ready="false">
 <svg viewBox="0 0 240 320" role="img" aria-label="Front illustrative garment shape">
 <g class="shirt"><path class="fabric" d="M75 45 L95 37 Q120 58 145 37 L165 45 L210 75 L190 124 L170 112 L170 275 Q120 282 70 275 L70 112 L50 124 L30 75 Z"/><path class="seam" d="M95 37 Q120 85 145 37 M73 269 Q120 279 167 269"/></g>
 <g class="hoodie"><path class="fabric" d="M95 38 Q120 11 145 38 L164 48 L177 51 L209 77 L189 140 L170 127 L170 274 Q120 283 70 274 L70 127 L51 140 L31 77 L63 51 L76 48 Z"/><path class="fabric" d="M95 38 Q120 12 145 38 L159 61 Q120 99 81 61 Z"/><path class="seam" d="M109 76 L111 110 M131 76 L129 110 M75 269 Q120 278 165 269"/><path class="fabric" d="M89 201 Q120 209 151 201 L156 238 Q120 252 84 238 Z"/></g>
