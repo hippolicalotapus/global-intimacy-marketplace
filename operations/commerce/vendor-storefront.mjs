@@ -25,7 +25,9 @@ function draftStorefront(vendor, actor, membership, description) {
   return Object.freeze({ vendorSlug:vendor.slug, name:vendor.displayName, description:description.trim(), submittedBy:actor.id, status:'draft' });
 }
 function moderateStorefront(vendor, draft, actor, decision) {
-  assert(vendor?.status === 'approved' && draft?.vendorSlug === vendor.slug && draft.status === 'draft', 'Invalid storefront');
+  assert(vendor?.status === 'approved' && draft?.vendorSlug === vendor.slug && draft.status === 'draft' &&
+    safeId(draft.submittedBy) && safeText(draft.name) && draft.name === vendor.displayName &&
+    safeText(draft.description), 'Invalid storefront');
   assert(actor?.role === 'platform_moderator' && actor.active === true && safeId(actor.id) && actor.id !== draft.submittedBy, 'Independent moderator required');
   assert(['approved','rejected'].includes(decision), 'Invalid decision');
   return Object.freeze({...draft,status:decision});
@@ -41,7 +43,11 @@ function submitListing(vendor, actor, membership, input) {
     mediaRights:false,resaleAuthorized:false,territories:Object.freeze([]),stock:0,inventoryUpdatedAt:null});
 }
 function moderateListing(vendor, listing, actor, decision, evidence={}) {
-  assert(vendor?.status === 'approved' && listing?.status === 'pending' && listing.vendorSlug === vendor.slug,'Invalid listing review');
+  assert(vendor?.status === 'approved' && listing?.status === 'pending' && listing.vendorSlug === vendor.slug &&
+    safeId(listing.id) && safeId(listing.submittedBy) && safeText(listing.title) && safeText(listing.category) &&
+    Array.isArray(listing.requestedTerritories) && listing.requestedTerritories.length > 0 &&
+    listing.requestedTerritories.length <= 30 && listing.requestedTerritories.every(x => typeof x === 'string' && /^[A-Z]{2}$/.test(x)) &&
+    new Set(listing.requestedTerritories).size === listing.requestedTerritories.length,'Invalid listing review');
   assert(actor?.role === 'platform_moderator' && actor.active === true && safeId(actor.id) && actor.id !== listing.submittedBy,'Independent moderator required');
   assert(['approved','rejected'].includes(decision),'Invalid decision');
   let territories=[];
