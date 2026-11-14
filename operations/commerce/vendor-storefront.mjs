@@ -5,6 +5,7 @@ const safeText = x => typeof x === 'string' && x.trim().length > 0 && x.length <
 const assert = (ok, why) => { if (!ok) throw new Error(why); };
 function applyVendor(input) {
   assert(safeId(input?.ownerId), 'Owner ID required');
+  assert(safeText(input?.displayName) && input.displayName.length <= 160, 'Unsafe vendor name');
   return Object.freeze({...makeVendorApplication(input), ownerId: input.ownerId});
 }
 function moderateVendor(application, actor, decision, evidence={}) {
@@ -20,7 +21,7 @@ function requireVendorEditor(vendor, actor, membership) {
 }
 function draftStorefront(vendor, actor, membership, description) {
   requireVendorEditor(vendor, actor, membership);
-  assert(safeText(description), 'Invalid storefront description');
+  assert(safeText(description) && safeText(vendor.displayName), 'Invalid storefront description or name');
   return Object.freeze({ vendorSlug:vendor.slug, name:vendor.displayName, description:description.trim(), submittedBy:actor.id, status:'draft' });
 }
 function moderateStorefront(vendor, draft, actor, decision) {
@@ -55,7 +56,9 @@ function moderateListing(vendor, listing, actor, decision, evidence={}) {
 }
 function publicStorefront(vendor, profile, listings, country, now) {
   if (vendor?.status !== 'approved' || profile?.status !== 'approved' || profile.vendorSlug !== vendor.slug ||
-    !Array.isArray(listings) || typeof country !== 'string' || !/^[A-Z]{2}$/.test(country)) return null;
+    !Array.isArray(listings) || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(vendor.slug) ||
+    !safeText(profile.name) || !safeText(profile.description) || profile.name !== vendor.displayName ||
+    typeof country !== 'string' || !/^[A-Z]{2}$/.test(country)) return null;
   const products=[]; const ids=new Set();
   for (const item of listings) {
     if (item?.vendorSlug !== vendor.slug || ids.has(item.id) || !safeId(item.id) ||
