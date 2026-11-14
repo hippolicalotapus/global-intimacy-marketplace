@@ -87,3 +87,17 @@ test('standalone HTML demo contains labeled user controls and disabled payment',
   assert.match(html, /mock-customer-ui.mjs/);
   assert.doesNotMatch(html, /localStorage|sessionStorage|fetch\s*\(|XMLHttpRequest/);
 });
+
+test('fictional cart recovery rejects invalid JSON and leaves the original state intact', () => {
+  const original=createDemoCustomer();
+  assert.throws(() => restoreDemoCart(original,'{invalid'));
+  assert.equal(original.cart.lines[0].quantity,1);
+  assert.equal(original.account.authenticated,false);
+});
+test('fictional recovery snapshot is bound to its original session fixture', () => {
+  const original=createDemoCustomer();
+  const snapshot=saveDemoCart(original);
+  const other=createDemoCustomer({shopper:'guest'});
+  assert.throws(() => restoreDemoCart(other,snapshot));
+  assert.equal(other.cart.lines.length,0);
+});
