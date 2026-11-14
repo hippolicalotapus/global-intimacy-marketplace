@@ -50,6 +50,12 @@ button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:
 <p id="estimate" role="status" aria-live="polite" aria-atomic="true"></p><p><small>Taxes and final pricing not calculated. No shipping booked.</small></p>
 <button disabled aria-disabled="true">Payment disabled — simulation only</button>
 </section>
+<section class="panel" aria-labelledby="review-title">
+<h2 id="review-title">4. Fictional checkout review</h2>
+<p><small>Review only. No payment, final taxes, shipping order or real purchase is possible.</small></p>
+<div id="review-summary" role="status" aria-live="polite" aria-atomic="true"></div>
+<ul id="review-gates" aria-label="Checkout readiness requirements"></ul>
+</section>
 <p id="status" role="status" aria-live="polite" aria-atomic="true"></p>
 </main>
 <script type="module">
@@ -57,6 +63,7 @@ import {
   catalog,createDemoCustomer,changeDemoQuantity,changeDemoCountry,
   saveDemoCart,restoreDemoCart,previewDemo
 } from './mock-customer-ui.mjs';
+import { assessFictionalCheckout } from './mock-checkout-review.mjs';
 let state=createDemoCustomer(), snapshot=null;
 const byId=id=>document.getElementById(id);
 function money(minor){return '$'+(minor/100).toFixed(2)+' CAD (fictional)'}
@@ -95,6 +102,18 @@ function render(){
     }
     if(!next)next=list.querySelector('button:not(:disabled)');
     if(next)next.focus();
+  }
+  const readiness=assessFictionalCheckout(state);
+  byId('review-summary').textContent=readiness.totalBeforeTaxMinor===null
+    ? 'Fictional review unavailable: no eligible shipping estimate. No order placed.'
+    : readiness.itemCount+' fictional item(s); sample subtotal '+money(readiness.subtotalMinor)+
+      '; fictional shipping '+money(readiness.shippingMinor)+
+      '; estimated before tax '+money(readiness.totalBeforeTaxMinor)+'. No order placed.';
+  const gates=byId('review-gates');gates.replaceChildren();
+  for(const requirement of readiness.requirements){
+    const line=document.createElement('li');
+    line.textContent=(requirement.ready?'Sample ready: ':'Not enabled: ')+requirement.label;
+    gates.append(line);
   }
   byId('estimate').textContent=p.checkout
     ? 'Merchandise '+money(p.checkout.checkout.order.totalMinor)+

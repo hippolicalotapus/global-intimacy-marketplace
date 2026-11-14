@@ -325,6 +325,21 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('#status').getAttribute('aria-live')"),'polite');
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
+    await t.test('fictional checkout review reflects cart, country and disabled production gates',async()=>{
+      await send('Page.navigate',{url});
+      for(let i=0;i<40;i++){if(await evaluate("document.querySelector('#review-gates')?.children.length===6"))break;await delay(50)}
+      assert.match(await evaluate("document.querySelector('#review-summary').textContent"),/estimated before tax/);
+      assert.equal(await evaluate("document.querySelector('#review-gates').children.length"),6);
+      assert.equal(await evaluate("document.querySelector('#review-gates').textContent.includes('Not enabled: Real payment authorization')"),true);
+      await evaluate("document.querySelector('#add-hoodie').click()");
+      assert.match(await evaluate("document.querySelector('#review-summary').textContent"),/2 fictional item/);
+      await evaluate("document.querySelector('#country').value='GB';document.querySelector('#country').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.match(await evaluate("document.querySelector('#review-summary').textContent"),/review unavailable/);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+      await evaluate("document.querySelector('#country').value='CA';document.querySelector('#country').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.match(await evaluate("document.querySelector('#review-summary').textContent"),/estimated before tax/);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });
