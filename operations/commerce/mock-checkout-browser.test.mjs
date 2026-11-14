@@ -28,16 +28,18 @@ async function chromeSession(url) {
   const chrome = spawn(process.env.CHROME_BIN || 'google-chrome', [
     '--headless', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
     '--no-first-run', '--remote-debugging-port=0', '--user-data-dir=' + dir, 'about:blank'
-  ], { stdio: 'ignore' });
+  ], { stdio: ['ignore', 'ignore', 'pipe'] });
+  let diagnostics = '';
+  chrome.stderr?.on('data', chunk => { diagnostics = (diagnostics + chunk.toString()).slice(-3000); });
   try {
     let port;
     for (let i = 0; i < 70; i++) {
-      if (chrome.exitCode !== null) throw Error('Chrome exited before startup');
+      if (chrome.exitCode !== null) throw Error('Chrome exited before startup: ' + diagnostics);
       try { port = Number((await readFile(join(dir, 'DevToolsActivePort'), 'utf8')).split('\n')[0]); } catch {}
       if (port) break;
       await delay(100);
     }
-    if (!port) throw Error('Chrome DevTools endpoint unavailable');
+    if (!port) throw Error('Chrome DevTools endpoint unavailable: ' + diagnostics);
     const targets = await (await fetch('http://127.0.0.1:' + port + '/json/list')).json();
     const target = targets.find(x => x.type === 'page');
     if (!target) throw Error('Chrome tab unavailable');
