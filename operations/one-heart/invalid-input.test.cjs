@@ -38,3 +38,11 @@ test("size and tax requirements preserve preview-only behavior", () => {
   assert.equal(result.totalCents, 8849);
   assert.equal(result.checkoutEnabled, false);
 });
+
+test("malformed carrier expiry values cannot crash pricing preview", () => {
+  const base = {product: "standard", country: "CA", postal: "T0E2A0", shippingQuote, taxCents: 0};
+  for (const expiresAt of [null, 0, {}, [], Symbol("bad")]) {
+    assert.doesNotThrow(() => quote({...base, shippingQuote: {...shippingQuote, expiresAt}}));
+    assert.equal(quote({...base, shippingQuote: {...shippingQuote, expiresAt}}).status, "quote_required");
+  }
+});
