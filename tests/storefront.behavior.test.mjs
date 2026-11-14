@@ -567,3 +567,18 @@ test("Detail modal favorites show named accessible pressed state", async () => {
   delegated("fav", 201);
   assert.match(app.nodes.get("modalBody").innerHTML, /data-fav="201" aria-label="Add Three Sisters[^"]* to saved items" aria-pressed="false">/);
 });
+
+test("Full demo wishlist does not dismiss a product detail modal or imply a successful add", async () => {
+  const app = await storefront();
+  const ids = app.window.GIM_PRODUCTS.slice(0, 25).map(p => p.id);
+  const delegated = (key, id) => app.document.dispatch("click", { closest: selector => selector === "[data-"+key+"]" ? { dataset: { [key]: String(id) } } : null });
+  ids.slice(0, 24).forEach(id => delegated("wish", id));
+  delegated("detail", ids[24]);
+  assert.equal(app.nodes.get("productDialog").open, true);
+  const initialHash = app.location.hash;
+  delegated("wish", ids[24]);
+  assert.equal(app.nodes.get("productDialog").open, true);
+  assert.equal(app.location.hash, initialHash);
+  assert.match(app.nodes.get("toast").textContent, /24 items/);
+  assert.match(app.nodes.get("modalBody").innerHTML, /data-wish="[^"]+" aria-label="Add [^"]+ to demo wishlist" aria-pressed="false"/);
+});

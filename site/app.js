@@ -203,11 +203,12 @@
     notify(favorites.includes(id)?"Saved to your favorites.":"Removed from favorites.");
   }
   function wishlist(id){
-    if(!byId.has(id))return;
-    if(!selected.includes(id)&&selected.length>=24){notify("Demo wishlists support up to 24 items.");return;}
+    if(!byId.has(id))return false;
+    if(!selected.includes(id)&&selected.length>=24){notify("Demo wishlists support up to 24 items.");return false;}
     selected=selected.includes(id)?selected.filter(function(x){return x!==id;}):selected.concat(id);
     saveJson("gim:wishlist",selected);renderPicker();renderSelection();
     notify(selected.includes(id)?"Added to wishlist preview.":"Removed from wishlist preview.");
+    return true;
   }
   function detailVisual(p,view){
     var box=view.box, frame="detail-frame-"+p.id+"-"+box.join("-");
@@ -327,7 +328,7 @@
     document.addEventListener("click",function(e){
       var fav=e.target.closest("[data-fav]"),wish=e.target.closest("[data-wish]"),detail=e.target.closest("[data-detail]"),remove=e.target.closest("[data-remove]"),browse=e.target.closest("[data-browse-category]");
       if(fav){favorite(Number(fav.dataset.fav));if(el("productDialog").open)details(Number(fav.dataset.fav));}
-      else if(wish){wishlist(Number(wish.dataset.wish));if(el("productDialog").open){el("productDialog").close();location.hash="creators";}}
+      else if(wish){var wishChanged=wishlist(Number(wish.dataset.wish));if(wishChanged!==false&&el("productDialog").open){el("productDialog").close();location.hash="creators";}}
       else if(detail)details(Number(detail.dataset.detail));
       else if(remove)wishlist(Number(remove.dataset.remove));
       else if(browse){e.preventDefault();browseCategory(browse.dataset.browseCategory);}
