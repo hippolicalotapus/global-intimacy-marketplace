@@ -63,3 +63,15 @@ test("Supplier ID format validation",()=>{
 test("Unclosed CSV quote is rejected rather than truncated",()=>{
   assert.throws(()=>parseCSV('SKU,Name\n1,"unterminated'),/Malformed CSV/);
 });
+
+test("Ambiguous stock quantities fail closed instead of becoming fabricated units",()=>{
+  for(const stock of ["1,2","1 2","12.5","-1","1,20,0"]){
+    const staged=stageSupplierRows("demo",[{sku:"sku-1",name:"Safe import",stock}]);
+    assert.equal(staged.products[0].privateSupplierData.rawStockQuantity,null,stock);
+    assert.ok(staged.products[0].warnings.some(x=>x.includes("Stock not reported")),stock);
+    assert.equal(staged.products[0].flags.publicListingReady,false);
+    assert.equal(staged.allowOrders,false);
+  }
+  const valid=stageSupplierRows("demo",[{sku:"sku-2",name:"Safe import",stock:"1200"}]);
+  assert.equal(valid.products[0].privateSupplierData.rawStockQuantity,1200);
+});
