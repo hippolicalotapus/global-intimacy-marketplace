@@ -9,10 +9,17 @@ const OPTIONS = Object.freeze({
   'future-opportunities': ['Help test new wishlist features', 'Affiliate or referral commissions (if established)', 'Product testing or review collaborations', 'Exclusive merchandise collaborations', 'Only giving feedback, no promotion']
 });
 
-/** Only aggregate consented records; every reported bucket needs >=5 responses. */
+// Match the seven optional questions in site/creator-feedback.html. An empty
+// consented POST is not evidence that somebody answered the questionnaire.
+const QUESTION_FIELDS = Object.freeze([
+  'creator-format', 'wishlist-experience', 'products-wanted', 'safer-gifting',
+  'privacy-priority', 'future-opportunities', 'must-have-feature'
+]);
+
+/** Only aggregate consented, nonempty records; every reported bucket needs >=5 responses. */
 export function aggregateCreatorFeedback(records) {
   if (!Array.isArray(records)) throw new TypeError('Expected array of feedback records');
-  const eligible = records.filter(row => row && typeof row === 'object' && !Array.isArray(row) && row['response-consent'] === 'yes' && (row['form-name'] == null || row['form-name'] === 'creator-feedback') && (row['bot-field'] == null || row['bot-field'] === ''));
+  const eligible = records.filter(row => row && typeof row === 'object' && !Array.isArray(row) && row['response-consent'] === 'yes' && (row['form-name'] == null || row['form-name'] === 'creator-feedback') && (row['bot-field'] == null || row['bot-field'] === '') && QUESTION_FIELDS.some(field => typeof row[field] === 'string' && row[field].trim() !== ''));
   const groups = {};
   for (const [field, options] of Object.entries(OPTIONS)) {
     const counts = Object.fromEntries(options.map(x => [x, 0]));
