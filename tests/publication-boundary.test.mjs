@@ -16,8 +16,8 @@ function assertPublicBoundary(base) {
   let section = '';
   const publish = [];
   for (const line of config.split(/\r?\n/)) {
-    const header = /^\s*\[([^\]]+)\]\s*(?:#.*)?$/.exec(line);
-    if (header) { section = header[1]; continue; }
+    const header = /^\s*(?:\[\[([^\]]+)\]\]|\[([^\]]+)\])\s*(?:#.*)?$/.exec(line);
+    if (header) { section = header[1] ? `array:${header[1]}` : header[2]; continue; }
     const match = /^\s*publish\s*=\s*['"]([^'"]+)['"]\s*(?:#.*)?$/.exec(line);
     if (match) publish.push({ section, directory: match[1] });
   }
@@ -71,5 +71,13 @@ test('publish key outside [build] cannot stand in for the public site boundary',
       writeFileSync(join(dir,'netlify.toml'),`[build]\ncommand = ""\n${scope}\npublish = "site"\n`);
       assert.throws(()=>assertPublicBoundary(dir),/must be declared inside \[build\]/);
     }
+  } finally { rmSync(dir,{recursive:true,force:true}); }
+});
+
+test('publish inside a TOML array table cannot impersonate the [build] setting',()=>{
+  const dir=fixture();
+  try {
+    writeFileSync(join(dir,'netlify.toml'),'[build]\ncommand = ""\n[[headers]]\npublish = "site"\n');
+    assert.throws(()=>assertPublicBoundary(dir),/must be declared inside \[build\]/);
   } finally { rmSync(dir,{recursive:true,force:true}); }
 });
