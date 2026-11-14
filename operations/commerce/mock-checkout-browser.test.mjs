@@ -374,6 +374,24 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/cancelled/);
       assert.equal(await evaluate("document.querySelector('#journey-pending').disabled"),true);
     });
+    await t.test('fictional decline stays payment-disabled and rejects incompatible shipping',async()=>{
+      await navigateFixture();
+      assert.equal(await evaluate("document.querySelector('#journey-decline').disabled"),true);
+      await evaluate("document.querySelector('#journey-start').click()");
+      assert.equal(await evaluate("document.querySelector('#journey-decline').disabled"),true);
+      await evaluate("document.querySelector('#journey-pending').click()");
+      assert.equal(await evaluate("document.querySelector('#journey-decline').disabled"),false);
+      await evaluate("document.querySelector('#journey-decline').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/payment declined \(no charge\)/);
+      assert.equal(await evaluate("document.querySelector('#journey-confirm').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('#journey-decline').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+      await evaluate("document.querySelector('#journey-start').click();document.querySelector('#journey-cancel').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/checkout cancelled/);
+      await evaluate("document.querySelector('#journey-start').click();document.querySelector('#country').value='GB';document.querySelector('#country').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/No fictional checkout review started/);
+      assert.equal(await evaluate("document.querySelector('#journey-decline').disabled"),true);
+    });
     await t.test('cart changes and shopper switches invalidate fictional lifecycle',async()=>{
       await evaluate("document.querySelector('#journey-start').click()");
       await evaluate("document.querySelector('#add-hoodie').click()");

@@ -26,24 +26,28 @@ function beginFictionalJourney(state){
   return Object.freeze({
     order,state:order.state,review,shopper:state.shopper,country:state.country,
     mockOnly:true,paymentEnabled:false,orderSubmitted:false,shipmentBooked:false,
-    realPaymentProcessed:false,receiptIssued:false
+    realPaymentProcessed:false,receiptIssued:false,outcome:'none'
   });
 }
 function progressFictionalJourney(journey,event){
   requireJourney(journey);
-  if(!['pending','confirm','cancel'].includes(event)) throw new TypeError('Unknown fictional event');
+  if(!['pending','confirm','cancel','decline'].includes(event)) throw new TypeError('Unknown fictional event');
   const target=event==='pending'?'awaiting_payment':event==='confirm'?'paid':'cancelled';
   // Only the existing order-domain transition rules decide whether the event is legal.
-  const eventId={pending:'fictional_event_pending',confirm:'fictional_event_confirm',cancel:'fictional_event_cancel'}[event];
+  const eventId={pending:'fictional_event_pending',confirm:'fictional_event_confirm',cancel:'fictional_event_cancel',decline:'fictional_event_decline'}[event];
   // The UI treats repeated actions as invalid; keep order-domain webhook replay semantics intact.
   if(journey.order.processedEvents.includes(eventId)) throw new Error('Fictional action already applied');
+  if(event==='decline' && journey.state!=='awaiting_payment') throw new Error('Decline requires fictional payment pending');
   const order=advance(journey.order,target,eventId);
-  return Object.freeze({...journey,order,state:order.state});
+  const outcome=event==='decline'?'declined':event==='cancel'?'cancelled':event==='confirm'?'confirmed':journey.outcome;
+  return Object.freeze({...journey,order,state:order.state,outcome});
 }
 function describeFictionalJourney(journey){
   if(journey===null)return 'No fictional checkout review started.';
   requireJourney(journey);
-  return statuses[journey.state]+'. No real payment, order, receipt or delivery.';
+  const label=journey.state==='cancelled' && journey.outcome==='declined'
+    ? 'Simulated payment declined (no charge)' : statuses[journey.state];
+  return label+'. No real payment, order, receipt or delivery.';
 }
 export { beginFictionalJourney,progressFictionalJourney,describeFictionalJourney };
 

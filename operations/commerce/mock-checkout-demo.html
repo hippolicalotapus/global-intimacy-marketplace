@@ -64,6 +64,7 @@ button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:
 <button id="journey-start">Start fictional review</button>
 <button id="journey-pending" disabled>Simulate payment pending</button>
 <button id="journey-confirm" disabled>Simulate confirmation (no charge)</button>
+<button id="journey-decline" disabled>Simulate payment decline (no charge)</button>
 <button id="journey-cancel" disabled>Cancel fictional checkout</button>
 </div>
 </section>
@@ -132,6 +133,7 @@ function render(){
   byId('journey-start').disabled=readiness.totalBeforeTaxMinor===null;
   byId('journey-pending').disabled=stage!=='draft';
   byId('journey-confirm').disabled=stage!=='awaiting_payment';
+  byId('journey-decline').disabled=stage!=='awaiting_payment';
   byId('journey-cancel').disabled=!['draft','awaiting_payment'].includes(stage);
   byId('estimate').textContent=p.checkout
     ? 'Merchandise '+money(p.checkout.checkout.order.totalMinor)+
@@ -184,6 +186,7 @@ function advanceJourney(event){
 byId('journey-start').addEventListener('click',()=>advanceJourney('start'));
 byId('journey-pending').addEventListener('click',()=>advanceJourney('pending'));
 byId('journey-confirm').addEventListener('click',()=>advanceJourney('confirm'));
+byId('journey-decline').addEventListener('click',()=>advanceJourney('decline'));
 byId('journey-cancel').addEventListener('click',()=>advanceJourney('cancel'));
 byId('recover').setAttribute('aria-description','Restores only a fictional snapshot held in this page');
 // Localhost-only fictional failure injection for offline browser regression tests.

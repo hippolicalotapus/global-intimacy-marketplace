@@ -64,3 +64,20 @@ test('each fictional action rejects replay without changing the original journey
   assert.equal(pending.order.processedEvents.length,1);
 });
 
+
+test('simulated payment decline is distinct from cancellation and never charges or submits',()=>{
+  const draft=beginFictionalJourney(createDemoCustomer());
+  const pending=progressFictionalJourney(draft,'pending');
+  const declined=progressFictionalJourney(pending,'decline');
+  assert.equal(declined.state,'cancelled');
+  assert.equal(declined.outcome,'declined');
+  assert.match(describeFictionalJourney(declined),/payment declined \(no charge\)/);
+  for(const key of ['orderSubmitted','paymentEnabled','realPaymentProcessed','shipmentBooked','receiptIssued'])assert.equal(declined[key],false);
+  assert.equal(pending.state,'awaiting_payment');
+  assert.throws(()=>progressFictionalJourney(draft,'decline'),/requires fictional payment pending/);
+  assert.throws(()=>progressFictionalJourney(declined,'decline'));
+  assert.throws(()=>progressFictionalJourney(declined,'confirm'));
+  const cancelled=progressFictionalJourney(pending,'cancel');
+  assert.equal(cancelled.outcome,'cancelled');
+  assert.doesNotMatch(describeFictionalJourney(cancelled),/declined/);
+});
