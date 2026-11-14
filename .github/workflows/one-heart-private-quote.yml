@@ -1,0 +1,31 @@
+name: ONE HEART private quote regression
+on:
+  push:
+    branches:
+      - 'fix/one-heart-invalid-quote-input-20261113'
+    paths:
+      - 'operations/one-heart/**'
+      - '.github/workflows/one-heart-private-quote.yml'
+  pull_request:
+    paths:
+      - 'operations/one-heart/**'
+      - '.github/workflows/one-heart-private-quote.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-quote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax-check private quote modules
+        run: |
+          node --check operations/one-heart/quote-preview.cjs
+          node --check operations/one-heart/preview-cli.cjs
+          node --check operations/one-heart/invalid-input.test.cjs
+      - name: Run offline fail-closed regression tests
+        run: node --test operations/one-heart/invalid-input.test.cjs
