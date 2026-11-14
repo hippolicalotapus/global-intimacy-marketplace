@@ -20,15 +20,35 @@ function createFixtureTransactionStore({users=[],sessions=[],vendors=[],membersh
       'Invalid transaction restore');
     state=create(savedState.state).snapshot();
     receipts=new Map();
+    const coveredRevisions=new Set();
+    const savedRecords=new Map(state.records.map(record=>[record.id,record]));
     for(const item of savedState.receipts){
       fail(item&&typeof item==='object'&&!Array.isArray(item)&&
         Object.keys(item).sort().join(',')==='digest,key,result,revision'&&token(item.key)&&
         /^[a-f0-9]{64}$/.test(item.digest)&&Number.isSafeInteger(item.revision)&&
-        item.revision>=0&&item.revision<=state.revision&&!receipts.has(item.key)&&
-        Array.isArray(item.result),'Invalid idempotency receipt');
-      // Receipts are trusted fixture data; only a verified external seal could attest integrity.
+        item.revision>0&&item.revision<=state.revision&&!receipts.has(item.key)&&
+        Array.isArray(item.result)&&item.result.length>0&&item.result.length<=25&&
+        item.revision>=item.result.length,'Invalid idempotency receipt');
+      const start=item.revision-item.result.length;
+      for(let i=0;i<item.result.length;i++){
+        const result=item.result[i],event=state.events[start+i];
+        fail(event&&!coveredRevisions.has(event.revision)&&
+          event.revision===start+i+1&&result&&typeof result==='object'&&!Array.isArray(result)&&
+          Object.keys(result).sort().join(',')==='id,reviewedBy,status,submittedBy,title,type,vendorSlug,version'&&
+          result.id===event.recordId&&result.version===event.version&&
+          result.status===(event.action==='submitted'?'pending':event.action)&&
+          result.reviewedBy===(event.action==='submitted'?null:event.actorId)&&
+          (event.action!=='submitted'||result.submittedBy===event.actorId),
+          'Receipt conflicts with audit event');
+        const finalRecord=savedRecords.get(result.id);
+        fail(finalRecord&&result.vendorSlug===finalRecord.vendorSlug&&
+          result.type===finalRecord.type&&result.title===finalRecord.title&&
+          result.submittedBy===finalRecord.submittedBy,'Receipt conflicts with stored record');
+        coveredRevisions.add(event.revision);
+      }
       receipts.set(item.key,copy(item));
     }
+    fail(coveredRevisions.size===state.events.length,'Missing or overlapping idempotency receipts');
   }
   function batch({key,expectedRevision,operations}={}){
     fail(token(key),'Idempotency key required');
