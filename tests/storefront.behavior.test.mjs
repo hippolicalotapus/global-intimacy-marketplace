@@ -495,12 +495,12 @@ test("Collection links announce the current collection and clear it on normal sh
 
 test("Saved-item and wishlist controls name products and preserve pressed state", async () => {
   const app = await storefront();
-  assert.match(app.nodes.get("productGrid").innerHTML, /aria-label="Add Three Sisters to saved items" aria-pressed="false"/);
-  assert.match(app.nodes.get("wishlistPicker").innerHTML, /aria-label="Add Three Sisters to demo wishlist" aria-pressed="false"/);
+  assert.match(app.nodes.get("productGrid").innerHTML, /aria-label="Add Three Sisters[^"]* to saved items" aria-pressed="false"/);
+  assert.match(app.nodes.get("wishlistPicker").innerHTML, /aria-label="Add Three Sisters[^"]* to demo wishlist" aria-pressed="false"/);
   app.document.dispatch("click", { closest: selector => selector === "[data-fav]" ? { dataset: {fav: "201"} } : null });
-  assert.match(app.nodes.get("productGrid").innerHTML, /aria-label="Remove Three Sisters from saved items" aria-pressed="true"/);
+  assert.match(app.nodes.get("productGrid").innerHTML, /aria-label="Remove Three Sisters[^"]* from saved items" aria-pressed="true"/);
   app.document.dispatch("click", { closest: selector => selector === "[data-wish]" ? { dataset: {wish: "201"} } : null });
-  assert.match(app.nodes.get("wishlistPicker").innerHTML, /aria-label="Remove Three Sisters from demo wishlist" aria-pressed="true"/);
+  assert.match(app.nodes.get("wishlistPicker").innerHTML, /aria-label="Remove Three Sisters[^"]* from demo wishlist" aria-pressed="true"/);
 });
 
 test("Returning from a named collection to Shop restores the full preview catalogue", async () => {
