@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {prepareFictionalProof} from '../operations/gelato/design-proof.mjs';
+const good={fictional:true,paymentStatus:'simulated',orderId:'DEMO-PROOF-001',brand:'ONE HEART',garment:'tee',color:'ivory',size:'L',placement:'back',text:'One Heart'};
+test('proof records design choices but blocks production',()=>{const p=prepareFictionalProof(good);assert.equal(p.placement,'back');assert.equal(p.submitToSupplier,false);assert.equal(p.checkoutEnabled,false);assert.equal(p.requiresArtworkApproval,true);assert.equal(Object.isFrozen(p),true)});
+test('proof refuses real payment or personal information',()=>{assert.throws(()=>prepareFictionalProof({...good,paymentStatus:'paid'}));assert.throws(()=>prepareFictionalProof({...good,customerEmail:'someone@example.com'}))});
