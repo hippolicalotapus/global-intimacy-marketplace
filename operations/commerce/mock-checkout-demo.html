@@ -89,6 +89,11 @@ function render(){
     const buttons=Array.from(list.querySelectorAll('button'));
     let next=buttons.find(x=>x.getAttribute('aria-label')===focusLabel&&!x.disabled);
     if(!next && focusLabel.startsWith('Add one '))next=buttons.find(x=>x.getAttribute('aria-label')===focusLabel.replace('Add one ','Remove one ')&&!x.disabled);
+    // If the focused item was removed, keep keyboard users on an actionable control.
+    if(!next && !list.querySelector('button:not(:disabled)')){
+      next=byId(focusLabel.includes('fictional_hoodie')?'add-hoodie':'add-tee');
+    }
+    if(!next)next=list.querySelector('button:not(:disabled)');
     if(next)next.focus();
   }
   byId('estimate').textContent=p.checkout
@@ -98,8 +103,10 @@ function render(){
     : 'Checkout unavailable: '+p.shipping.status+' (no delivery promise)';
 }
 function report(message,kind='info'){byId('status').dataset.kind=kind;byId('status').textContent=message}
-function apply(action){try{const next=action();state=next;render();report('Local fictional simulation updated')}
-catch(error){
+function apply(action){try{
+  const next=action();state=next;render();
+  report(next.cart.lines.length===0?'Fictional cart is empty. Add a sample item to continue.':'Local fictional simulation updated');
+}catch(error){
   const limit=error instanceof TypeError && /Unsafe fictional cart edit/.test(error.message);
   report(limit?'Fictional cart limit reached. Use the minus button to reduce quantity; payment remains disabled.':'Simulation rejected change: '+error.message,'error')
 }}

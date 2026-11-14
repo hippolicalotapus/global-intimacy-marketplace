@@ -193,6 +193,25 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       await evaluate("document.activeElement.click()");
       assert.match(await evaluate("document.querySelector('#items').textContent"),/× 9/);
     });
+    await t.test('removing final fictional item restores focus to Add sample control', async () => {
+      await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      await evaluate("document.querySelector('#items button[aria-label^=Remove]').focus()");
+      await evaluate("document.activeElement.click()");
+      assert.equal(await evaluate("document.querySelector('#items').textContent"),'Cart is empty');
+      assert.equal(await evaluate("document.activeElement.id"),'add-tee');
+      assert.match(await evaluate("document.querySelector('#status').textContent"),/Fictional cart is empty/);
+      assert.match(await evaluate("document.querySelector('#estimate').textContent"),/Checkout unavailable/);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+      await evaluate("document.activeElement.click()");
+      assert.match(await evaluate("document.querySelector('#items').textContent"),/× 1/);
+    });
+    await t.test('unsupported fictional shipping destination can be corrected safely', async () => {
+      await evaluate("document.querySelector('#country').value='GB';document.querySelector('#country').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.match(await evaluate("document.querySelector('#estimate').textContent"),/Checkout unavailable/);
+      await evaluate("document.querySelector('#country').value='CA';document.querySelector('#country').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.match(await evaluate("document.querySelector('#estimate').textContent"),/before tax/);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });
