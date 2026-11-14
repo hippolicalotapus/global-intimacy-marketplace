@@ -12,7 +12,9 @@ function createFixtureKeyring({keys=[],activeKeyId}={}){
       ((typeof item.secret==='string'&&Buffer.byteLength(item.secret,'utf8')>=32)||
       (Buffer.isBuffer(item.secret)&&item.secret.length>=32)),
       'Invalid fixture signing key');
-    entries.set(item.id,Object.freeze({id:item.id,status:item.status,secret:item.secret}));
+    // A supplied Buffer must not remain mutable through an external reference.
+    const secret=Buffer.isBuffer(item.secret)?Buffer.from(item.secret):item.secret;
+    entries.set(item.id,Object.freeze({id:item.id,status:item.status,secret}));
   }
   ensure(entries.get(activeKeyId)?.status==='active','Active fixture key required');
   const get=(keyId,sign=false)=>{
