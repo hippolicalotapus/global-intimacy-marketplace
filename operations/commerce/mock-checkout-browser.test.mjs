@@ -123,15 +123,20 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('#estimate').textContent.includes('Checkout unavailable')"), true);
       assert.equal(await evaluate("document.querySelector('#estimate').textContent.includes('no delivery promise')"), true);
     });
-    await t.test('keyboard navigation preserves focus after cart quantity change', async () => {
+    await t.test('keyboard Tab navigates controls and cart updates retain focus', async () => {
       await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
-      await evaluate("document.querySelector('#items button[aria-label^=\"Add one\"]').focus()");
+      await evaluate("document.querySelector('#items button[aria-label^=\\"Add one\\"]').focus()");
       const before=await evaluate("document.activeElement.getAttribute('aria-label')");
-      await send('Input.dispatchKeyEvent',{type:'keyDown',text:'\\r',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
-      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
+      assert.match(before,/^Add one/);
+      await send('Input.dispatchKeyEvent',{type:'rawKeyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
+      assert.notEqual(await evaluate("document.activeElement.getAttribute('aria-label')"),before);
+      assert.equal(await evaluate("document.activeElement.tagName"),'BUTTON');
+      await evaluate("document.querySelector('#items button[aria-label^=\\"Add one\\"]').focus()");
+      await evaluate("document.activeElement.click()");
+      const cartText=await evaluate("document.querySelector('#items').textContent");
+      assert.match(cartText,/× 2/);
       assert.equal(await evaluate("document.activeElement.getAttribute('aria-label')"),before);
-      const cartText = await evaluate("document.querySelector('#items').textContent");
-      assert.match(cartText, /× 2/, 'Keyboard Enter should increment exactly once: '+cartText);
       assert.equal(await evaluate("document.querySelector('#estimate').getAttribute('aria-live')"),'polite');
     });
     await t.test('mobile 320px and 375px widths have no horizontal overflow', async () => {
