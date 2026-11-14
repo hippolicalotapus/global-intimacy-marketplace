@@ -75,3 +75,12 @@ test("Ambiguous stock quantities fail closed instead of becoming fabricated unit
   const valid=stageSupplierRows("demo",[{sku:"sku-2",name:"Safe import",stock:"1200"}]);
   assert.equal(valid.products[0].privateSupplierData.rawStockQuantity,1200);
 });
+
+test("Duplicate CSV headers are rejected before stock or SKU can be overwritten",()=>{
+  for(const csv of [
+    "SKU,Name,SKU\nSAFE,Widget,OVERRIDE\n",
+    "SKU,Name,Stock,Stock\nP1,Widget,12,999\n",
+    "SKU,Name,Stock Quantity,Stock-Quantity\nP1,Widget,12,999\n"
+  ]) assert.throws(()=>parseCSV(csv),/Duplicate CSV column header/);
+  assert.equal(parseCSV("SKU,Name,Stock\nP1,Widget,12\n")[0].stock,"12");
+});
