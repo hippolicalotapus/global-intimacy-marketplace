@@ -53,7 +53,9 @@ function retryDeclinedFictionalJourney(previous,state){
   const next=beginFictionalJourney(state);
   if(previous.shopper!==next.shopper || previous.country!==next.country ||
     previous.review.subtotalMinor!==next.review.subtotalMinor ||
-    previous.review.itemCount!==next.review.itemCount) {
+    previous.review.itemCount!==next.review.itemCount ||
+    previous.review.shippingMinor!==next.review.shippingMinor ||
+    JSON.stringify(previous.review.cartLines)!==JSON.stringify(next.review.cartLines)) {
     throw new Error('Fictional cart or shopper changed; start a new review');
   }
   return Object.freeze({...next,attemptNumber:previous.attemptNumber+1});

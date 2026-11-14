@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createDemoCustomer,changeDemoCountry } from './mock-customer-ui.mjs';
+import { createDemoCustomer,changeDemoCountry,changeDemoQuantity } from './mock-customer-ui.mjs';
 import { beginFictionalJourney,progressFictionalJourney,retryDeclinedFictionalJourney,describeFictionalJourney } from './mock-checkout-lifecycle.mjs';
 
 test('fictional checkout starts as unpaid draft and never activates ordering',()=>{
@@ -109,4 +109,30 @@ test('only same fictional shopper cart and shipping may retry declined scenario'
   assert.throws(()=>retryDeclinedFictionalJourney(declined,changeDemoCountry(createDemoCustomer(),'US')));
   assert.throws(()=>retryDeclinedFictionalJourney(beginFictionalJourney(createDemoCustomer()),createDemoCustomer()));
   assert.equal(declined.state,'cancelled');
+});
+
+test('cancelled fictional checkout can restart as a clean new review, without reusing prior events',()=>{
+  const state=createDemoCustomer();
+  const cancelled=progressFictionalJourney(progressFictionalJourney(beginFictionalJourney(state),'pending'),'cancel');
+  assert.throws(()=>retryDeclinedFictionalJourney(cancelled,state),/Only a declined/);
+  const fresh=beginFictionalJourney(state);
+  assert.equal(fresh.state,'draft');
+  assert.equal(fresh.attemptNumber,1);
+  assert.deepEqual(fresh.order.processedEvents,[]);
+  assert.equal(cancelled.state,'cancelled');
+  for(const key of ['paymentEnabled','realPaymentProcessed','orderSubmitted','shipmentBooked'])assert.equal(fresh[key],false);
+});
+test('cart and shipping edits require new fictional review rather than retrying a stale decline',()=>{
+  const state=createDemoCustomer();
+  const declined=progressFictionalJourney(progressFictionalJourney(beginFictionalJourney(state),'pending'),'decline');
+  const edited=changeDemoQuantity(state,'fictional_tee',2);
+  assert.throws(()=>retryDeclinedFictionalJourney(declined,edited),/cart or shopper changed/);
+  const moved=changeDemoCountry(state,'US');
+  assert.throws(()=>retryDeclinedFictionalJourney(declined,moved),/cart or shopper changed/);
+  assert.throws(()=>retryDeclinedFictionalJourney(declined,changeDemoCountry(state,'GB')));
+  const fresh=beginFictionalJourney(edited);
+  assert.equal(fresh.attemptNumber,1);
+  assert.equal(fresh.review.itemCount,2);
+  assert.equal(fresh.paymentEnabled,false);
+  assert.equal(declined.attemptNumber,1);
 });

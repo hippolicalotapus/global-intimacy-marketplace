@@ -417,6 +417,28 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('#journey-retry').disabled"),true);
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
+    await t.test('cancel and decline recover with fresh review after cart, shopper and destination edits',async()=>{
+      await navigateFixture();
+      await evaluate("document.querySelector('#journey-start').click();document.querySelector('#journey-pending').click();document.querySelector('#journey-decline').click()");
+      assert.equal(await evaluate("document.querySelector('#journey-retry').disabled"),false);
+      await evaluate("document.querySelector('#add-hoodie').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/No fictional checkout review started/);
+      assert.equal(await evaluate("document.querySelector('#journey-retry').disabled"),true);
+      await evaluate("document.querySelector('#journey-start').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/Attempt 1 of 3/);
+      await evaluate("document.querySelector('#journey-cancel').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/cancelled/);
+      await evaluate("document.querySelector('#journey-start').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/Fictional review draft/);
+      await evaluate("document.querySelector('#country').value='US';document.querySelector('#country').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/No fictional checkout review started/);
+      await evaluate("document.querySelector('#journey-start').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/Attempt 1 of 3/);
+      await evaluate("document.querySelector('#shopper').value='guest';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.equal(await evaluate("document.querySelector('#journey-start').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('#journey-retry').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });
