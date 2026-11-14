@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  catalog, createDemoCustomer, changeDemoQuantity, changeDemoCountry,
+  catalog, createDemoCustomer, restartDemoSession, changeDemoQuantity, changeDemoCountry,
   saveDemoCart, restoreDemoCart, previewDemo
 } from './mock-customer-ui.mjs';
 
@@ -121,4 +121,38 @@ test('fictional cart restore rejects quantities beyond demonstration limits', ()
   snapshot.lines[0].quantity=11;
   assert.throws(()=>restoreDemoCart(state,JSON.stringify(snapshot)));
   assert.equal(state.cart.lines[0].quantity,1);
+});
+
+test('expired or mismatched fictional sessions cannot edit carts, quote or restore',()=>{
+  const state=createDemoCustomer();
+  const snapshot=saveDemoCart(state);
+  const expired=Object.freeze({...state,session:Object.freeze({...state.session,expiresAt:200000})});
+  const foreign=Object.freeze({...state,session:Object.freeze({...state.session,ownerId:'other_fixture'})});
+  for(const invalid of [expired,foreign]){
+    assert.throws(()=>previewDemo(invalid));
+    assert.throws(()=>changeDemoQuantity(invalid,catalog.tee.productId,2));
+    assert.throws(()=>changeDemoCountry(invalid,'US'));
+    assert.throws(()=>saveDemoCart(invalid));
+    assert.throws(()=>restoreDemoCart(invalid,snapshot));
+  }
+  assert.equal(state.cart.lines[0].quantity,1);
+});
+test('abandoned fictional session restarts empty and old cart snapshot cannot leak',()=>{
+  const state=changeDemoQuantity(createDemoCustomer(),catalog.hoodie.productId,2);
+  const oldSnapshot=saveDemoCart(state);
+  const fresh=restartDemoSession(state);
+  assert.notEqual(fresh.session.sessionId,state.session.sessionId);
+  assert.equal(fresh.account.accountId,state.account.accountId);
+  assert.equal(fresh.cart.lines.length,0);
+  assert.equal(previewDemo(fresh).paymentEnabled,false);
+  assert.throws(()=>restoreDemoCart(fresh,oldSnapshot));
+  const withItem=changeDemoQuantity(fresh,catalog.tee.productId,1);
+  const newSnapshot=saveDemoCart(withItem);
+  const later=restartDemoSession(withItem);
+  assert.notEqual(later.session.sessionId,fresh.session.sessionId);
+  assert.throws(()=>restoreDemoCart(later,newSnapshot));
+  assert.equal(restoreDemoCart(withItem,newSnapshot).cart.lines.length,1);
+  const guest=restartDemoSession(createDemoCustomer({shopper:'guest'}));
+  assert.throws(()=>restoreDemoCart(guest,newSnapshot));
+  assert.equal(state.cart.lines.length,2);
 });

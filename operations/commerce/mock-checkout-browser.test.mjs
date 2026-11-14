@@ -462,6 +462,21 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('#history-clear').disabled"),true);
       assert.equal(await evaluate("document.querySelector('#history-summary').getAttribute('aria-live')"),'polite');
     });
+    await t.test('abandoned checkout recovery resets session and prevents stale-cart reuse', async()=>{
+      await navigateFixture();
+      await evaluate("document.querySelector('#add-hoodie').click();document.querySelector('#save').click();document.querySelector('#journey-start').click()");
+      assert.equal(await evaluate("document.querySelector('#recover').disabled"),false);
+      await evaluate("document.querySelector('#restart-session').click()");
+      assert.equal(await evaluate("document.querySelector('#items').textContent"),'Cart is empty');
+      assert.equal(await evaluate("document.querySelector('#recover').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('#journey-start').disabled"),true);
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/No fictional checkout review started/);
+      assert.match(await evaluate("document.querySelector('#status').textContent"),/Old snapshot, checkout and history cleared/);
+      assert.equal(await evaluate("document.querySelector('#history-clear').disabled"),true);
+      await evaluate("document.querySelector('#add-tee').click();document.querySelector('#save').click();document.querySelector('#restart-session').click()");
+      assert.equal(await evaluate("document.querySelector('#recover').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });

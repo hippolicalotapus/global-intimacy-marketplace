@@ -4,11 +4,12 @@ import {
   previewMockShipping, previewMockCustomerCheckout
 } from './mock-customer-cart.mjs';
 import {
-  sessionForFixture, saveFictionalCart, restoreFictionalCart
+  sessionForFixture, checkFixtureAccess, saveFictionalCart, restoreFictionalCart
 } from './mock-customer-flow.mjs';
 
 const fictionalRates = Object.freeze({ CA: 450, US: 750 });
 const now = 200000;
+let freshSessionSequence=0;
 function demoProduct(productId, unitPriceMinor) {
   return {
     productId, unitPriceMinor, quantity: 1,
@@ -37,7 +38,22 @@ function createDemoCustomer({ shopper = 'returning', country = 'CA' } = {}) {
   if (shopper === 'returning') cart = addMockCartLine(cart, catalog.tee);
   return Object.freeze({ account, session, cart, country, shopper, mockOnly: true });
 }
+function requireDemoAccess(state) {
+  if(!state?.mockOnly) throw new TypeError('Not a fictional customer');
+  checkFixtureAccess({account:state.account,session:state.session,cart:state.cart,now});
+}
+function restartDemoSession(state) {
+  if(!state?.mockOnly || !['returning','guest'].includes(state.shopper) ||
+      !['CA','US','GB'].includes(state.country) ||
+      state.account?.accountId!==(state.shopper==='returning'?'fictional_returning':'fictional_guest')) {
+    throw new TypeError('Invalid fictional customer for session restart');
+  }
+  const session=sessionForFixture({account:state.account,
+    sessionId:'fresh_'+state.shopper+'_'+(++freshSessionSequence),now,expiresAt:now+60000});
+  return Object.freeze({...state,session,cart:createMockCart({ownerId:state.account.accountId})});
+}
 function changeDemoQuantity(state, productId, quantity) {
+  requireDemoAccess(state);
   if (!state?.mockOnly || !Number.isSafeInteger(quantity) || quantity < 0 || quantity > 10) {
     throw new TypeError('Unsafe fictional cart edit');
   }
@@ -53,15 +69,16 @@ function changeDemoQuantity(state, productId, quantity) {
   return Object.freeze({ ...state, cart: setMockCartQuantity(state.cart, productId, quantity) });
 }
 function changeDemoCountry(state, country) {
+  requireDemoAccess(state);
   if (!state?.mockOnly || !['CA', 'US', 'GB'].includes(country)) throw new TypeError('Unsupported fictional country selection');
   return Object.freeze({ ...state, country });
 }
 function saveDemoCart(state) {
-  if (!state?.mockOnly) throw new TypeError('Not a fictional customer');
+  requireDemoAccess(state);
   return saveFictionalCart({ account: state.account, session: state.session, cart: state.cart, now });
 }
 function restoreDemoCart(state, serialized) {
-  if (!state?.mockOnly) throw new TypeError('Not a fictional customer');
+  requireDemoAccess(state);
   const restored = restoreFictionalCart({
     serialized, account: state.account, session: state.session, now
   });
@@ -77,7 +94,7 @@ function restoreDemoCart(state, serialized) {
   return Object.freeze({ ...state, cart: restored });
 }
 function previewDemo(state) {
-  if (!state?.mockOnly) throw new TypeError('Not a fictional customer');
+  requireDemoAccess(state);
   const fixture = { mode: 'fictional', ratesMinor: fictionalRates };
   const shipping = previewMockShipping({ cart: state.cart, country: state.country, fixture, now });
   if (shipping.status !== 'fictional_quote') {
@@ -95,6 +112,6 @@ function previewDemo(state) {
   });
 }
 export {
-  catalog, createDemoCustomer, changeDemoQuantity, changeDemoCountry,
+  catalog, createDemoCustomer, restartDemoSession, changeDemoQuantity, changeDemoCountry,
   saveDemoCart, restoreDemoCart, previewDemo
 };

@@ -40,7 +40,7 @@ button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:
 <h2 id="cart-title">2. Fictional cart</h2>
 <ul id="items" aria-label="Fictional cart products" aria-describedby="cart-instructions"></ul>
 <p id="cart-instructions"><small>Use the plus and minus buttons to change fictional quantities. Maximum ten of each item.</small></p>
-<div class="controls"><button id="add-tee">Add sample tee</button><button id="add-hoodie">Add sample hoodie</button><button id="save">Save local snapshot</button><button id="recover" disabled>Recover snapshot</button></div>
+<div class="controls"><button id="add-tee">Add sample tee</button><button id="add-hoodie">Add sample hoodie</button><button id="save">Save local snapshot</button><button id="recover" disabled>Recover snapshot</button><button id="restart-session">Start fresh fictional session</button></div>
 <p><small>Snapshot exists only in this open page's memory. Nothing is saved to browser storage.</small></p>
 </section>
 <section class="panel" aria-labelledby="shipping-title">
@@ -74,7 +74,7 @@ button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:
 </main>
 <script type="module">
 import {
-  catalog,createDemoCustomer,changeDemoQuantity,changeDemoCountry,
+  catalog,createDemoCustomer,restartDemoSession,changeDemoQuantity,changeDemoCountry,
   saveDemoCart,restoreDemoCart,previewDemo
 } from './mock-customer-ui.mjs';
 import { assessFictionalCheckout } from './mock-checkout-review.mjs';
@@ -176,6 +176,13 @@ byId('add-tee').addEventListener('click',()=>apply(()=>changeDemoQuantity(state,
 byId('add-hoodie').addEventListener('click',()=>apply(()=>changeDemoQuantity(state,catalog.hoodie.productId,
   (state.cart.lines.find(x=>x.productId===catalog.hoodie.productId)?.quantity||0)+1)));
 byId('save').addEventListener('click',()=>{try{snapshot=saveDemoCart(state);byId('recover').disabled=false;report('Fictional cart snapshot saved in page memory only')}catch(error){report('Could not save fictional cart: '+error.message,'error')}});
+byId('restart-session').addEventListener('click',()=>{
+  try{
+    state=restartDemoSession(state);snapshot=null;journey=null;
+    history=emptyFictionalHistory();historySequence=0;render();
+    report('Fresh fictional session started with an empty cart. Old snapshot, checkout and history cleared. No real account login.');
+  }catch(error){report('Could not restart fictional session: '+error.message,'error')}
+});
 byId('recover').addEventListener('click',()=>{
   const previous=state;
   try{
