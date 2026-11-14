@@ -1,11 +1,14 @@
 "use strict";
 /* Local-only regression preflight. No network, deployment, publishing or checkout actions. */
-const {existsSync, readdirSync, statSync} = require("node:fs");
+const {existsSync, readdirSync, statSync, readFileSync} = require("node:fs");
+const {createHash} = require("node:crypto");
 const path = require("node:path");
 const {spawnSync} = require("node:child_process");
 
 const REQUIRED = Object.freeze([
   ".github/workflows/beta-checks.yml",
+  ".gitignore",
+  "netlify.toml",
   "operations/custom-apparel/browser-demo.js",
   "operations/custom-apparel/index.html",
   "operations/custom-apparel/mock-order.cjs",
@@ -23,20 +26,25 @@ const REQUIRED = Object.freeze([
   "site/countries.js",
   "site/creator-feedback.html",
   "site/creator-feedback.js",
+  "site/creator-feedback.css",
   "site/creator-feedback-thanks.html",
   "site/drawing-register.json",
   "site/globe-math.js",
+  "site/destination.css",
   "site/globe-3d.js",
   "site/globe-software.js",
   "site/destination.js",
   "site/index.html",
   "site/lookbook.html",
   "site/product-drawings.js",
+  "site/product-drawings.css",
   "site/ruby-welcome.js",
   "site/ruby-welcome.css",
+  "site/lookbook.css",
   "site/share-preview.js",
   "site/shipping.js",
   "site/styles.css",
+  "site/unconventional.css",
   "site/assets/approved-logo.svg",
   "site/assets/social/one-heart-preview.png",
   "site/assets/welcome/1000156129.png",
@@ -54,9 +62,40 @@ const REQUIRED = Object.freeze([
   "tests/storefront.behavior.test.mjs"
 ]);
 
+// The product-drawings regression checks every image digest, not just the JSON registry.
+// Do not claim a complete checkout when its referenced binary assets are absent or altered.
+function checkDrawingAssets(root) {
+  const registryPath=path.join(root,"site/drawing-register.json");
+  if (!existsSync(registryPath)) return [];
+  let registry;
+  try {registry=JSON.parse(readFileSync(registryPath,"utf8"));}
+  catch {return ["site/drawing-register.json (invalid JSON)"];}
+  if (!Array.isArray(registry.records) || registry.records.length !== registry.drawingCount ||
+      registry.records.length < 1) return ["site/drawing-register.json (invalid records)"];
+  const problems=[];
+  for(const record of registry.records) {
+    if(typeof record.path !== "string" ||
+        !/^assets\/(drawings|apparel|illustrations)\/[a-zA-Z0-9/_-]+\.webp$/.test(record.path) ||
+        !/^[a-f0-9]{64}$/.test(record.sha256)) {
+      problems.push("site/drawing-register.json (invalid asset entry)");
+      continue;
+    }
+    const relative="site/"+record.path;
+    const full=path.join(root,relative);
+    if(!existsSync(full) || !statSync(full).isFile()) {
+      problems.push(relative);
+      continue;
+    }
+    const hash=createHash("sha256").update(readFileSync(full)).digest("hex");
+    if(hash!==record.sha256) problems.push(relative+" (digest mismatch)");
+  }
+  return problems;
+}
+
 function inspect(root) {
   const fullRoot=path.resolve(root);
   const missing=REQUIRED.filter(rel=> !existsSync(path.join(fullRoot,rel)) || !statSync(path.join(fullRoot,rel)).isFile());
+  missing.push(...checkDrawingAssets(fullRoot));
   const testDir=path.join(fullRoot,"tests");
   const testFiles=existsSync(testDir) ? readdirSync(testDir).filter(name=>name.endsWith(".test.mjs")).sort().map(name=>path.join("tests",name)) : [];
   const expectedTests=REQUIRED.filter(x=>x.startsWith("tests/")&&x.endsWith(".test.mjs"));
