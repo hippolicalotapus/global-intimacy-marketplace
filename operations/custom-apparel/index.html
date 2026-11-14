@@ -9,16 +9,16 @@ body{margin:0 auto;max-width:920px;padding:20px}
 h1{margin-bottom:5px} .warning{background:#fff1d6;border-left:5px solid #ad6c00;padding:12px}
 main{display:grid;grid-template-columns:minmax(260px,1fr) minmax(260px,1fr);gap:24px}
 form,.preview{background:#fff;border:1px solid #d3dbe4;border-radius:14px;padding:18px}
-label{display:block;font-weight:600;margin:12px 0 4px} select,input{box-sizing:border-box;width:100%;padding:10px;font:inherit}
+label{display:block;font-weight:600;margin:12px 0 4px} select,input{box-sizing:border-box;width:100%;padding:10px;font:inherit;min-height:44px;border:1px solid #9caabd;border-radius:6px;background:#fff;color:#14213d}
 button{padding:12px 16px;margin-top:16px;border:0;border-radius:8px;background:#172c56;color:#fff;cursor:pointer;font:inherit}
-button:disabled{opacity:.5;cursor:not-allowed}.mock{border:2px dashed #b3bec9;border-radius:10px;min-height:95px;padding:15px;margin:12px 0;overflow-wrap:anywhere}
+button:disabled{opacity:.5;cursor:not-allowed}:is(button,select,input):focus-visible{outline:3px solid #006fd6;outline-offset:3px}.mock{border:2px dashed #b3bec9;border-radius:10px;min-height:95px;padding:15px;margin:12px 0;overflow-wrap:anywhere}
 #status{min-height:2.5em}#receipt{font-weight:600;overflow-wrap:anywhere}
 .preview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.mock-panel{text-align:center;min-width:0}
+.mock-panel{text-align:center;min-width:0}.mock-panel strong{display:block;margin:5px 0 10px}.hint{font-size:.9rem;color:#33465f}.preview [role="status"]{line-height:1.5}
 .stage{position:relative;aspect-ratio:3/4;background:radial-gradient(circle at 50% 20%,#fff,#d8dfe6);border:1px solid #cbd2dd;border-radius:12px;overflow:hidden;--cloth:#242936;--outline:#141a26;--ink:#fff}
 .stage svg{width:100%;height:100%;filter:drop-shadow(0 7px 6px #0003)}
-.stage .fabric{fill:var(--cloth);stroke:var(--outline);stroke-width:2}
-.stage .seam{fill:none;stroke:var(--outline);stroke-width:1.8;opacity:.55}
+.stage .fabric{fill:var(--cloth);stroke:var(--outline);stroke-width:2}.stage .highlight{fill:#fff;opacity:.08}.stage .side-shadow{fill:#000;opacity:.09}
+.stage .seam{fill:none;stroke:var(--outline);stroke-width:1.8;opacity:.55}.stage .double-seam{fill:none;stroke:var(--outline);stroke-width:1;stroke-dasharray:2 3;opacity:.35}.stage[data-side="back"] .front-detail{display:none}
 .stage .hoodie{display:none}
 .stage[data-garment="hoodie"] .hoodie{display:block}
 .stage[data-garment="hoodie"] .shirt{display:none}
@@ -26,6 +26,9 @@ button:disabled{opacity:.5;cursor:not-allowed}.mock{border:2px dashed #b3bec9;bo
 .stage[data-color="cream"]{--cloth:#e8dfce;--outline:#a9a094;--ink:#202632}
 .stage[data-color="navy"]{--cloth:#253e60;--outline:#18263c}
 .stage[data-color="forest"]{--cloth:#315244;--outline:#1e362b}
+.stage[data-text-style="classic"] .print-text{font-family:Georgia,serif;font-weight:650;letter-spacing:.01em}
+.stage[data-text-style="mono"] .print-text{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-weight:750;letter-spacing:-.03em}
+.stage[data-text-style="bold"] .print-text{font-family:system-ui,sans-serif;font-weight:850}
 .print-text{position:absolute;top:42%;left:28%;width:44%;transform:translateY(-50%);text-align:center;color:var(--ink);font-size:16px;font-weight:750;line-height:1.15;white-space:pre-wrap;overflow-wrap:normal;word-break:normal;max-height:30%;overflow:hidden}
 .print-text[data-placement="left-chest"]{top:34%;left:27%;width:28%;font-size:11px}
 .stage[data-ready="false"] .print-text{display:none}
@@ -46,24 +49,26 @@ button:disabled{opacity:.5;cursor:not-allowed}.mock{border:2px dashed #b3bec9;bo
 <label for="color">Colour</label><select id="color"></select>
 <label for="quantity">Mock quantity (1-10)</label><input id="quantity" type="number" min="1" max="10" step="1" value="1" required>
 <label for="frontPlacement">Front placement</label><select id="frontPlacement"><option value="center">Centre</option><option value="left-chest">Left chest</option></select>
-<label for="frontText">Front text (48 characters max)</label><input id="frontText" maxlength="48" placeholder="Your original text" autocomplete="off">
-<label for="backText">Back text (48 characters max)</label><input id="backText" maxlength="48" placeholder="Optional back text" autocomplete="off">
-<button type="submit">Review mock preview</button>
+<label for="frontText">Front text (48 characters max)</label><input id="frontText" maxlength="48" placeholder="Your original text" autocomplete="off" aria-describedby="artHint">
+<label for="backText">Back text (48 characters max)</label><input id="backText" maxlength="48" placeholder="Optional back text" autocomplete="off" aria-describedby="artHint">
+<p id="artHint" class="hint">Enter original lettering on at least one side. Long text may not fit the selected print area. No images or personal information.</p>
+<label for="textStyle">Lettering style</label><select id="textStyle"><option value="bold">Bold modern</option><option value="classic">Classic serif</option><option value="mono">Monospaced</option></select>
+<button type="submit">Review front and back mockup</button>
 </form>
-<section class="preview" aria-live="polite">
+<section class="preview" aria-label="Illustrative garment previews">
 <h2>Front &amp; back garment preview</h2>
-<p>Illustrative front/back garment silhouettes and print placement. Lettering that cannot fit will be rejected rather than cut off. Not a photograph, supplier proof or exact scale.</p><div class="preview-grid"><div class="mock-panel"><strong>Front</strong><div id="frontStage" class="stage" data-garment="tshirt" data-color="black" data-ready="false">
-<svg viewBox="0 0 240 320" role="img" aria-label="Front illustrative garment shape">
-<g class="shirt"><path class="fabric" d="M75 45 L95 37 Q120 58 145 37 L165 45 L210 75 L190 124 L170 112 L170 275 Q120 282 70 275 L70 112 L50 124 L30 75 Z"/><path class="seam" d="M95 37 Q120 85 145 37 M73 269 Q120 279 167 269"/></g>
-<g class="hoodie"><path class="fabric" d="M95 38 Q120 11 145 38 L164 48 L177 51 L209 77 L189 140 L170 127 L170 274 Q120 283 70 274 L70 127 L51 140 L31 77 L63 51 L76 48 Z"/><path class="fabric" d="M95 38 Q120 12 145 38 L159 61 Q120 99 81 61 Z"/><path class="seam" d="M109 76 L111 110 M131 76 L129 110 M75 269 Q120 278 165 269"/><path class="fabric" d="M89 201 Q120 209 151 201 L156 238 Q120 252 84 238 Z"/></g>
-</svg><div class="print-text" id="frontMock" data-placement="center"></div></div></div><div class="mock-panel"><strong>Back</strong><div id="backStage" class="stage" data-garment="tshirt" data-color="black" data-ready="false">
-<svg viewBox="0 0 240 320" role="img" aria-label="Back illustrative garment shape">
-<g class="shirt"><path class="fabric" d="M75 45 L95 37 Q120 58 145 37 L165 45 L210 75 L190 124 L170 112 L170 275 Q120 282 70 275 L70 112 L50 124 L30 75 Z"/><path class="seam" d="M95 37 Q120 85 145 37 M73 269 Q120 279 167 269"/></g>
-<g class="hoodie"><path class="fabric" d="M95 38 Q120 11 145 38 L164 48 L177 51 L209 77 L189 140 L170 127 L170 274 Q120 283 70 274 L70 127 L51 140 L31 77 L63 51 L76 48 Z"/><path class="fabric" d="M95 38 Q120 12 145 38 L159 61 Q120 99 81 61 Z"/><path class="seam" d="M109 76 L111 110 M131 76 L129 110 M75 269 Q120 278 165 269"/><path class="fabric" d="M89 201 Q120 209 151 201 L156 238 Q120 252 84 238 Z"/></g>
+<p>Illustrative front/back garment silhouettes and print placement. Lettering that cannot fit will be rejected rather than cut off. Not a photograph, supplier proof or exact scale.</p><div class="preview-grid"><div class="mock-panel"><strong>Front</strong><div id="frontStage" class="stage" data-garment="tshirt" data-color="black" data-side="front" data-text-style="bold" data-ready="false">
+<svg viewBox="0 0 240 320" aria-hidden="true" focusable="false">
+<g class="shirt"><path class="fabric" d="M75 45 L95 37 Q120 58 145 37 L165 45 L210 75 L190 124 L170 112 L170 275 Q120 282 70 275 L70 112 L50 124 L30 75 Z"/><path class="seam" d="M95 37 Q120 85 145 37 M73 269 Q120 279 167 269"/><path class="highlight" d="M73 65 L81 54 L82 269 L73 269 Z"/><path class="side-shadow" d="M160 59 L169 65 L168 268 L159 272 Z"/><path class="double-seam" d="M76 263 Q120 275 164 263"/></g>
+<g class="hoodie"><path class="fabric" d="M95 38 Q120 11 145 38 L164 48 L177 51 L209 77 L189 140 L170 127 L170 274 Q120 283 70 274 L70 127 L51 140 L31 77 L63 51 L76 48 Z"/><path class="fabric" d="M95 38 Q120 12 145 38 L159 61 Q120 99 81 61 Z"/><path class="seam" d="M75 269 Q120 278 165 269"/><path class="seam front-detail" d="M109 76 L111 110 M131 76 L129 110"/><path class="fabric front-detail" d="M89 201 Q120 209 151 201 L156 238 Q120 252 84 238 Z"/><path class="highlight" d="M74 73 L83 65 L83 269 L74 269 Z"/><path class="side-shadow" d="M157 65 L167 75 L167 269 L158 269 Z"/></g>
+</svg><div class="print-text" id="frontMock" data-placement="center"></div></div></div><div class="mock-panel"><strong>Back</strong><div id="backStage" class="stage" data-garment="tshirt" data-color="black" data-side="back" data-text-style="bold" data-ready="false">
+<svg viewBox="0 0 240 320" aria-hidden="true" focusable="false">
+<g class="shirt"><path class="fabric" d="M75 45 L95 37 Q120 58 145 37 L165 45 L210 75 L190 124 L170 112 L170 275 Q120 282 70 275 L70 112 L50 124 L30 75 Z"/><path class="seam" d="M95 37 Q120 85 145 37 M73 269 Q120 279 167 269"/><path class="highlight" d="M73 65 L81 54 L82 269 L73 269 Z"/><path class="side-shadow" d="M160 59 L169 65 L168 268 L159 272 Z"/><path class="double-seam" d="M76 263 Q120 275 164 263"/></g>
+<g class="hoodie"><path class="fabric" d="M95 38 Q120 11 145 38 L164 48 L177 51 L209 77 L189 140 L170 127 L170 274 Q120 283 70 274 L70 127 L51 140 L31 77 L63 51 L76 48 Z"/><path class="fabric" d="M95 38 Q120 12 145 38 L159 61 Q120 99 81 61 Z"/><path class="seam" d="M75 269 Q120 278 165 269"/><path class="seam front-detail" d="M109 76 L111 110 M131 76 L129 110"/><path class="fabric front-detail" d="M89 201 Q120 209 151 201 L156 238 Q120 252 84 238 Z"/><path class="highlight" d="M74 73 L83 65 L83 269 L74 269 Z"/><path class="side-shadow" d="M157 65 L167 75 L167 269 L158 269 Z"/></g>
 </svg><div class="print-text" id="backMock" data-placement="center"></div></div></div></div>
-<p id="status" role="status">Choose options, then review the mock preview.</p>
+<p id="status" role="status" aria-live="polite" aria-atomic="true">Choose options, then review the mock preview.</p>
 <button type="button" id="mockConfirm" disabled>Generate fictional mock receipt</button>
-<p id="receipt" role="status"></p>
+<p id="receipt" role="status" aria-live="polite" aria-atomic="true"></p>
 </section>
 </main>
 <script src="mock-order.cjs"></script>

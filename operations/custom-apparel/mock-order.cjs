@@ -9,9 +9,10 @@
     tshirt: Object.freeze({sizes: ["XS","S","M","L","XL","2XL","3XL"], colors: ["black","white","navy","forest"]}),
     hoodie: Object.freeze({sizes: ["S","M","L","XL","2XL","3XL"], colors: ["black","cream","navy","forest"]})
   });
-  const FIELDS = new Set(["garment","size","color","quantity","frontText","backText","frontPlacement","backPlacement"]);
+  const FIELDS = new Set(["garment","size","color","quantity","frontText","backText","frontPlacement","backPlacement","textStyle"]);
   const FRONT = new Set(["center","left-chest"]);
   const BACK = new Set(["center"]);
+  const STYLES = new Set(["bold","classic","mono"]);
 
   function validate(input) {
     if (!input || typeof input !== "object" || Array.isArray(input) ||
@@ -33,8 +34,10 @@
     if (!frontText && !backText) return {ok:false, reason:"design_required"};
     if (!FRONT.has(input.frontPlacement) || !BACK.has(input.backPlacement))
       return {ok:false, reason:"placement"};
+    const textStyle = input.textStyle === undefined ? "bold" : input.textStyle;
+    if (!STYLES.has(textStyle)) return {ok:false, reason:"text_style"};
     const design = Object.freeze({garment, size:input.size, color:input.color, quantity:input.quantity,
-      frontText, backText, frontPlacement:input.frontPlacement, backPlacement:input.backPlacement});
+      frontText, backText, frontPlacement:input.frontPlacement, backPlacement:input.backPlacement, textStyle});
     return {ok:true, design};
   }
 

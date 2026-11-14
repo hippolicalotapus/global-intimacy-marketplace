@@ -101,7 +101,7 @@ test("browser demo is self-contained, unlinked and has no network/order storage"
 test("browser form previews shirt and hoodie, rejects invalid edits, and issues only fictional receipts", async () => {
   const {runInNewContext} = await import("node:vm");
   const browserSrc=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","textStyle"];
   const elems=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
@@ -109,7 +109,7 @@ test("browser form previews shirt and hoodie, rejects invalid edits, and issues 
     replaceChildren(...options){this.options=options;this.value=options[0]?.value||"";}
   }]));
   const document={getElementById:id=>elems[id],createElement:tag=>({tagName:tag,value:"",textContent:""})};
-  elems.garment.value="tshirt";elems.frontPlacement.value="center";
+  elems.garment.value="tshirt";elems.frontPlacement.value="center";elems.textStyle.value="bold";
   const window={GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")};
   runInNewContext(browserSrc,{document,window});
   const fire=(id,event)=>elems[id].listeners[event]({preventDefault(){}});
@@ -165,7 +165,7 @@ test("left-chest print zone has enough width for common two-word artwork", async
 test("browser preview rejects overflow and never issues fictional receipt for clipped text", async () => {
   const {runInNewContext} = await import("node:vm");
   const source = await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","textStyle"];
   const nodes=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
@@ -173,7 +173,7 @@ test("browser preview rejects overflow and never issues fictional receipt for cl
     replaceChildren(...values){this.options=values;this.value=values[0]?.value||"";}
   }]));
   const document={getElementById:id=>nodes[id],createElement:()=>({value:"",textContent:""})};
-  nodes.garment.value="tshirt";nodes.frontPlacement.value="left-chest";
+  nodes.garment.value="tshirt";nodes.frontPlacement.value="left-chest";nodes.textStyle.value="bold";
   runInNewContext(source,{document,window:{GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")}});
   const fire=(id,name)=>nodes[id].listeners[name]({preventDefault(){}});
   nodes.frontText.value="Supercalifragilisticexpialidocious";
@@ -191,4 +191,26 @@ test("browser preview rejects overflow and never issues fictional receipt for cl
   assert.equal(nodes.frontStage.dataset.ready,"true");
   fire("mockConfirm","click");
   assert.match(nodes.receipt.textContent,/MOCK-0001/);
+});
+
+
+test("lettering styles use an allowlist and remain fictional", () => {
+  assert.equal(validate({...base,textStyle:"bold"}).design.textStyle,"bold");
+  assert.equal(validate({...base,textStyle:"classic"}).design.textStyle,"classic");
+  assert.equal(validate({...base,textStyle:"mono"}).design.textStyle,"mono");
+  assert.equal(validate({...base,textStyle:"url(javascript:alert(1))"}).reason,"text_style");
+  assert.equal(validate(base).design.textStyle,"bold");
+  const session=createMockSession();
+  session.preview({...base,textStyle:"classic"});
+  assert.equal(session.confirmMock().design.textStyle,"classic");
+});
+test("accessible print preview has labelled controls and front/back details", async () => {
+  const html=await readFile(new URL("../operations/custom-apparel/index.html",import.meta.url),"utf8");
+  for(const id of ["textStyle","frontText","backText","frontPlacement","garment","size","color"]) assert.match(html,new RegExp('for="'+id+'"'));
+  assert.match(html,/id="status" role="status" aria-live="polite"/);
+  assert.match(html,/id="receipt" role="status" aria-live="polite"/);
+  assert.match(html,/:focus-visible\{/);
+  assert.match(html,/data-side="back"/);
+  assert.match(html,/\.stage\[data-side="back"\] \.front-detail\{display:none\}/);
+  assert.match(html,/data-text-style="bold"/);
 });

@@ -13,6 +13,7 @@
   const garment = document.getElementById("garment");
   const color = document.getElementById("color");
   const size = document.getElementById("size");
+  const textStyle = document.getElementById("textStyle");
   const message = (text) => {status.textContent = text;};
   function clearPreview() {
     front.textContent = "";
@@ -55,6 +56,7 @@
       quantity:Number(document.getElementById("quantity").value),
       frontText:document.getElementById("frontText").value,
       backText:document.getElementById("backText").value,
+      textStyle:textStyle.value,
       frontPlacement:document.getElementById("frontPlacement").value,
       backPlacement:"center"};
   }
@@ -80,6 +82,7 @@
     for (const stage of [frontStage,backStage]) {
       stage.dataset.garment = result.design.garment;
       stage.dataset.color = result.design.color;
+      stage.dataset.textStyle = result.design.textStyle;
       stage.dataset.ready = "true";
     }
     if (!fitPrintableText(front) || !fitPrintableText(back)) {
@@ -89,7 +92,7 @@
       return;
     }
     confirm.disabled = false;
-    message("Mock preview ready. Pricing and delivery are unverified; no real order can be placed.");
+    message("Mock preview ready: " + result.design.color + " " + result.design.garment + ", " + result.design.size + ", " + result.design.textStyle + " lettering. Pricing and delivery remain unverified; no real order can be placed.");
   });
   confirm.addEventListener("click", () => {
     const result = session.confirmMock();
