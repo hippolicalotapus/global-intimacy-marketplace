@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="unconventional.css">
 <link rel="stylesheet" href="destination.css">
 <link rel="stylesheet" href="ruby-welcome.css">
+<script src="apparel-studio.js" defer></script>
 <script src="catalog.js" defer></script>
 <script src="apparel.js" defer></script>
 <script src="product-drawings.js" defer></script>
@@ -127,9 +128,15 @@
         <h2 id="fictional-apparel-title">Build-your-own apparel — concept preview</h2>
         <p>Explore a future personalized T-shirt or hoodie. This is an offline concept only: no price, inventory, order, checkout or supplier fulfillment is available.</p>
         <div role="group" aria-label="Fictional apparel choices">
-          <p><strong>Garments under consideration:</strong> T-shirt and hoodie</p>
-          <p><strong>Colors under consideration:</strong> Ivory, charcoal and ruby</p>
-          <p><strong>Customization under consideration:</strong> Front or back placement with short personal text</p>
+          <label for="studio-garment">Garment</label>
+          <select id="studio-garment"><option>T-shirt</option><option>Hoodie</option></select>
+          <label for="studio-color">Color</label>
+          <select id="studio-color"><option>Ivory</option><option>Charcoal</option><option>Ruby</option></select>
+          <label for="studio-placement">Placement</label>
+          <select id="studio-placement"><option>Front</option><option>Back</option></select>
+          <label for="studio-wording">Personal text (24 characters maximum)</label>
+          <input id="studio-wording" type="text" maxlength="24" autocomplete="off" placeholder="Optional personal text">
+          <p><strong>Fictional preview:</strong> <output id="studio-preview" aria-live="polite"></output></p>
         </div>
         <p><strong>Not for production.</strong> Artwork approval, supplier SKU, shipping and pricing must be verified before any sale.</p>
       </div>
