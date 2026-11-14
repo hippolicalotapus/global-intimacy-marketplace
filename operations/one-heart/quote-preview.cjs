@@ -11,7 +11,10 @@ const PRODUCTS = Object.freeze({
   standard: Object.freeze({price: 7499}),
   premium: Object.freeze({price: 8499})
 });
-function quote({product, country, postal, size = "regular", shippingQuote, taxCents}) {
+function quote(input) {
+  // Reject malformed calls without throwing; checkout remains disabled.
+  if (!input || typeof input !== "object" || Array.isArray(input)) return {status: "unavailable", reason: "input"};
+  const {product, country, postal, size = "regular", shippingQuote, taxCents} = input;
   if (!Object.hasOwn(PRODUCTS, product)) return {status: "unavailable", reason: "product"};
   if (country !== "CA") return {status: "quote_required", reason: "destination"};
   const normalized = postalCode(postal);
