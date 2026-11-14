@@ -18,9 +18,10 @@ async function storefront(hash = "", options = {}) {
     }
     dispatchEvent(event) { for (const handler of this.listeners[event.type] || []) handler(event); }
     addEventListener(type, handler) { (this.listeners[type] ||= []).push(handler); }
-    dispatch(type, target = this) { for (const handler of this.listeners[type] || []) handler({ target, preventDefault() {} }); }
-    setAttribute() {}
-    removeAttribute() {}
+    dispatch(type, target = this, extras = {}) { for (const handler of this.listeners[type] || []) handler({ target, preventDefault() {}, ...extras }); }
+    setAttribute(name, value) { this[name] = value; }
+    removeAttribute(name) { delete this[name]; }
+    querySelector(selector) { return selector === "summary" ? (this.summary ||= new Element("summary")) : null; }
     querySelectorAll() { return this.children || []; }
     focus(options) { this.focusOptions=options; this.focusCount=(this.focusCount||0)+1; }
     scrollIntoView(options) { this.scrollOptions=options; this.scrollCount=(this.scrollCount||0)+1; }
@@ -41,6 +42,7 @@ async function storefront(hash = "", options = {}) {
   document.querySelectorAll = selector => selector === "[data-oneheart]" ? links.filter(n => "oneheart" in n.dataset)
     : selector === '[data-all-products], [data-route="shop"]' ? links.filter(n => "allProducts" in n.dataset || n.dataset.route === "shop")
     : selector === "[data-route]" ? links.filter(n => n.dataset.route)
+    : selector === "[data-nav-collection]" ? links.filter(n => n.dataset.navCollection)
     : selector === ".page" ? [...nodes.values()].filter(n => n.id.startsWith("view-")) : [];
   const storage = () => { const values = new Map(settings.country ? [["gim:country",settings.country]] : []); return { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) }; };
   const location = { hash, href: "https://store.example/" + hash };
@@ -458,3 +460,45 @@ test("Product details disclose actual design facts and leave unverified clothing
  app.nodes.get("closeModal").dispatch("click");app.search("paisley");assert.equal(app.nodes.get("catalogResultsTitle").textContent,'Search: “paisley”');assert.match(app.nodes.get("catalogMatchCount").textContent,/3 product previews/);
 });
 
+
+test("Keyboard skip navigation focuses the storefront main region", async () => {
+  const app = await storefront();
+  app.nodes.get("skipMain").dispatch("click");
+  assert.equal(app.nodes.get("main").focusCount, 1);
+  assert.equal(app.nodes.get("main").scrollOptions.block, "start");
+});
+
+test("Escape closes the category menu and restores focus to its summary", async () => {
+  const app = await storefront();
+  const menu = app.nodes.get("shopMenu");
+  menu.open = true;
+  menu.dispatch("keydown", menu, { key: "Escape" });
+  assert.equal(menu.open, false);
+  assert.equal(menu.querySelector("summary").focusCount, 1);
+});
+
+test("Collection links announce the current collection and clear it on normal shopping", async () => {
+  const app = await storefront("#one-heart");
+  const one = app.links.filter(n => n.dataset.navCollection === "one-heart");
+  const sarcastic = app.links.filter(n => n.dataset.navCollection === "sarcastabastard");
+  assert.ok(one.length >= 2 && sarcastic.length >= 1);
+  assert.ok(one.every(n => n["aria-current"] === "page"));
+  assert.ok(sarcastic.every(n => !n["aria-current"]));
+  app.location.hash = "#sarcastabastard";
+  app.window.dispatch("hashchange");
+  assert.ok(sarcastic.every(n => n["aria-current"] === "page"));
+  assert.ok(one.every(n => !n["aria-current"]));
+  app.location.hash = "#shop";
+  app.window.dispatch("hashchange");
+  assert.ok([...one, ...sarcastic].every(n => !n["aria-current"]));
+});
+
+test("Saved-item and wishlist controls name products and preserve pressed state", async () => {
+  const app = await storefront();
+  assert.match(app.nodes.get("productGrid").innerHTML, /aria-label="Add Three Sisters to saved items" aria-pressed="false"/);
+  assert.match(app.nodes.get("wishlistPicker").innerHTML, /aria-label="Add Three Sisters to demo wishlist" aria-pressed="false"/);
+  app.document.dispatch("click", { closest: selector => selector === "[data-fav]" ? { dataset: {fav: "201"} } : null });
+  assert.match(app.nodes.get("productGrid").innerHTML, /aria-label="Remove Three Sisters from saved items" aria-pressed="true"/);
+  app.document.dispatch("click", { closest: selector => selector === "[data-wish]" ? { dataset: {wish: "201"} } : null });
+  assert.match(app.nodes.get("wishlistPicker").innerHTML, /aria-label="Remove Three Sisters from demo wishlist" aria-pressed="true"/);
+});
