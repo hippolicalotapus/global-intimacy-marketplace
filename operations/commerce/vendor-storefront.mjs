@@ -9,7 +9,10 @@ function applyVendor(input) {
   return Object.freeze({...makeVendorApplication(input), ownerId: input.ownerId});
 }
 function moderateVendor(application, actor, decision, evidence={}) {
-  assert(application?.status === 'pending', 'Application not pending');
+  assert(application?.status === 'pending' && safeId(application.ownerId) &&
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(application.slug) &&
+    safeText(application.displayName) && application.displayName.length <= 160 &&
+    typeof application.country === 'string' && /^[A-Z]{2}$/.test(application.country), 'Invalid pending application');
   assert(actor?.role === 'platform_moderator' && actor.active === true && safeId(actor.id) && actor.id !== application.ownerId, 'Independent active moderator required');
   if (decision === 'approved') assert(evidence.legalEntity === true && evidence.eligibility === true && evidence.terms === true, 'Verified onboarding evidence required');
   return reviewVendor(application, decision, actor.id);
@@ -17,6 +20,7 @@ function moderateVendor(application, actor, decision, evidence={}) {
 function requireVendorEditor(vendor, actor, membership) {
   assert(vendor?.status === 'approved' && safeId(actor?.id) && actor.active === true &&
     membership?.active === true && membership.userId === actor.id && membership.vendorSlug === vendor.slug &&
+    typeof vendor.slug === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(vendor.slug) &&
     ['owner','manager'].includes(membership.role), 'Active vendor membership required');
 }
 function draftStorefront(vendor, actor, membership, description) {
@@ -30,7 +34,7 @@ function moderateStorefront(vendor, draft, actor, decision) {
     safeText(draft.description), 'Invalid storefront');
   assert(actor?.role === 'platform_moderator' && actor.active === true && safeId(actor.id) && actor.id !== draft.submittedBy, 'Independent moderator required');
   assert(['approved','rejected'].includes(decision), 'Invalid decision');
-  return Object.freeze({...draft,status:decision});
+  return Object.freeze({...draft,status:decision,reviewedBy:actor.id});
 }
 function submitListing(vendor, actor, membership, input) {
   requireVendorEditor(vendor, actor, membership);
@@ -57,18 +61,21 @@ function moderateListing(vendor, listing, actor, decision, evidence={}) {
     assert(Array.isArray(territories) && territories.length > 0 && territories.every(x => listing.requestedTerritories.includes(x)) &&
       new Set(territories).size === territories.length,'Invalid approved territories');
   }
-  return Object.freeze({...listing,status:decision,mediaRights:decision === 'approved',
+  return Object.freeze({...listing,status:decision,reviewedBy:actor.id,mediaRights:decision === 'approved',
     resaleAuthorized:decision === 'approved',territories:Object.freeze([...territories]),stock:0,inventoryUpdatedAt:null});
 }
 function publicStorefront(vendor, profile, listings, country, now) {
   if (vendor?.status !== 'approved' || profile?.status !== 'approved' || profile.vendorSlug !== vendor.slug ||
     !Array.isArray(listings) || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(vendor.slug) ||
     !safeText(profile.name) || !safeText(profile.description) || profile.name !== vendor.displayName ||
+    !safeId(profile.submittedBy) || !safeId(profile.reviewedBy) || profile.submittedBy === profile.reviewedBy ||
     typeof country !== 'string' || !/^[A-Z]{2}$/.test(country)) return null;
   const products=[]; const ids=new Set();
   for (const item of listings) {
     if (item?.vendorSlug !== vendor.slug || ids.has(item.id) || !safeId(item.id) ||
-      !safeText(item.title) || !safeText(item.category) || !canPublishProduct({vendor,product:item,country,now})) continue;
+      !safeText(item.title) || !safeText(item.category) || !safeId(item.submittedBy) ||
+      !safeId(item.reviewedBy) || item.submittedBy === item.reviewedBy ||
+      !canPublishProduct({vendor,product:item,country,now})) continue;
     ids.add(item.id);
     products.push(Object.freeze({id:item.id,title:item.title,category:item.category}));
   }
