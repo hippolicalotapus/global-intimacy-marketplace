@@ -18,6 +18,17 @@
   const backPlacement = document.getElementById("backPlacement");
   const placementHint = document.getElementById("placementHint");
   const backPlacementHint = document.getElementById("backPlacementHint");
+  const frontInput = document.getElementById("frontText");
+  const backInput = document.getElementById("backText");
+  const frontCount = document.getElementById("frontCount");
+  const backCount = document.getElementById("backCount");
+  function updateCharacterCounts() {
+    for (const [input, output] of [[frontInput, frontCount],[backInput, backCount]]) {
+      const length = [...input.value].length;
+      output.textContent = length + " of 48 characters";
+      output.dataset.nearLimit = String(length >= 40);
+    }
+  }
   function updatePlacementHint() {
     const chest = frontPlacement.value === "left-chest";
     frontStage.dataset.placement = chest ? "left-chest" : "center";
@@ -72,13 +83,14 @@
   function data() {
     return {garment:garment.value, color:color.value, size:size.value,
       quantity:Number(document.getElementById("quantity").value),
-      frontText:document.getElementById("frontText").value,
-      backText:document.getElementById("backText").value,
+      frontText:frontInput.value,
+      backText:backInput.value,
       textStyle:textStyle.value,
       frontPlacement:frontPlacement.value,
       backPlacement:backPlacement.value};
   }
   form.addEventListener("input", () => {
+    updateCharacterCounts();
     session.invalidate();
     clearPreview();
     receipt.textContent = "";
@@ -127,4 +139,5 @@
   updateChoices();
   updatePlacementHint();
   updateBackHint();
+  updateCharacterCounts();
 }());

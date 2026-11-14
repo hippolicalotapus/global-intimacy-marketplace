@@ -38,7 +38,7 @@ button:disabled{opacity:.5;cursor:not-allowed}:is(button,select,input):focus-vis
 .stage[data-side="back"][data-placement="upper-back"] .print-guide{top:20%;left:30%;width:40%;height:20%}
 .stage[data-ready="true"] .print-guide{opacity:.28}
 .stage:focus-within .print-guide{border-color:#006fd6}
-.zone-guidance{font-weight:600;line-height:1.5;color:#20354c}
+.zone-guidance{font-weight:600;line-height:1.5;color:#20354c}.character-count{display:block;text-align:right;font-size:.85rem;color:#34465b;margin-top:4px}.character-count[data-near-limit="true"]{color:#8a4300;font-weight:750}
 
 @media(max-width:420px){.preview-grid{gap:5px}}
 @media(max-width:350px){.preview-grid{grid-template-columns:1fr}.stage{max-width:220px;margin:0 auto}}
@@ -60,8 +60,8 @@ button:disabled{opacity:.5;cursor:not-allowed}:is(button,select,input):focus-vis
 <p id="placementHint" class="zone-guidance" role="status" aria-live="polite">Front: centre print zone for larger lettering. Dashed outlines are illustrative.</p>
 <label for="backPlacement">Back print position</label><select id="backPlacement" aria-describedby="backPlacementHint"><option value="center">Centre — larger lettering zone</option><option value="upper-back">Upper back — compact lettering zone</option></select>
 <p id="backPlacementHint" class="zone-guidance" role="status" aria-live="polite">Back: centred print area for larger lettering. Print dimensions are not supplier-verified.</p>
-<label for="frontText">Front text (48 characters max)</label><input id="frontText" maxlength="48" placeholder="Your original text" autocomplete="off" aria-describedby="artHint">
-<label for="backText">Back text (48 characters max)</label><input id="backText" maxlength="48" placeholder="Optional back text" autocomplete="off" aria-describedby="artHint">
+<label for="frontText">Front text (48 characters max)</label><input id="frontText" maxlength="48" placeholder="Your original text" autocomplete="off" aria-describedby="artHint frontCount"><span class="character-count" id="frontCount" aria-live="off">0 of 48 characters</span>
+<label for="backText">Back text (48 characters max)</label><input id="backText" maxlength="48" placeholder="Optional back text" autocomplete="off" aria-describedby="artHint backCount"><span class="character-count" id="backCount" aria-live="off">0 of 48 characters</span>
 <p id="artHint" class="hint">Enter original lettering on at least one side. Long text may not fit the selected print area. No images or personal information.</p>
 <label for="textStyle">Lettering style</label><select id="textStyle"><option value="bold">Bold modern</option><option value="classic">Classic serif</option><option value="mono">Monospaced</option></select>
 <button type="submit">Review front and back mockup</button>

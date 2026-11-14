@@ -101,7 +101,7 @@ test("browser demo is self-contained, unlinked and has no network/order storage"
 test("browser form previews shirt and hoodie, rejects invalid edits, and issues only fictional receipts", async () => {
   const {runInNewContext} = await import("node:vm");
   const browserSrc=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount"];
   const elems=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
@@ -165,7 +165,7 @@ test("left-chest print zone has enough width for common two-word artwork", async
 test("browser preview rejects overflow and never issues fictional receipt for clipped text", async () => {
   const {runInNewContext} = await import("node:vm");
   const source = await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount"];
   const nodes=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
@@ -219,7 +219,7 @@ test("accessible print preview has labelled controls and front/back details", as
 test("front print position changes accessible guidance without authorizing an order", async () => {
   const {runInNewContext} = await import("node:vm");
   const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount"];
   const elems=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
@@ -280,4 +280,58 @@ test("browser preview exposes independent back position and safe guidance", asyn
   assert.match(js,/backPlacement\.addEventListener\("change", updateBackHint\)/);
   assert.doesNotMatch(js,/Back: centred print zone only/);
   assert.ok(!/fetch\(|XMLHttpRequest|localStorage|sessionStorage|innerHTML/.test(js));
+});
+
+
+test("accessible front and back character counts update and warn near the limit", async () => {
+  const {runInNewContext} = await import("node:vm");
+  const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount"];
+  const elems=Object.fromEntries(ids.map(id=>[id,{value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
+    addEventListener(name,fn){this.listeners[name]=fn;},replaceChildren(...opts){this.options=opts;this.value=opts[0]?.value||"";}}]));
+  elems.garment.value="tshirt"; elems.frontPlacement.value="center"; elems.backPlacement.value="center"; elems.textStyle.value="bold";
+  const document={getElementById:id=>elems[id],createElement:()=>({value:"",textContent:""})};
+  runInNewContext(js,{document,window:{GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")}});
+  assert.equal(elems.frontCount.textContent,"0 of 48 characters");
+  elems.frontText.value="A".repeat(40); elems.customForm.listeners.input({});
+  assert.equal(elems.frontCount.textContent,"40 of 48 characters");
+  assert.equal(elems.frontCount.dataset.nearLimit,"true");
+  assert.equal(elems.backCount.dataset.nearLimit,"false");
+  assert.equal(elems.mockConfirm.disabled,true);
+  elems.backText.value="Back"; elems.customForm.listeners.input({});
+  assert.equal(elems.backCount.textContent,"4 of 48 characters");
+});
+test("character counts are described accessibly and do not add network or order endpoints", async () => {
+  const html=await readFile(new URL("../operations/custom-apparel/index.html",import.meta.url),"utf8");
+  const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
+  assert.match(html,/id="frontText"[^>]*aria-describedby="artHint frontCount"/);
+  assert.match(html,/id="backText"[^>]*aria-describedby="artHint backCount"/);
+  assert.match(html,/id="frontCount" aria-live="off"/);
+  assert.match(html,/id="backCount" aria-live="off"/);
+  assert.ok(!/fetch\(|XMLHttpRequest|localStorage|sessionStorage|innerHTML/.test(js));
+});
+
+test("supplier readiness audit identifies missing proofs without authorizing manufacture", async () => {
+  const {audit} = require("../operations/custom-apparel/supplier-readiness.cjs");
+  const spec = JSON.parse(await readFile(new URL("../operations/custom-apparel/print-zone-specifications.json",import.meta.url),"utf8"));
+  const result = audit(spec);
+  assert.equal(result.complete,false);
+  assert.equal(result.manufacturingApproved,false);
+  assert.ok(result.missing.includes("tshirt.front_left_chest.printAreaWidthMm"));
+  assert.ok(result.missing.includes("hoodie.back_upper_back.supplierProofUrl"));
+  assert.ok(result.missing.length >= 60);
+  assert.ok(Object.isFrozen(result.missing));
+});
+test("supplier audit rejects malformed and partially filled specifications", () => {
+  const {audit} = require("../operations/custom-apparel/supplier-readiness.cjs");
+  for(const sample of [null,[],{}, {schemaVersion:2}, {schemaVersion:1,garments:{}}]) {
+    const result = audit(sample);
+    assert.equal(result.complete,false);
+    assert.equal(result.manufacturingApproved,false);
+  }
+});
+test("offline supplier audit has no checkout, fetch, or persistence capability", async () => {
+  const js=await readFile(new URL("../operations/custom-apparel/supplier-readiness.cjs",import.meta.url),"utf8");
+  assert.match(js,/manufacturingApproved:false/);
+  assert.ok(!/fetch\(|XMLHttpRequest|localStorage|sessionStorage|payment|checkoutEnabled|submitOrder/i.test(js));
 });
