@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GIM Custom Apparel - Private Mock Workflow</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#1b2540;background:#f3f5f7}
+body{margin:0 auto;max-width:920px;padding:20px}
+h1{margin-bottom:5px} .warning{background:#fff1d6;border-left:5px solid #ad6c00;padding:12px}
+main{display:grid;grid-template-columns:minmax(260px,1fr) minmax(260px,1fr);gap:24px}
+form,.preview{background:#fff;border:1px solid #d3dbe4;border-radius:14px;padding:18px}
+label{display:block;font-weight:600;margin:12px 0 4px} select,input{box-sizing:border-box;width:100%;padding:10px;font:inherit}
+button{padding:12px 16px;margin-top:16px;border:0;border-radius:8px;background:#172c56;color:#fff;cursor:pointer;font:inherit}
+button:disabled{opacity:.5;cursor:not-allowed}.mock{border:2px dashed #b3bec9;border-radius:10px;min-height:95px;padding:15px;margin:12px 0;overflow-wrap:anywhere}
+#status{min-height:2.5em}#receipt{font-weight:600;overflow-wrap:anywhere}
+@media(max-width:700px){main{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<h1>Custom T-shirt &amp; hoodie mock-up</h1>
+<p class="warning"><strong>PRIVATE TEST ONLY.</strong> Text-only artwork positioning concept, not a garment proof. No upload, payments, pricing, shipping, manufacturing or live orders. Not linked from the public store.</p>
+<main>
+<form id="customForm">
+<h2>Choose your mock garment</h2>
+<label for="garment">Garment</label><select id="garment"><option value="tshirt">T-shirt</option><option value="hoodie">Hoodie</option></select>
+<label for="size">Size</label><select id="size"></select>
+<label for="color">Colour</label><select id="color"></select>
+<label for="quantity">Mock quantity (1-10)</label><input id="quantity" type="number" min="1" max="10" step="1" value="1" required>
+<label for="frontPlacement">Front placement</label><select id="frontPlacement"><option value="center">Centre</option><option value="left-chest">Left chest</option></select>
+<label for="frontText">Front text (48 characters max)</label><input id="frontText" maxlength="48" placeholder="Your original text" autocomplete="off">
+<label for="backText">Back text (48 characters max)</label><input id="backText" maxlength="48" placeholder="Optional back text" autocomplete="off">
+<button type="submit">Review mock preview</button>
+</form>
+<section class="preview" aria-live="polite">
+<h2>Text placement preview</h2>
+<p>Front</p><div class="mock" id="frontMock" aria-label="Front text mockup"></div>
+<p>Back</p><div class="mock" id="backMock" aria-label="Back text mockup"></div>
+<p id="status" role="status">Choose options, then review the mock preview.</p>
+<button type="button" id="mockConfirm" disabled>Generate fictional mock receipt</button>
+<p id="receipt" role="status"></p>
+</section>
+</main>
+<script src="mock-order.cjs"></script>
+<script src="browser-demo.js"></script>
+</body>
+</html>
