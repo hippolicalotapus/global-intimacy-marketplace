@@ -1,0 +1,101 @@
+{
+  "sourceCommit": "b63bfe7419ecd85fbbf44fc14c957662b444b5b5",
+  "description": "Storefront smoke and behaviour test snapshot prerequisites; obtain files from this exact commit. This manifest does not deploy or download files.",
+  "files": [
+    {
+      "path": "tests/site.smoke.test.mjs",
+      "sha": "f41e129b94661cb3e982e8e6699309eff87e2624",
+      "size": 9386
+    },
+    {
+      "path": "tests/storefront.behavior.test.mjs",
+      "sha": "c04f54f8bfa412a02b272f0eddd63d72c2c90696",
+      "size": 28040
+    },
+    {
+      "path": "site/index.html",
+      "sha": "4f556af66534305b069e1d65ab08e2b3865ca4d1",
+      "size": 60129
+    },
+    {
+      "path": "site/styles.css",
+      "sha": "ae5e233b1e0e9609740bfee74f868c9ac3049b44",
+      "size": 40816
+    },
+    {
+      "path": "site/catalog.js",
+      "sha": "fac46c954a9a36f06581ea54c297b7bab25911be",
+      "size": 8452
+    },
+    {
+      "path": "site/apparel.js",
+      "sha": "2203d327e903522ac517fc30aa5647d3cc0d0357",
+      "size": 28789
+    },
+    {
+      "path": "site/app.js",
+      "sha": "301e08a3fcf14919fdfffa710236c826f8c3aacb",
+      "size": 33551
+    },
+    {
+      "path": "site/assets/approved-logo.svg",
+      "sha": "fa5802387cb979955757fb4fc17e7b5117b7a80b",
+      "size": 3637
+    },
+    {
+      "path": "netlify.toml",
+      "sha": "4a7f5383e76bb5e0bc8fc9afde1f63f942536132",
+      "size": 709
+    },
+    {
+      "path": "operations/suppliers/supplier-registry.json",
+      "sha": "f4caf24eb92e54f38a8bcc120f7916034e7d5b44",
+      "size": 39726
+    },
+    {
+      "path": ".gitignore",
+      "sha": "01ad8267bef7660d5223d83097b089dfaa4001a5",
+      "size": 282
+    },
+    {
+      "path": "site/product-drawings.js",
+      "sha": "1db2f95fe6cb9cdccda631667d787f3597e23c11",
+      "size": 50993
+    },
+    {
+      "path": "site/countries.js",
+      "sha": "4bc51b248f9956ea7ec63cd7955d0afdb4147952",
+      "size": 202477
+    },
+    {
+      "path": "site/shipping.js",
+      "sha": "ffe6eadefdb837f041205ed777a1429e8cfdd0b4",
+      "size": 3259
+    },
+    {
+      "path": "site/globe-math.js",
+      "sha": "4912d9265df6aa51ba4c24bb73b834428648af1b",
+      "size": 1745
+    },
+    {
+      "path": "site/globe-3d.js",
+      "sha": "a21774c9fca7b18831adfdef696bf34bfa836b0b",
+      "size": 5857
+    },
+    {
+      "path": "site/globe-software.js",
+      "sha": "090634729fd112c092086bb848f8c97bfa675dff",
+      "size": 2820
+    },
+    {
+      "path": "site/destination.js",
+      "sha": "d8c66a246ce829d73d1a37393e65eb8c7eb916e5",
+      "size": 8163
+    },
+    {
+      "path": "site/ruby-welcome.js",
+      "sha": "600eae118e5e2ad4a904228cd586473c5cb0f2c6",
+      "size": 2587
+    }
+  ]
+}
