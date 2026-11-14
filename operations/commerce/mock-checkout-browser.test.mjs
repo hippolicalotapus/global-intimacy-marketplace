@@ -139,6 +139,21 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.activeElement.getAttribute('aria-label')"),before);
       assert.equal(await evaluate("document.querySelector('#estimate').getAttribute('aria-live')"),'polite');
     });
+    await t.test('quantity buttons keep 48px hit targets, spacing, and accessible grouping', async () => {
+      await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      const geometry=await evaluate("(()=>{const buttons=[...document.querySelectorAll('.quantity-controls button')];const a=buttons[0].getBoundingClientRect(),b=buttons[1].getBoundingClientRect();return {count:buttons.length,aW:a.width,aH:a.height,bW:b.width,bH:b.height,gap:b.left-a.right,group:buttons[0].parentElement.getAttribute('role'),label:buttons[0].parentElement.getAttribute('aria-label')}})()");
+      assert.equal(geometry.count,2);
+      assert.equal(geometry.group,'group');
+      assert.match(geometry.label,/fictional_tee/);
+      assert.ok(geometry.aW>=48 && geometry.aH>=48 && geometry.bW>=48 && geometry.bH>=48,JSON.stringify(geometry));
+      assert.ok(geometry.gap>=8,JSON.stringify(geometry));
+    });
+    await t.test('error feedback is announced and never activates payment', async () => {
+      const result=await evaluate("(()=>{const status=document.querySelector('#status');const controls=document.querySelector('.quantity-controls');const prior=status.textContent;const title=document.querySelector('button[aria-disabled=true]');const cart=controls.parentElement.textContent;return {live:status.getAttribute('aria-live'),atomic:status.getAttribute('aria-atomic'),paymentDisabled:title.disabled,cart,prior}})()");
+      assert.equal(result.live,'polite');
+      assert.equal(result.atomic,'true');
+      assert.equal(result.paymentDisabled,true);
+    });
     await t.test('mobile 320px and 375px widths have no horizontal overflow', async () => {
       for (const width of [320, 375]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });

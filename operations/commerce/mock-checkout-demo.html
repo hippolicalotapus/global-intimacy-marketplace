@@ -14,6 +14,13 @@ main{display:grid;gap:18px;margin-top:20px;min-width:0}.panel{background:#251b28
 button,select{background:#efe5ee;color:#211323;border:0;border-radius:8px;padding:10px;font:inherit;min-height:44px;max-width:100%}label[for]{display:block;margin-bottom:8px}
 button:focus-visible,select:focus-visible{outline:3px solid #f6bfdd;outline-offset:3px}
 button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:#d6c1d2}
+.cart-line{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #66525f}
+.cart-details{flex:1 1 165px;min-width:0}
+.quantity-controls{display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap}
+.quantity-controls button{min-width:48px;min-height:48px;font-weight:700}
+#status:not(:empty){padding:10px 12px;border-inline-start:4px solid #d8a5c6;background:#302331;border-radius:4px}
+#status[data-kind=error]{border-inline-start-color:#ffb58b}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 @media(max-width:420px){body{padding:12px}.panel{padding:14px}h1{font-size:1.45rem}.controls button{flex:1 1 130px;min-width:0}}
 #status{white-space:pre-wrap}output{font-weight:700}
 </style>
@@ -30,7 +37,8 @@ button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:
 </section>
 <section class="panel" aria-labelledby="cart-title">
 <h2 id="cart-title">2. Fictional cart</h2>
-<ul id="items" aria-label="Fictional cart products"></ul>
+<ul id="items" aria-label="Fictional cart products" aria-describedby="cart-instructions"></ul>
+<p id="cart-instructions"><small>Use the plus and minus buttons to change fictional quantities. Maximum ten of each item.</small></p>
 <div class="controls"><button id="add-tee">Add sample tee</button><button id="add-hoodie">Add sample hoodie</button><button id="save">Save local snapshot</button><button id="recover" disabled>Recover snapshot</button></div>
 <p><small>Snapshot exists only in this open page's memory. Nothing is saved to browser storage.</small></p>
 </section>
@@ -41,7 +49,7 @@ button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:
 <p id="estimate" role="status" aria-live="polite" aria-atomic="true"></p><p><small>Taxes and final pricing not calculated. No shipping booked.</small></p>
 <button disabled aria-disabled="true">Payment disabled — simulation only</button>
 </section>
-<p id="status" role="status" aria-live="polite"></p>
+<p id="status" role="status" aria-live="polite" aria-atomic="true"></p>
 </main>
 <script type="module">
 import {
@@ -56,8 +64,11 @@ function render(){
   const focusLabel=list.contains(document.activeElement)?document.activeElement.getAttribute('aria-label'):null;
   list.replaceChildren();
   for(const item of state.cart.lines){
-    const li=document.createElement('li');
-    li.append(document.createTextNode(item.productId+' — '+money(item.unitPriceMinor)+' × '+item.quantity+' '));
+    const li=document.createElement('li');li.className='cart-line';
+    const details=document.createElement('span');details.className='cart-details';
+    details.textContent=item.productId+' — '+money(item.unitPriceMinor)+' × '+item.quantity;
+    const controls=document.createElement('span');controls.className='quantity-controls';
+    controls.setAttribute('role','group');controls.setAttribute('aria-label','Quantity controls for '+item.productId);
     const lower=document.createElement('button');lower.textContent='−';
     lower.setAttribute('aria-label','Remove one '+item.productId);
     lower.addEventListener('click',()=>apply(()=>changeDemoQuantity(state,item.productId,item.quantity-1)));
@@ -65,7 +76,7 @@ function render(){
     higher.setAttribute('aria-label','Add one '+item.productId);
     higher.disabled=item.quantity>=10;
     higher.addEventListener('click',()=>apply(()=>changeDemoQuantity(state,item.productId,item.quantity+1)));
-    li.append(lower,higher);list.append(li);
+    controls.append(lower,higher);li.append(details,controls);list.append(li);
   }
   if(!state.cart.lines.length){const li=document.createElement('li');li.textContent='Cart is empty';list.append(li)}
   const p=previewDemo(state);
@@ -79,15 +90,16 @@ function render(){
       ' = '+money(p.checkout.mockTotalBeforeTaxMinor)+' before tax'
     : 'Checkout unavailable: '+p.shipping.status+' (no delivery promise)';
 }
-function apply(action){try{state=action();render();byId('status').textContent='Local fictional simulation updated'}
-catch(error){byId('status').textContent='Simulation rejected change: '+error.message}}
+function report(message,kind='info'){byId('status').dataset.kind=kind;byId('status').textContent=message}
+function apply(action){try{const next=action();state=next;render();report('Local fictional simulation updated')}
+catch(error){report('Simulation rejected change: '+error.message,'error')}}
 byId('shopper').addEventListener('change',event=>apply(()=>{snapshot=null;return createDemoCustomer({shopper:event.target.value})}));
 byId('country').addEventListener('change',event=>apply(()=>changeDemoCountry(state,event.target.value)));
 byId('add-tee').addEventListener('click',()=>apply(()=>changeDemoQuantity(state,catalog.tee.productId,
   (state.cart.lines.find(x=>x.productId===catalog.tee.productId)?.quantity||0)+1)));
 byId('add-hoodie').addEventListener('click',()=>apply(()=>changeDemoQuantity(state,catalog.hoodie.productId,
   (state.cart.lines.find(x=>x.productId===catalog.hoodie.productId)?.quantity||0)+1)));
-byId('save').addEventListener('click',()=>{try{snapshot=saveDemoCart(state);byId('recover').disabled=false;byId('status').textContent='Fictional cart snapshot saved in page memory only'}catch(error){byId('status').textContent=error.message}});
+byId('save').addEventListener('click',()=>{try{snapshot=saveDemoCart(state);byId('recover').disabled=false;report('Fictional cart snapshot saved in page memory only')}catch(error){report('Could not save fictional cart: '+error.message,'error')}});
 byId('recover').addEventListener('click',()=>apply(()=>restoreDemoCart(state,snapshot)));
 byId('recover').setAttribute('aria-description','Restores only a fictional snapshot held in this page');
 render();
