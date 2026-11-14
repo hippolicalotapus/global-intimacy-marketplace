@@ -35,3 +35,14 @@ test('does not mutate supplied data',()=>{
   aggregateCreatorFeedback(records);
   assert.deepEqual(records,copy);
 });
+
+test('rejects honeypot submissions even if consent checkbox was spoofed',()=>{
+  const spam=Array.from({length:5},()=>row({'bot-field':'robot-content'}));
+  const report=aggregateCreatorFeedback(spam);
+  assert.equal(report.consentedSample,'below_reporting_threshold');
+  assert.deepEqual(report.groups['creator-format'],{});
+});
+test('accepts genuine blank honeypot submissions',()=>{
+  const report=aggregateCreatorFeedback(Array.from({length:5},()=>row({'bot-field':''})));
+  assert.equal(report.groups['creator-format']['Product reviews'],5);
+});
