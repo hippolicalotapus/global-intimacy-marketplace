@@ -11,9 +11,19 @@ function assertPublicBoundary(base) {
   const config = readFileSync(join(base, 'netlify.toml'), 'utf8');
   const build = /^\s*\[build\]\s*$/gm;
   assert.equal([...config.matchAll(build)].length, 1, 'Exactly one Netlify build section required');
-  const publish = [...config.matchAll(/^\s*publish\s*=\s*['"]([^'"]+)['"]\s*(?:#.*)?$/gm)];
+  // Track TOML sections: a publish key outside [build] does not configure
+  // Netlify's primary public directory and must never count as approved.
+  let section = '';
+  const publish = [];
+  for (const line of config.split(/\r?\n/)) {
+    const header = /^\s*\[([^\]]+)\]\s*(?:#.*)?$/.exec(line);
+    if (header) { section = header[1]; continue; }
+    const match = /^\s*publish\s*=\s*['"]([^'"]+)['"]\s*(?:#.*)?$/.exec(line);
+    if (match) publish.push({ section, directory: match[1] });
+  }
   assert.equal(publish.length, 1, 'Exactly one explicit publish directory required');
-  assert.equal(publish[0][1], 'site', 'Public deployment must publish only site/');
+  assert.equal(publish[0].section, 'build', 'Publish directory must be declared inside [build]');
+  assert.equal(publish[0].directory, 'site', 'Public deployment must publish only site/');
   const visit = dir => {
     for (const entry of readdirSync(dir, {withFileTypes:true})) {
       assert.ok(!forbidden.test(entry.name), `Prohibited published path: ${entry.name}`);
@@ -52,4 +62,14 @@ test('private supplier files, backup files and environment secrets are blocked',
 test('symlinks cannot expose files outside public site',async t=>{
   const {symlinkSync} = await import('node:fs');
   const dir=fixture();try { writeFileSync(join(dir,'private.txt'),'private');symlinkSync(join(dir,'private.txt'),join(dir,'site','external-link.txt'));assert.throws(()=>assertPublicBoundary(dir),/must not contain symlinks/); } finally {rmSync(dir,{recursive:true,force:true});}
+});
+
+test('publish key outside [build] cannot stand in for the public site boundary',()=>{
+  const dir=fixture();
+  try {
+    for (const scope of ['[context.production]', '[headers.values]']) {
+      writeFileSync(join(dir,'netlify.toml'),`[build]\ncommand = ""\n${scope}\npublish = "site"\n`);
+      assert.throws(()=>assertPublicBoundary(dir),/must be declared inside \[build\]/);
+    }
+  } finally { rmSync(dir,{recursive:true,force:true}); }
 });
