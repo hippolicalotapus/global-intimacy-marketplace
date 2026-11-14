@@ -276,6 +276,7 @@
       }
     }
     var view=hash.startsWith("gift=")?"gift":(hash==="catalog"||hash==="one-heart"||hash==="sarcastabastard"||hash==="results")?"shop":hash.split("?")[0];
+    if(hash==="shop")selectCollection("All");
     if(hash==="one-heart")selectCollection("ONE HEART");
     if(hash==="sarcastabastard")selectCollection("SARCASTABASTARD");
     if(!["shop","favorites","creators","gift","early","about","explore-interests"].includes(view))view="shop";

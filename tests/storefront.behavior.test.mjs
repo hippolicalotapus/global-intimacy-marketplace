@@ -502,3 +502,18 @@ test("Saved-item and wishlist controls name products and preserve pressed state"
   app.document.dispatch("click", { closest: selector => selector === "[data-wish]" ? { dataset: {wish: "201"} } : null });
   assert.match(app.nodes.get("wishlistPicker").innerHTML, /aria-label="Remove Three Sisters from demo wishlist" aria-pressed="true"/);
 });
+
+test("Returning from a named collection to Shop restores the full preview catalogue", async () => {
+  const app = await storefront("#one-heart");
+  assert.equal(app.count(), 18);
+  app.location.hash = "#shop";
+  app.window.dispatch("hashchange");
+  assert.equal(app.count(), 110);
+  assert.ok(app.links.filter(n => n.dataset.navCollection).every(n => !n["aria-current"]));
+  app.location.hash = "#sarcastabastard";
+  app.window.dispatch("hashchange");
+  assert.equal(app.count(), 1);
+  app.location.hash = "#shop";
+  app.window.dispatch("hashchange");
+  assert.equal(app.count(), 110);
+});
