@@ -6,7 +6,7 @@ import {
 } from './mock-customer-cart.mjs';
 
 const now = 110000;
-const vendor = { status: 'approved' };
+const vendor = () => ({ status: 'approved' });
 const product = () => ({
   status: 'approved', mediaRights: true, resaleAuthorized: true,
   territories: ['CA'], stock: 4, inventoryUpdatedAt: new Date(100000).toISOString()
@@ -14,7 +14,7 @@ const product = () => ({
 const account = () => createMockAccount({ accountId: 'fictional_buyer' });
 const cart = () => createMockCart({ ownerId: 'fictional_buyer', currency: 'CAD' });
 const line = () => ({
-  vendor, product: product(), productId: 'fictional_sku',
+  vendor: vendor(), product: product(), productId: 'fictional_sku',
   quantity: 2, unitPriceMinor: 1200
 });
 const filled = () => addMockCartLine(cart(), line());
