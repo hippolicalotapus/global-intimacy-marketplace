@@ -90,7 +90,7 @@ test("browser demo is self-contained, unlinked and has no network/order storage"
   const html=await readFile(new URL("../operations/custom-apparel/index.html",import.meta.url),"utf8");
   const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
   assert.match(html,/PRIVATE TEST ONLY/);
-  assert.match(html,/type="button" id="mockConfirm" disabled/);
+  assert.match(html,/type="button" id="mockConfirm" aria-describedby="mockSafety" disabled/);
   assert.match(html,/mock-order\.cjs/);
   assert.ok(!/fetch\(|XMLHttpRequest|localStorage|sessionStorage|sendBeacon|WebSocket|paymentRequest/i.test(js));
   assert.ok(!/checkout|api\/orders/.test(js));
@@ -334,4 +334,42 @@ test("offline supplier audit has no checkout, fetch, or persistence capability",
   const js=await readFile(new URL("../operations/custom-apparel/supplier-readiness.cjs",import.meta.url),"utf8");
   assert.match(js,/manufacturingApproved:false/);
   assert.ok(!/fetch\(|XMLHttpRequest|localStorage|sessionStorage|payment|checkoutEnabled|submitOrder/i.test(js));
+});
+
+
+test("resize invalidates previously valid mock preview and prevents stale receipt", async () => {
+  const {runInNewContext} = await import("node:vm");
+  const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount"];
+  const elems=Object.fromEntries(ids.map(id=>[id,{value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},clientHeight:100,scrollHeight:25,clientWidth:100,scrollWidth:30,
+    addEventListener(type,handler){this.listeners[type]=handler;},replaceChildren(...items){this.options=items;this.value=items[0]?.value||"";}}]));
+  const events={};
+  const window={GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs"),addEventListener(type,handler){events[type]=handler;}};
+  const document={getElementById:id=>elems[id],createElement:()=>({value:"",textContent:""})};
+  elems.garment.value="tshirt";elems.frontPlacement.value="center";elems.backPlacement.value="center";elems.textStyle.value="bold";
+  runInNewContext(js,{document,window});
+  elems.frontText.value="Safe mock";elems.quantity.value="1";
+  elems.customForm.listeners.input({});
+  elems.customForm.listeners.submit({preventDefault(){}});
+  assert.equal(elems.mockConfirm.disabled,false);
+  events.resize({});
+  assert.equal(elems.mockConfirm.disabled,true);
+  assert.equal(elems.frontStage.dataset.ready,"false");
+  assert.match(elems.status.textContent,/Screen size changed/);
+  elems.mockConfirm.listeners.click({});
+  assert.equal(elems.receipt.textContent,"");
+  elems.customForm.listeners.submit({preventDefault(){}});
+  assert.equal(elems.mockConfirm.disabled,false);
+  events.pageshow({persisted:true});
+  assert.equal(elems.mockConfirm.disabled,true);
+  assert.match(elems.status.textContent,/Page restored/);
+});
+test("fictional confirmation communicates no-payment and supplier restrictions accessibly", async () => {
+  const html=await readFile(new URL("../operations/custom-apparel/index.html",import.meta.url),"utf8");
+  const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
+  assert.match(html,/id="mockConfirm" aria-describedby="mockSafety" disabled/);
+  assert.match(html,/id="mockSafety"/);
+  assert.match(html,/Nothing is saved, paid for, printed or submitted/);
+  assert.match(js,/window.addEventListener\("resize"/);
+  assert.match(js,/window.addEventListener\("pageshow"/);
 });

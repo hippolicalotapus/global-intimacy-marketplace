@@ -78,7 +78,8 @@ button:disabled{opacity:.5;cursor:not-allowed}:is(button,select,input):focus-vis
 <g class="hoodie"><path class="fabric" d="M95 38 Q120 11 145 38 L164 48 L177 51 L209 77 L189 140 L170 127 L170 274 Q120 283 70 274 L70 127 L51 140 L31 77 L63 51 L76 48 Z"/><path class="fabric" d="M95 38 Q120 12 145 38 L159 61 Q120 99 81 61 Z"/><path class="seam" d="M75 269 Q120 278 165 269"/><path class="seam front-detail" d="M109 76 L111 110 M131 76 L129 110"/><path class="fabric front-detail" d="M89 201 Q120 209 151 201 L156 238 Q120 252 84 238 Z"/><path class="highlight" d="M74 73 L83 65 L83 269 L74 269 Z"/><path class="side-shadow" d="M157 65 L167 75 L167 269 L158 269 Z"/></g>
 </svg><div class="print-guide" aria-hidden="true"></div><div class="print-text" id="backMock" data-placement="center"></div></div></div></div>
 <p id="status" role="status" aria-live="polite" aria-atomic="true">Choose options, then review the mock preview.</p>
-<button type="button" id="mockConfirm" disabled>Generate fictional mock receipt</button>
+<p id="mockSafety" class="hint">Fictional test only. Nothing is saved, paid for, printed or submitted to a supplier.</p>
+<button type="button" id="mockConfirm" aria-describedby="mockSafety" disabled>Generate fictional mock receipt</button>
 <p id="receipt" role="status" aria-live="polite" aria-atomic="true"></p>
 </section>
 </main>

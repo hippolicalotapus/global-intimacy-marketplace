@@ -97,6 +97,24 @@
     message("Changes detected. Review another mock preview before confirming.");
   });
   garment.addEventListener("change", () => {updateChoices(); session.invalidate(); clearPreview(); receipt.textContent = "";});
+  // Lettering that fit before a resize may be clipped in a smaller print area.
+  // A resize requires an explicit new preview, never an automatic mock order.
+  if (typeof window.addEventListener === "function") {
+    window.addEventListener("resize", () => {
+      if (frontStage.dataset.ready !== "true" && backStage.dataset.ready !== "true") return;
+      session.invalidate();
+      clearPreview();
+      receipt.textContent = "";
+      message("Screen size changed. Review the garment again to verify text fits before generating a fictional receipt.");
+    });
+    window.addEventListener("pageshow", event => {
+      if (!event.persisted) return;
+      session.invalidate();
+      clearPreview();
+      receipt.textContent = "";
+      message("Page restored. Review your design again before generating a fictional receipt.");
+    });
+  }
   frontPlacement.addEventListener("change", updatePlacementHint);
   backPlacement.addEventListener("change", updateBackHint);
   form.addEventListener("submit", event => {
