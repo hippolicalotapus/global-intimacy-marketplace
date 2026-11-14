@@ -115,3 +115,34 @@ test('returned envelope payload cannot modify state and replay cannot reapprove'
  assert.equal(restored.recordFor({sessionId:'session_owner',id:'entry_001'}).status,'approved');
  assert.throws(()=>restored.review({sessionId:'session_mod2',id:'entry_001',decision:'approved',evidence}));
 });
+
+test('trusted minimum audit sequence rejects a correctly signed stale replay',()=>{
+ const store=setup();
+ const stale=sealAuthorizationFixture(store,key);
+ createDraft(store,'entry_002','session_other','other-vendor');
+ const floor=store.snapshot().sequence;
+ assert.equal(floor,3);
+ assert.throws(()=>restoreSealedFixtureAuthorization(fixtures(),stale,key,{minimumSequence:floor}));
+ const current=sealAuthorizationFixture(store,key);
+ assert.deepEqual(restoreSealedFixtureAuthorization(fixtures(),current,key,{minimumSequence:floor}).snapshot(),store.snapshot());
+});
+test('restore rejects invalid trusted sequence floors',()=>{
+ const sealed=sealAuthorizationFixture(setup(),key);
+ for(const floor of [-1,1.5,NaN,Infinity,'2',null]) {
+  assert.throws(()=>restoreSealedFixtureAuthorization(fixtures(),sealed,key,{minimumSequence:floor}));
+ }
+});
+test('audit envelopes reject oversized fictional payloads',()=>{
+ assert.throws(()=>sealFixtureAudit({padding:'x'.repeat(1024*1024)},key));
+ const valid=sealAuthorizationFixture(setup(),key);
+ assert.throws(()=>openFixtureAudit({...valid,payload:'A'.repeat(1400000)},key));
+});
+test('failed rollback and invalid restore attempts do not affect existing tenant records',()=>{
+ const store=setup();
+ const initial=store.snapshot();
+ const stale=sealAuthorizationFixture(store,key);
+ assert.throws(()=>restoreSealedFixtureAuthorization(fixtures(),stale,key,{minimumSequence:initial.sequence+1}));
+ assert.throws(()=>restoreSealedFixtureAuthorization(fixtures(),{...stale,mac:'0'.repeat(64)},key));
+ assert.deepEqual(store.snapshot(),initial);
+ assert.throws(()=>store.recordFor({sessionId:'session_other',id:'entry_001'}));
+});
