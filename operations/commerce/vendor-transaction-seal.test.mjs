@@ -51,7 +51,7 @@ test('sealed transaction snapshot restores record and receipt without duplicate 
 test('tampering, wrong key, missing key and unexpected envelope kind reject restoration',()=>{
  const envelope=sealTransactionFixture(make(),key);
  for(const corrupt of [
-  {...envelope,payload:envelope.payload.slice(0,-1)+'A'},
+  {...envelope,payload:envelope.payload.slice(0,-1)+(envelope.payload.endsWith('A')?'B':'A')},
   {...envelope,mac:'0'.repeat(64)},
   {...envelope,version:2}
  ]) assert.throws(()=>restoreSealedTransactionFixture(fixtures(),corrupt,key));
