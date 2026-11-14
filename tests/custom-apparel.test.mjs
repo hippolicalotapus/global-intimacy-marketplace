@@ -101,9 +101,9 @@ test("browser demo is self-contained, unlinked and has no network/order storage"
 test("browser form previews shirt and hoodie, rejects invalid edits, and issues only fictional receipts", async () => {
   const {runInNewContext} = await import("node:vm");
   const browserSrc=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","garment","color","size","quantity","frontText","backText","frontPlacement"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement"];
   const elems=Object.fromEntries(ids.map(id=>[id,{
-    value:"",textContent:"",disabled:false,listeners:{},
+    value:"",textContent:"",disabled:false,listeners:{},dataset:{},
     addEventListener(event,callback){this.listeners[event]=callback;},
     replaceChildren(...options){this.options=options;this.value=options[0]?.value||"";}
   }]));
@@ -117,10 +117,14 @@ test("browser form previews shirt and hoodie, rejects invalid edits, and issues 
   fire("customForm","input");fire("customForm","submit");
   assert.equal(elems.mockConfirm.disabled,false);
   assert.equal(elems.frontMock.textContent,"My own design");
+  assert.equal(elems.frontStage.dataset.ready,"true");
+  assert.equal(elems.frontStage.dataset.garment,"tshirt");
   fire("mockConfirm","click");
   assert.match(elems.receipt.textContent,/MOCK-0001/);
   assert.match(elems.receipt.textContent,/Payment disabled/);
   elems.garment.value="hoodie";fire("garment","change");
+  assert.equal(elems.frontStage.dataset.ready,"false");
+  assert.equal(elems.frontMock.textContent,"");
   assert.equal(elems.size.options.length,6);
   elems.quantity.value="0";fire("customForm","input");fire("customForm","submit");
   assert.equal(elems.mockConfirm.disabled,true);
@@ -128,4 +132,24 @@ test("browser form previews shirt and hoodie, rejects invalid edits, and issues 
   elems.quantity.value="2";fire("customForm","input");fire("customForm","submit");
   fire("mockConfirm","click");
   assert.match(elems.receipt.textContent,/MOCK-0002.*hoodie/);
+  assert.equal(elems.backStage.dataset.garment,"hoodie");
+  assert.equal(elems.frontStage.dataset.ready,"true");
+});
+
+test("illustrative shirt and hoodie silhouettes exist for front and back", async () => {
+  const html=await readFile(new URL("../operations/custom-apparel/index.html",import.meta.url),"utf8");
+  assert.equal((html.match(/class="shirt"/g)||[]).length,2);
+  assert.equal((html.match(/class="hoodie"/g)||[]).length,2);
+  assert.match(html,/id="frontStage"/);
+  assert.match(html,/id="backStage"/);
+  assert.match(html,/data-color="cream"/);
+  assert.match(html,/left-chest/);
+  assert.match(html,/Not a photograph, supplier proof or exact scale/);
+});
+test("preview DOM updates use safe text and never persist or send orders", async () => {
+  const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
+  assert.match(js,/front\.textContent = result\.design\.frontText/);
+  assert.match(js,/stage\.dataset\.color = result\.design\.color/);
+  assert.match(js,/clearPreview\(\)/);
+  assert.ok(!/innerHTML|insertAdjacentHTML|fetch\(|XMLHttpRequest|localStorage|sessionStorage/.test(js));
 });

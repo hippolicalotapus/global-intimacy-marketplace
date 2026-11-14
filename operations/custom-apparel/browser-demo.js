@@ -8,10 +8,19 @@
   const confirm = document.getElementById("mockConfirm");
   const front = document.getElementById("frontMock");
   const back = document.getElementById("backMock");
+  const frontStage = document.getElementById("frontStage");
+  const backStage = document.getElementById("backStage");
   const garment = document.getElementById("garment");
   const color = document.getElementById("color");
   const size = document.getElementById("size");
   const message = (text) => {status.textContent = text;};
+  function clearPreview() {
+    front.textContent = "";
+    back.textContent = "";
+    frontStage.dataset.ready = "false";
+    backStage.dataset.ready = "false";
+    confirm.disabled = true;
+  }
   function updateChoices() {
     const choices = window.GIMMockApparel.GARMENTS[garment.value];
     function fill(node, values) {
@@ -37,23 +46,28 @@
   }
   form.addEventListener("input", () => {
     session.invalidate();
-    confirm.disabled = true;
+    clearPreview();
     receipt.textContent = "";
     message("Changes detected. Review another mock preview before confirming.");
   });
-  garment.addEventListener("change", () => {updateChoices(); session.invalidate(); confirm.disabled = true;});
+  garment.addEventListener("change", () => {updateChoices(); session.invalidate(); clearPreview(); receipt.textContent = "";});
   form.addEventListener("submit", event => {
     event.preventDefault();
     const result = session.preview(data());
     if (result.status !== "preview_only") {
-      front.textContent = "";
-      back.textContent = "";
-      confirm.disabled = true;
+      clearPreview();
       message("Preview rejected: " + result.reason + ". Check garment, size, text, placement and quantity.");
       return;
     }
-    front.textContent = result.design.frontText || "(no front text)";
-    back.textContent = result.design.backText || "(no back text)";
+    front.textContent = result.design.frontText;
+    back.textContent = result.design.backText;
+    front.dataset.placement = result.design.frontPlacement;
+    back.dataset.placement = result.design.backPlacement;
+    for (const stage of [frontStage,backStage]) {
+      stage.dataset.garment = result.design.garment;
+      stage.dataset.color = result.design.color;
+      stage.dataset.ready = "true";
+    }
     confirm.disabled = false;
     message("Mock preview ready. Pricing and delivery are unverified; no real order can be placed.");
   });
