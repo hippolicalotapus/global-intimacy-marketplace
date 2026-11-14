@@ -154,6 +154,18 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(result.atomic,'true');
       assert.equal(result.paymentDisabled,true);
     });
+    await t.test('cart limit errors are announced without changing the saved quantity', async () => {
+      await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      await evaluate("for(let i=0;i<9;i++)document.querySelector('#add-tee').click()");
+      assert.match(await evaluate("document.querySelector('#items').textContent"),/× 10/);
+      await evaluate("document.querySelector('#add-tee').click()");
+      assert.match(await evaluate("document.querySelector('#items').textContent"),/× 10/);
+      const feedback=await evaluate("({message:document.querySelector('#status').textContent,kind:document.querySelector('#status').dataset.kind,live:document.querySelector('#status').getAttribute('aria-live'),disabled:document.querySelector('button[aria-disabled=true]').disabled})");
+      assert.equal(feedback.kind,'error');
+      assert.equal(feedback.live,'polite');
+      assert.match(feedback.message,/Simulation rejected change/);
+      assert.equal(feedback.disabled,true);
+    });
     await t.test('mobile 320px and 375px widths have no horizontal overflow', async () => {
       for (const width of [320, 375]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });
