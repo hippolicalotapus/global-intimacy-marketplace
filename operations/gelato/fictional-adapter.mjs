@@ -1,12 +1,18 @@
 // Offline-only Gelato payload preview. Never sends HTTP requests.
 const PRODUCT_UID = 'apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_classic_gsi_s_gco_white_gpr_4-4';
 const SAMPLE_ART = 'https://cdn-origin.gelato-api-dashboard.ie.live.gelato.tech/docs/sample-print-files/logo.png';
+// This module is deliberately not a network client. No credentials, fetch, or SDK imports.
+const usedDemoIds = new Set();
 export function buildFictionalGelatoPreview(input) {
   if (!input || input.fictional !== true || input.paymentStatus !== 'simulated') throw new Error('Fictional simulated orders only');
   if (!/^DEMO-[A-Z0-9-]{3,40}$/.test(input.orderId || '')) throw new Error('Demo order ID required');
   if (!Number.isInteger(input.quantity) || input.quantity < 1 || input.quantity > 10) throw new Error('Invalid demo quantity');
   if (input.productUid && input.productUid !== PRODUCT_UID) throw new Error('Only fixed sample SKU allowed');
   if (input.artworkUrl && input.artworkUrl !== SAMPLE_ART) throw new Error('Only public sample artwork allowed');
+  if (input.shippingVerified !== true || input.shippingCountry !== 'US' ||
+      input.shippingMethod !== 'express' || input.shippingQuoteFictional !== true) {
+    throw new Error('Verified fictional shipping inputs required');
+  }
   return Object.freeze({
     mode: 'offline-preview',
     networkAllowed: false,
@@ -19,3 +25,11 @@ export function buildFictionalGelatoPreview(input) {
     }
   });
 }
+
+export function reserveFictionalPreview(input) {
+  const preview = buildFictionalGelatoPreview(input);
+  if (usedDemoIds.has(input.orderId)) throw new Error('Duplicate demo order');
+  usedDemoIds.add(input.orderId);
+  return preview;
+}
+export function resetFictionalPreviewReservationsForTests() { usedDemoIds.clear(); }
