@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GIM fictional checkout rehearsal</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#f6eef3;background:#171019}
+*{box-sizing:border-box}body{max-width:820px;margin:auto;padding:24px}
+h1{font-size:1.8rem}header{border-bottom:1px solid #66525f;padding-bottom:16px}
+.notice{background:#382b39;border:1px solid #b78da7;padding:14px;border-radius:12px}
+main{display:grid;gap:18px;margin-top:20px}.panel{background:#251b28;padding:18px;border-radius:12px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button,select{background:#efe5ee;color:#211323;border:0;border-radius:8px;padding:10px;font:inherit}
+button:focus-visible,select:focus-visible{outline:3px solid #f6bfdd}
+button:disabled{opacity:.55}li{margin:12px 0}small{color:#d6c1d2}
+#status{white-space:pre-wrap}output{font-weight:700}
+</style>
+</head>
+<body>
+<header><h1>Global Intimacy Marketplace · Checkout rehearsal</h1>
+<p class="notice" role="status">FICTIONAL DEMO ONLY · No login, real pricing, payment, shipping, order submission or customer information. Nothing is stored on a server.</p></header>
+<main>
+<section class="panel" aria-labelledby="shopper-title">
+<h2 id="shopper-title">1. Simulated shopper</h2>
+<label for="shopper">Fixture</label>
+<select id="shopper"><option value="returning">Returning fictional shopper</option><option value="guest">Guest fictional shopper</option></select>
+<p><small>Selection only changes a local test fixture. This is not authentication.</small></p>
+</section>
+<section class="panel" aria-labelledby="cart-title">
+<h2 id="cart-title">2. Fictional cart</h2>
+<ul id="items"></ul>
+<div class="controls"><button id="add-tee">Add sample tee</button><button id="add-hoodie">Add sample hoodie</button><button id="save">Save local snapshot</button><button id="recover">Recover snapshot</button></div>
+<p><small>Snapshot exists only in this open page's memory. Nothing is saved to browser storage.</small></p>
+</section>
+<section class="panel" aria-labelledby="shipping-title">
+<h2 id="shipping-title">3. Fictional destination and checkout estimate</h2>
+<label for="country">Country</label>
+<select id="country"><option value="CA">Canada</option><option value="US">United States</option><option value="GB">United Kingdom (unsupported)</option></select>
+<p id="estimate"></p><p><small>Taxes and final pricing not calculated. No shipping booked.</small></p>
+<button disabled aria-disabled="true">Payment disabled — simulation only</button>
+</section>
+<p id="status" role="status" aria-live="polite"></p>
+</main>
+<script type="module">
+import {
+  catalog,createDemoCustomer,changeDemoQuantity,changeDemoCountry,
+  saveDemoCart,restoreDemoCart,previewDemo
+} from './mock-customer-ui.mjs';
+let state=createDemoCustomer(), snapshot=null;
+const byId=id=>document.getElementById(id);
+function money(minor){return '$'+(minor/100).toFixed(2)+' CAD (fictional)'}
+function render(){
+  const list=byId('items');list.replaceChildren();
+  for(const item of state.cart.lines){
+    const li=document.createElement('li');
+    li.append(document.createTextNode(item.productId+' — '+money(item.unitPriceMinor)+' × '+item.quantity+' '));
+    const lower=document.createElement('button');lower.textContent='−';
+    lower.setAttribute('aria-label','Remove one '+item.productId);
+    lower.addEventListener('click',()=>apply(()=>changeDemoQuantity(state,item.productId,item.quantity-1)));
+    const higher=document.createElement('button');higher.textContent='+';
+    higher.setAttribute('aria-label','Add one '+item.productId);
+    higher.disabled=item.quantity>=10;
+    higher.addEventListener('click',()=>apply(()=>changeDemoQuantity(state,item.productId,item.quantity+1)));
+    li.append(lower,higher);list.append(li);
+  }
+  if(!state.cart.lines.length){const li=document.createElement('li');li.textContent='Cart is empty';list.append(li)}
+  const p=previewDemo(state);
+  byId('country').value=state.country;
+  byId('shopper').value=state.shopper;
+  byId('estimate').textContent=p.checkout
+    ? 'Merchandise '+money(p.checkout.checkout.order.totalMinor)+
+      ' + fictional shipping '+money(p.shipping.shippingMinor)+
+      ' = '+money(p.checkout.mockTotalBeforeTaxMinor)+' before tax'
+    : 'Checkout unavailable: '+p.shipping.status+' (no delivery promise)';
+}
+function apply(action){try{state=action();byId('status').textContent='Local fictional simulation updated';render()}
+catch(error){byId('status').textContent='Simulation rejected change: '+error.message}}
+byId('shopper').addEventListener('change',event=>apply(()=>{snapshot=null;return createDemoCustomer({shopper:event.target.value})}));
+byId('country').addEventListener('change',event=>apply(()=>changeDemoCountry(state,event.target.value)));
+byId('add-tee').addEventListener('click',()=>apply(()=>changeDemoQuantity(state,catalog.tee.productId,
+  (state.cart.lines.find(x=>x.productId===catalog.tee.productId)?.quantity||0)+1)));
+byId('add-hoodie').addEventListener('click',()=>apply(()=>changeDemoQuantity(state,catalog.hoodie.productId,
+  (state.cart.lines.find(x=>x.productId===catalog.hoodie.productId)?.quantity||0)+1)));
+byId('save').addEventListener('click',()=>{try{snapshot=saveDemoCart(state);byId('status').textContent='Fictional cart snapshot saved in page memory only'}catch(error){byId('status').textContent=error.message}});
+byId('recover').addEventListener('click',()=>apply(()=>restoreDemoCart(state,snapshot)));
+render();
+</script>
+</body>
+</html>
