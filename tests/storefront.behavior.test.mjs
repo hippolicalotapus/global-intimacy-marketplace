@@ -532,3 +532,12 @@ test("Direct catalogue navigation restores all previews after browsing a named c
   app.window.dispatch("hashchange");
   assert.equal(app.count(), 110);
 });
+
+test("Every product detail button announces its own product", async () => {
+  const app = await storefront();
+  const cards = app.nodes.get("productGrid").innerHTML;
+  const buttons = [...cards.matchAll(/<button[^>]*data-detail="([^"]+)"[^>]*>/g)];
+  assert.equal(buttons.length, 110);
+  assert.ok(buttons.every(m => /aria-label="View details for [^"]+"/.test(m[0])));
+  assert.match(cards, /data-detail="201" aria-label="View details for ONE HEART Three Sisters[^"]*"/);
+});
