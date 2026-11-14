@@ -46,3 +46,14 @@ test('accepts genuine blank honeypot submissions',()=>{
   const report=aggregateCreatorFeedback(Array.from({length:5},()=>row({'bot-field':''})));
   assert.equal(report.groups['creator-format']['Product reviews'],5);
 });
+
+test('does not aggregate records explicitly belonging to another Netlify form',()=>{
+  const wrong=Array.from({length:5},()=>row({'form-name':'customer-support'}));
+  const report=aggregateCreatorFeedback(wrong);
+  assert.equal(report.consentedSample,'below_reporting_threshold');
+  assert.deepEqual(report.groups['creator-format'],{});
+});
+test('allows named creator-feedback records and legacy records without form-name',()=>{
+  const report=aggregateCreatorFeedback([...Array.from({length:3},()=>row({'form-name':'creator-feedback'})),...Array.from({length:2},()=>row())]);
+  assert.equal(report.groups['creator-format']['Product reviews'],5);
+});
