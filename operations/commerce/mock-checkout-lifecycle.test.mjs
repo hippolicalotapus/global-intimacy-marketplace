@@ -47,3 +47,20 @@ test('empty cart and unsupported shipping block fictional journey start',()=>{
   assert.throws(()=>beginFictionalJourney(createDemoCustomer({shopper:'guest'})));
   assert.throws(()=>beginFictionalJourney(changeDemoCountry(createDemoCustomer(),'GB')));
 });
+
+test('each fictional action rejects replay without changing the original journey',()=>{
+  const draft=beginFictionalJourney(createDemoCustomer());
+  const pending=progressFictionalJourney(draft,'pending');
+  const paid=progressFictionalJourney(pending,'confirm');
+  const cancelled=progressFictionalJourney(draft,'cancel');
+  for(const [journey,event] of [[pending,'pending'],[paid,'confirm'],[cancelled,'cancel']]) {
+    const before=JSON.stringify(journey);
+    assert.throws(()=>progressFictionalJourney(journey,event),/already applied/);
+    assert.equal(JSON.stringify(journey),before);
+    assert.equal(journey.paymentEnabled,false);
+    assert.equal(journey.orderSubmitted,false);
+  }
+  assert.equal(draft.order.processedEvents.length,0);
+  assert.equal(pending.order.processedEvents.length,1);
+});
+

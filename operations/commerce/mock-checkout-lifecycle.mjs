@@ -35,6 +35,8 @@ function progressFictionalJourney(journey,event){
   const target=event==='pending'?'awaiting_payment':event==='confirm'?'paid':'cancelled';
   // Only the existing order-domain transition rules decide whether the event is legal.
   const eventId={pending:'fictional_event_pending',confirm:'fictional_event_confirm',cancel:'fictional_event_cancel'}[event];
+  // The UI treats repeated actions as invalid; keep order-domain webhook replay semantics intact.
+  if(journey.order.processedEvents.includes(eventId)) throw new Error('Fictional action already applied');
   const order=advance(journey.order,target,eventId);
   return Object.freeze({...journey,order,state:order.state});
 }
@@ -44,3 +46,4 @@ function describeFictionalJourney(journey){
   return statuses[journey.state]+'. No real payment, order, receipt or delivery.';
 }
 export { beginFictionalJourney,progressFictionalJourney,describeFictionalJourney };
+
