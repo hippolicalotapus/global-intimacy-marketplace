@@ -22,8 +22,8 @@
     const chest = frontPlacement.value === "left-chest";
     frontStage.dataset.placement = chest ? "left-chest" : "center";
     placementHint.textContent = chest
-      ? "Front: compact left-chest print zone, suitable for short lettering. Back: centred print zone only. Dashed outlines are illustrative."
-      : "Front: centre print zone for larger lettering. Back: centred print zone only. Dashed outlines are illustrative.";
+      ? "Front: compact left-chest print zone, suitable for short lettering. Dashed outlines are illustrative."
+      : "Front: centre print zone for larger lettering. Dashed outlines are illustrative.";
   }
   function updateBackHint() {
     const upper = backPlacement.value === "upper-back";

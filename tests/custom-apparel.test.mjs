@@ -101,7 +101,7 @@ test("browser demo is self-contained, unlinked and has no network/order storage"
 test("browser form previews shirt and hoodie, rejects invalid edits, and issues only fictional receipts", async () => {
   const {runInNewContext} = await import("node:vm");
   const browserSrc=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint";
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint"];
   const elems=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
@@ -165,7 +165,7 @@ test("left-chest print zone has enough width for common two-word artwork", async
 test("browser preview rejects overflow and never issues fictional receipt for clipped text", async () => {
   const {runInNewContext} = await import("node:vm");
   const source = await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint";
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint"];
   const nodes=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
@@ -219,7 +219,7 @@ test("accessible print preview has labelled controls and front/back details", as
 test("front print position changes accessible guidance without authorizing an order", async () => {
   const {runInNewContext} = await import("node:vm");
   const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint";
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint"];
   const elems=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
@@ -237,7 +237,7 @@ test("front print position changes accessible guidance without authorizing an or
   assert.equal(elems.mockConfirm.disabled,true);
   assert.equal(elems.frontStage.dataset.placement,"left-chest");
   assert.match(elems.placementHint.textContent,/compact left-chest/);
-  assert.match(elems.placementHint.textContent,/Back: centred/);
+  assert.doesNotMatch(elems.placementHint.textContent,/Back: centred/);
 });
 test("print-zone guidance is accessible and never claims verified supplier dimensions", async () => {
   const html=await readFile(new URL("../operations/custom-apparel/index.html",import.meta.url),"utf8");
@@ -278,5 +278,6 @@ test("browser preview exposes independent back position and safe guidance", asyn
   assert.match(js,/backPlacement:backPlacement\.value/);
   assert.match(js,/backStage\.dataset\.placement = result\.design\.backPlacement/);
   assert.match(js,/backPlacement\.addEventListener\("change", updateBackHint\)/);
+  assert.doesNotMatch(js,/Back: centred print zone only/);
   assert.ok(!/fetch\(|XMLHttpRequest|localStorage|sessionStorage|innerHTML/.test(js));
 });
