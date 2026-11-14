@@ -5,8 +5,15 @@ const fail=(ok,why)=>{if(!ok)throw new Error(why);};
 const token=x=>typeof x==='string'&&/^[A-Za-z0-9_-]{3,80}$/.test(x);
 const copy=x=>JSON.parse(JSON.stringify(x));
 const hash=x=>createHash('sha256').update(JSON.stringify(x),'utf8').digest('hex');
-function createFixtureTransactionStore({users=[],sessions=[],vendors=[],memberships=[],savedState,minimumRevision=0}={}){
-  const fixtures={users,sessions,vendors,memberships};
+function createFixtureTransactionStore({users=[],sessions=[],vendors=[],memberships=[],savedState,minimumRevision=0,revokedSessionIds=[]}={}){
+  // Revocations are trusted fixture configuration, not supplied by a vendor request.
+  fail(Array.isArray(revokedSessionIds)&&revokedSessionIds.every(token)&&
+    new Set(revokedSessionIds).size===revokedSessionIds.length&&
+    revokedSessionIds.every(id=>sessions.some(session=>session.id===id)),
+    'Invalid session revocations');
+  const revoked=new Set(revokedSessionIds);
+  const activeSessions=sessions.filter(session=>!revoked.has(session.id));
+  const fixtures={users,sessions:activeSessions,vendors,memberships};
   fail(Number.isSafeInteger(minimumRevision)&&minimumRevision>=0,'Invalid trusted revision floor');
   const create=state=>createFixturePersistenceContract({...fixtures,...(state===undefined?{}:{savedState:state}),minimumRevision:state===undefined?0:minimumRevision});
   let state,receipts;
@@ -67,7 +74,7 @@ function createFixtureTransactionStore({users=[],sessions=[],vendors=[],membersh
         const op=operations[i],result=previous.result[i];
         fail(result&&result.id===op.id,'Inconsistent replay receipt');
         reader.read({sessionId:op.sessionId,id:result.id});
-        const principalId=sessions.find(x=>x.id===op.sessionId)?.userId;
+        const principalId=activeSessions.find(x=>x.id===op.sessionId)?.userId;
         fail(token(principalId)&&
           (op.type==='submit'?result.submittedBy===principalId:
             result.reviewedBy===principalId),'Replay actor mismatch');
