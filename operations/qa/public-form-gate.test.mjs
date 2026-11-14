@@ -36,3 +36,18 @@ test('all public HTML pages pass the prelaunch form gate', () => {
   const sourceSite = new URL('../../site/', import.meta.url);
   assert.deepEqual(auditSiteForms(fileURLToPath(sourceSite)), []);
 });
+
+test('formmethod override cannot activate a POST request',()=>{
+  assert.match(auditHtmlForms('<form><button type="submit" formmethod="POST">Send</button></form>').join(' '),/submit override forbidden/);
+  assert.match(auditHtmlForms('<form><input type="submit" formmethod="post"></form>').join(' '),/submit override forbidden/);
+});
+test('duplicate action attributes cannot conceal an external form endpoint',()=>{
+  const issues = auditHtmlForms('<form action="https://invalid.example/collect" action=""></form>');
+  assert.match(issues.join(' '),/duplicate submission attribute forbidden/);
+  assert.match(issues.join(' '),/external form action/);
+});
+test('duplicate method attributes cannot conceal an unapproved POST',()=>{
+  const issues = auditHtmlForms('<form method="POST" method="GET"></form>');
+  assert.match(issues.join(' '),/duplicate submission attribute forbidden/);
+  assert.match(issues.join(' '),/unapproved POST/);
+});
