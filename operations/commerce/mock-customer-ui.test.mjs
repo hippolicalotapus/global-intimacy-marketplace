@@ -101,3 +101,24 @@ test('fictional recovery snapshot is bound to its original session fixture', () 
   assert.throws(() => restoreDemoCart(other,snapshot));
   assert.equal(other.cart.lines.length,0);
 });
+
+test('fictional cart restore rejects altered sample prices and unknown product identifiers', () => {
+  const state=createDemoCustomer();
+  const original=saveDemoCart(state);
+  const snapshot=JSON.parse(original);
+  for(const forged of [
+    {...snapshot,lines:snapshot.lines.map(line=>({...line,unitPriceMinor:1}))},
+    {...snapshot,lines:snapshot.lines.map(line=>({...line,productId:'fictional_unknown'}))}
+  ]){
+    assert.throws(()=>restoreDemoCart(state,JSON.stringify(forged)));
+  }
+  assert.equal(state.cart.lines[0].unitPriceMinor,catalog.tee.unitPriceMinor);
+  assert.equal(restoreDemoCart(state,original).cart.lines[0].unitPriceMinor,catalog.tee.unitPriceMinor);
+});
+test('fictional cart restore rejects quantities beyond demonstration limits', () => {
+  const state=createDemoCustomer();
+  const snapshot=JSON.parse(saveDemoCart(state));
+  snapshot.lines[0].quantity=11;
+  assert.throws(()=>restoreDemoCart(state,JSON.stringify(snapshot)));
+  assert.equal(state.cart.lines[0].quantity,1);
+});

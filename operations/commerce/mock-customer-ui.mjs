@@ -62,12 +62,19 @@ function saveDemoCart(state) {
 }
 function restoreDemoCart(state, serialized) {
   if (!state?.mockOnly) throw new TypeError('Not a fictional customer');
-  return Object.freeze({
-    ...state,
-    cart: restoreFictionalCart({
-      serialized, account: state.account, session: state.session, now
-    })
+  const restored = restoreFictionalCart({
+    serialized, account: state.account, session: state.session, now
   });
+  // Fictional snapshots are not signed: revalidate catalog identifiers and sample prices.
+  // This is demo consistency, NOT production authentication or payment security.
+  for (const line of restored.lines) {
+    const approved = Object.values(catalog).find(item => item.productId === line.productId);
+    if (!approved || line.unitPriceMinor !== approved.unitPriceMinor ||
+        !Number.isSafeInteger(line.quantity) || line.quantity < 1 || line.quantity > 10) {
+      throw new Error('Fictional snapshot does not match the demonstration catalog');
+    }
+  }
+  return Object.freeze({ ...state, cart: restored });
 }
 function previewDemo(state) {
   if (!state?.mockOnly) throw new TypeError('Not a fictional customer');
