@@ -9,11 +9,15 @@
   function status(product, country, now) {
     if (!product || typeof product !== "object" || !countryCodes.has(country)) return "unknown";
     var rules = Array.isArray(product.deliveryRules) ? product.deliveryRules : [];
-    var matching = rules.filter(function (r) { return r.country === country; });
+    var matching = rules.filter(function (r) { return r && typeof r === "object" && !Array.isArray(r) && r.country === country; });
     if (matching.some(function (r) { return r.status === "blocked"; })) return "blocked";
+    // Corrupt feed entries must not crash previews or certify delivery.
+    if (rules.some(function (r) { return !r || typeof r !== "object" || Array.isArray(r); })) return "unknown";
     // Duplicate/conflicting, expired, undated and general-region claims fail closed.
     if (matching.length !== 1) return "unknown";
     var rule = matching[0], at = now === undefined ? Date.now() : Number(now);
+    if ((Object.hasOwn(rule, "excludedRegions") && !Array.isArray(rule.excludedRegions)) ||
+        (Object.hasOwn(rule, "excludedPostcodes") && !Array.isArray(rule.excludedPostcodes))) return "unknown";
     var checked = Date.parse(rule.checkedAt), until = Date.parse(rule.validUntil);
     if (!Number.isFinite(at) || !Number.isFinite(checked) || !Number.isFinite(until) || checked > at || until <= at) return "unknown";
     if (rule.status !== "allowed" || rule.verified !== true || rule.productId !== product.id ||
