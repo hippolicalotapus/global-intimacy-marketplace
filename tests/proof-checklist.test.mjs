@@ -65,7 +65,7 @@ test('fully populated fictional specification still never grants manufacturing a
   for(const garment of GARMENTS){const g=spec.garments[garment];g.supplierSku='TEST-SKU';g.fabricAndBlankConfirmed=true;
     for(const position of PLACEMENTS){const p=g.placements[position];p.status='verified';
       p.printAreaWidthMm=150;p.printAreaHeightMm=200;p.offsetFromCollarMm=30;p.offsetFromCenterMm=0;
-      p.method='Sample print';p.supplierProofUrl='https://example.invalid/proof';p.approvedBy='Fictional approver';}}
+      p.method='Sample print';p.supplierProofUrl='https://supplier-portfolio.org/proof';p.approvedBy='Fictional approver';}}
   const r=inspectSupplierProof(spec);
   assert.equal(r.supplierReady,true);assert.equal(r.missingCount,0);
   assert.equal(r.manufacturingApproved,false);
@@ -82,4 +82,30 @@ test('source contains no network, storage, payment, or supplier submission', asy
   assert.ok(!/fetch\s*\(|XMLHttpRequest|localStorage|sessionStorage|payment|submitOrder|http[s]?:\/\//i.test(source));
   assert.ok(source.includes('manufacturingApproved:false'));
   assert.equal(REQUIRED.length,7);
+});
+
+test('untrusted supplier proof URLs cannot count as valid evidence links', () => {
+  const spec=makeSpec();
+  const place=spec.garments.tshirt.placements.front_center;
+  for(const value of ['http://supplier-portfolio.org/proof', 'https://example.invalid/proof',
+      'https://example.com/proof', 'https://localhost/proof',
+      'https://127.0.0.1/proof', 'https://user:secret@supplier-portfolio.org/proof',
+      'javascript:alert(1)', 'not a URL', 'https://supplier-portfolio.org/']) {
+    place.supplierProofUrl=value;
+    assert.ok(inspectSupplierProof(spec).pending.some(x=>x.garment==='tshirt' &&
+      x.position==='front_center' && x.field==='supplierProofUrl'),value);
+  }
+});
+test('a syntactically plausible HTTPS proof still never authorizes manufacture', () => {
+  const spec=makeSpec();
+  spec.garments.hoodie.placements.back_upper_back.supplierProofUrl='https://supplier-portfolio.org/proof';
+  const report=inspectSupplierProof(spec);
+  assert.ok(!report.pending.some(x=>x.garment==='hoodie'&&x.position==='back_upper_back'&&x.field==='supplierProofUrl'));
+  assert.equal(report.manufacturingApproved,false);
+  assert.equal(report.supplierReady,false);
+});
+test('proof URL checker never fetches or stores evidence', async () => {
+  const source=await readFile(new URL('../operations/custom-apparel/proof-checklist.cjs',import.meta.url),'utf8');
+  assert.ok(source.includes('plausibleProofLink'));
+  assert.ok(!/fetch\s*\(|XMLHttpRequest|localStorage|sessionStorage|sendBeacon/.test(source));
 });

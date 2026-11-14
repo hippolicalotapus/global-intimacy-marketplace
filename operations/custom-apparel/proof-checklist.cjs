@@ -8,11 +8,26 @@ const REQUIRED = Object.freeze([
 ]);
 const isRecord = x => x !== null && typeof x === "object" && !Array.isArray(x);
 const nonEmpty = x => typeof x === "string" && x.trim().length > 0;
+// Syntax and transport checks only. A plausible URL is not evidence of a real supplier proof.
+const plausibleProofLink = value => {
+  if (!nonEmpty(value)) return false;
+  try {
+    const url = new URL(value);
+    const host = url.hostname.toLowerCase();
+    return url.protocol === "https:" && !url.username && !url.password &&
+      url.pathname.length > 1 && host !== "localhost" &&
+      !host.endsWith(".localhost") && !host.endsWith(".invalid") &&
+      !host.endsWith(".test") && !host.endsWith(".example") &&
+      host !== "example.com" && host !== "www.example.com" &&
+      !/^(127\.|10\.|192\.168\.|169\.254\.)/.test(host);
+  } catch { return false; }
+};
 const missingField = (entry, field) => {
   const value = entry?.[field];
   if (field.endsWith("Mm")) {
     return !Number.isFinite(value) || value < 0 || (field.startsWith("printArea") && value === 0);
   }
+  if (field === "supplierProofUrl") return !plausibleProofLink(value);
   return !nonEmpty(value);
 };
 function inspectSupplierProof(spec) {
