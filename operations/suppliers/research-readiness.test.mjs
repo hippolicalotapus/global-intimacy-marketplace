@@ -70,3 +70,16 @@ test('malformed input cannot accidentally pass', () => {
   assert.throws(()=>auditResearchCandidates(registry,{items:null}),/required/);
   assert.ok(audit([null]).problems.some(x=>x.code==='malformed_candidate'));
 });
+
+test('mismatched EAN in supplier page URL is review-only, not guessed or auto-corrected', () => {
+  const p = {...product(), sourceUrl: 'https://www.concordepro.com/a/variant-6959532363808.html'};
+  const r = audit([p]);
+  assert.deepEqual(r.review.map(x => x.code), ['source_url_ean_variant_mismatch']);
+  assert.equal(r.invalidCount, 0);
+  assert.equal(r.shippingEligible, 0);
+  assert.equal(r.publicationEligible, 0);
+});
+test('non-EAN URL slugs do not generate an invented EAN mismatch', () => {
+  const r = audit([{...product(), sourceUrl: 'https://concordepro.com/a/variant.html'}]);
+  assert.equal(r.reviewCount, 0);
+});
