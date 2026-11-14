@@ -25,3 +25,22 @@ test('moderation rejects malicious user-facing titles and categories',()=>{
   assert.throws(()=>submitListing(vendor,actor,membership,{...input,title:'Bad\u0000Title'}));
   assert.throws(()=>submitListing(vendor,actor,membership,{...input,category:'<b>unsafe</b>'}));
 });
+
+test('storefront reviewer rejects forged draft fields before approval',()=>{
+  const draft=draftStorefront(vendor,actor,membership,'Legitimate fixture');
+  assert.throws(()=>moderateStorefront(vendor,{...draft,name:'<script>'},reviewer,'approved'));
+  assert.throws(()=>moderateStorefront(vendor,{...draft,description:'<img>'},reviewer,'approved'));
+  assert.throws(()=>moderateStorefront(vendor,{...draft,submittedBy:'../other'},reviewer,'approved'));
+  assert.throws(()=>moderateStorefront(vendor,{...draft,name:'Other Vendor'},reviewer,'approved'));
+});
+
+test('listing reviewer rejects forged metadata and requested territories',()=>{
+  const draft=submitListing(vendor,actor,membership,input);
+  const evidence={mediaRights:true,resaleRights:true,compliance:true,territories:['CA']};
+  for (const change of [
+    {title:'<script>'}, {category:'<img>'}, {id:'../escape'},
+    {submittedBy:'../other'}, {requestedTerritories:['ca']},
+    {requestedTerritories:['CA','CA']}, {requestedTerritories:[]},
+    {requestedTerritories:null}
+  ]) assert.throws(()=>moderateListing(vendor,{...draft,...change},reviewer,'approved',evidence));
+});
