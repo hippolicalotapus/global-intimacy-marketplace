@@ -30,8 +30,10 @@ jobs:
           node --check operations/suppliers/import-feed.test.mjs
           node --check operations/feedback/aggregate.mjs
           node --check operations/feedback/aggregate.test.mjs
+          node --check operations/feedback/summary-cli.mjs
+          node --check operations/feedback/summary-cli.test.mjs
           node --check operations/one-heart/quote-preview.cjs
           node --check operations/one-heart/preview-cli.cjs
       - name: Unit tests and static smoke tests
-        run: node --test tests/*.test.mjs operations/suppliers/import-feed.test.mjs operations/feedback/aggregate.test.mjs
+        run: node --test tests/*.test.mjs operations/suppliers/import-feed.test.mjs operations/feedback/aggregate.test.mjs operations/feedback/summary-cli.test.mjs
 
