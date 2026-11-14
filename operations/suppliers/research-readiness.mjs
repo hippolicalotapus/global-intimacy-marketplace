@@ -59,6 +59,13 @@ export function auditResearchCandidates(registry, batch, destinationCountry = 'C
       else if (seenEANs.has(ean)) issue(problems, 'duplicate_ean13', id);
       else seenEANs.add(ean);
     }
+    // A product-page URL can point to a different size/variant. Review the
+    // discrepancy without asserting either EAN is wrong or changing the SKU.
+    if (ean && validOfficialSource(product.sourceUrl)) {
+      const path = new URL(product.sourceUrl).pathname;
+      const urlEAN = /-(\d{13})\.html$/i.exec(path)?.[1];
+      if (urlEAN && urlEAN !== ean) issue(review, 'source_url_ean_variant_mismatch', id);
+    }
     // Research data cannot authorize commercial claims, even if a supplier
     // account exists. A changed approval flag requires separate reconciliation.
     if (product.canPublishAsPurchasable !== false || product.verifiedStock !== false ||
