@@ -101,7 +101,7 @@ test("browser demo is self-contained, unlinked and has no network/order storage"
 test("browser form previews shirt and hoodie, rejects invalid edits, and issues only fictional receipts", async () => {
   const {runInNewContext} = await import("node:vm");
   const browserSrc=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary","frontOffset","backOffset"];
   const elems=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
@@ -109,7 +109,7 @@ test("browser form previews shirt and hoodie, rejects invalid edits, and issues 
     replaceChildren(...options){this.options=options;this.value=options[0]?.value||"";}
   }]));
   const document={getElementById:id=>elems[id],createElement:tag=>({tagName:tag,value:"",textContent:""})};
-  elems.garment.value="tshirt";elems.frontPlacement.value="center";elems.backPlacement.value="center";elems.backPlacement.value="center";elems.textStyle.value="bold";
+  elems.garment.value="tshirt";elems.frontPlacement.value="center";elems.backPlacement.value="center";elems.backPlacement.value="center";elems.textStyle.value="bold";elems.frontOffset.value="normal";elems.backOffset.value="normal";
   const window={GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")};
   runInNewContext(browserSrc,{document,window});
   const fire=(id,event)=>elems[id].listeners[event]({preventDefault(){}});
@@ -165,7 +165,7 @@ test("left-chest print zone has enough width for common two-word artwork", async
 test("browser preview rejects overflow and never issues fictional receipt for clipped text", async () => {
   const {runInNewContext} = await import("node:vm");
   const source = await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary","frontOffset","backOffset"];
   const nodes=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
@@ -173,7 +173,7 @@ test("browser preview rejects overflow and never issues fictional receipt for cl
     replaceChildren(...values){this.options=values;this.value=values[0]?.value||"";}
   }]));
   const document={getElementById:id=>nodes[id],createElement:()=>({value:"",textContent:""})};
-  nodes.garment.value="tshirt";nodes.frontPlacement.value="left-chest";nodes.backPlacement.value="center";nodes.textStyle.value="bold";
+  nodes.garment.value="tshirt";nodes.frontPlacement.value="left-chest";nodes.backPlacement.value="center";nodes.textStyle.value="bold";nodes.frontOffset.value="normal";nodes.backOffset.value="normal";
   runInNewContext(source,{document,window:{GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")}});
   const fire=(id,name)=>nodes[id].listeners[name]({preventDefault(){}});
   nodes.frontText.value="Supercalifragilisticexpialidocious";
@@ -219,14 +219,14 @@ test("accessible print preview has labelled controls and front/back details", as
 test("front print position changes accessible guidance without authorizing an order", async () => {
   const {runInNewContext} = await import("node:vm");
   const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary","frontOffset","backOffset"];
   const elems=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
     addEventListener(type,fn){this.listeners[type]=fn;},
     replaceChildren(...items){this.options=items;this.value=items[0]?.value||"";}
   }]));
-  elems.garment.value="tshirt";elems.frontPlacement.value="center";elems.backPlacement.value="center";elems.backPlacement.value="center";elems.textStyle.value="bold";
+  elems.garment.value="tshirt";elems.frontPlacement.value="center";elems.backPlacement.value="center";elems.backPlacement.value="center";elems.textStyle.value="bold";elems.frontOffset.value="normal";elems.backOffset.value="normal";
   const document={getElementById:id=>elems[id],createElement:()=>({value:"",textContent:""})};
   runInNewContext(js,{document,window:{GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")}});
   assert.equal(elems.frontStage.dataset.placement,"center");
@@ -286,10 +286,10 @@ test("browser preview exposes independent back position and safe guidance", asyn
 test("accessible front and back character counts update and warn near the limit", async () => {
   const {runInNewContext} = await import("node:vm");
   const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary","frontOffset","backOffset"];
   const elems=Object.fromEntries(ids.map(id=>[id,{value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
     addEventListener(name,fn){this.listeners[name]=fn;},replaceChildren(...opts){this.options=opts;this.value=opts[0]?.value||"";}}]));
-  elems.garment.value="tshirt"; elems.frontPlacement.value="center"; elems.backPlacement.value="center"; elems.textStyle.value="bold";
+  elems.garment.value="tshirt"; elems.frontPlacement.value="center"; elems.backPlacement.value="center"; elems.textStyle.value="bold";elems.frontOffset.value="normal";elems.backOffset.value="normal";
   const document={getElementById:id=>elems[id],createElement:()=>({value:"",textContent:""})};
   runInNewContext(js,{document,window:{GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")}});
   assert.equal(elems.frontCount.textContent,"0 of 48 characters");
@@ -340,13 +340,13 @@ test("offline supplier audit has no checkout, fetch, or persistence capability",
 test("resize invalidates previously valid mock preview and prevents stale receipt", async () => {
   const {runInNewContext} = await import("node:vm");
   const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary","frontOffset","backOffset"];
   const elems=Object.fromEntries(ids.map(id=>[id,{value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},clientHeight:100,scrollHeight:25,clientWidth:100,scrollWidth:30,
     addEventListener(type,handler){this.listeners[type]=handler;},replaceChildren(...items){this.options=items;this.value=items[0]?.value||"";}}]));
   const events={};
   const window={GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs"),addEventListener(type,handler){events[type]=handler;}};
   const document={getElementById:id=>elems[id],createElement:()=>({value:"",textContent:""})};
-  elems.garment.value="tshirt";elems.frontPlacement.value="center";elems.backPlacement.value="center";elems.textStyle.value="bold";
+  elems.garment.value="tshirt";elems.frontPlacement.value="center";elems.backPlacement.value="center";elems.textStyle.value="bold";elems.frontOffset.value="normal";elems.backOffset.value="normal";
   runInNewContext(js,{document,window});
   elems.frontText.value="Safe mock";elems.quantity.value="1";
   elems.customForm.listeners.input({});
@@ -378,13 +378,13 @@ test("fictional confirmation communicates no-payment and supplier restrictions a
 test("accessible preview summary describes both sides and clears on edits and resize", async () => {
   const {runInNewContext} = await import("node:vm");
   const browserSrc=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary","frontOffset","backOffset"];
   const nodes=Object.fromEntries(ids.map(id=>[id,{value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},clientHeight:100,scrollHeight:20,clientWidth:100,scrollWidth:30,
     addEventListener(type,handler){this.listeners[type]=handler;},replaceChildren(...opts){this.options=opts;this.value=opts[0]?.value||"";}}]));
   const listeners={};
   const window={GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs"),addEventListener(type,fn){listeners[type]=fn;}};
   const document={getElementById:id=>nodes[id],createElement:()=>({value:"",textContent:""})};
-  nodes.garment.value="hoodie";nodes.frontPlacement.value="left-chest";nodes.backPlacement.value="upper-back";nodes.textStyle.value="classic";
+  nodes.garment.value="hoodie";nodes.frontPlacement.value="left-chest";nodes.backPlacement.value="upper-back";nodes.textStyle.value="classic";nodes.frontOffset.value="normal";nodes.backOffset.value="normal";
   runInNewContext(browserSrc,{window,document});
   nodes.frontText.value="Front brand";nodes.backText.value="Back note";nodes.quantity.value="1";
   nodes.customForm.listeners.input({});nodes.customForm.listeners.submit({preventDefault(){}});
@@ -413,11 +413,11 @@ test("preview summary is a polite screen-reader region and never injects HTML", 
 test("overflow identifies the failing side and marks only its field invalid", async () => {
   const {runInNewContext} = await import("node:vm");
   const source = await readFile(new URL("../operations/custom-apparel/browser-demo.js", import.meta.url), "utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary","frontOffset","backOffset"];
   let focused="";
   const nodes=Object.fromEntries(ids.map(id=>[id,{value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},clientHeight:100,scrollHeight:20,clientWidth:100,scrollWidth:40,
     addEventListener(event,callback){this.listeners[event]=callback;}, replaceChildren(...options){this.options=options;this.value=options[0]?.value||"";},focus(){focused=id;}}]));
-  nodes.garment.value="tshirt";nodes.frontPlacement.value="center";nodes.backPlacement.value="upper-back";nodes.textStyle.value="bold";
+  nodes.garment.value="tshirt";nodes.frontPlacement.value="center";nodes.backPlacement.value="upper-back";nodes.textStyle.value="bold";nodes.frontOffset.value="normal";nodes.backOffset.value="normal";
   const window={GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")};
   const document={getElementById:id=>nodes[id],createElement:()=>({value:"",textContent:""})};
   runInNewContext(source,{window,document});
@@ -441,4 +441,33 @@ test("overflow messaging remains plain text and introduces no submission", async
   assert.match(js,/backInput\.ariaInvalid = String\(!backFits\)/);
   assert.match(js,/const sides =/);
   assert.ok(!/innerHTML|insertAdjacentHTML|XMLHttpRequest|localStorage|sessionStorage|fetch\(/.test(js));
+});
+
+
+test("bounded independent vertical presets validate and persist only in fictional receipts", () => {
+  assert.equal(validate({...base,frontOffset:"raised",backOffset:"normal"}).ok,true);
+  assert.equal(validate({...base,frontOffset:"normal",backOffset:"raised"}).ok,true);
+  for (const value of ["lower", "-100px", "url(http://bad)", null, 1]) {
+    assert.equal(validate({...base,frontOffset:value}).reason,"offset");
+    assert.equal(validate({...base,backOffset:value}).reason,"offset");
+  }
+  const session=createMockSession();
+  session.preview({...base,frontOffset:"raised",backOffset:"normal"});
+  const receipt=session.confirmMock();
+  assert.equal(receipt.design.frontOffset,"raised");
+  assert.equal(receipt.design.backOffset,"normal");
+  assert.equal(receipt.checkoutEnabled,false);
+  assert.equal(receipt.fulfillmentStatus,"not_submitted");
+});
+test("illustrative height controls are independently labelled and have fixed CSS presets", async () => {
+  const html=await readFile(new URL("../operations/custom-apparel/index.html",import.meta.url),"utf8");
+  const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
+  for(const side of ["front", "back"]) {
+    assert.match(html,new RegExp('for="'+side+'Offset"'));
+    assert.match(html,new RegExp('id="'+side+'Offset"'));
+    assert.match(js,new RegExp(side+'Stage\\.dataset\\.offset'));
+  }
+  assert.match(html,/not supplier-approved print coordinates/);
+  assert.match(html,/\.stage\[data-offset="raised"\]/);
+  assert.ok(!/fetch\(|XMLHttpRequest|localStorage|sessionStorage|innerHTML/.test(js));
 });

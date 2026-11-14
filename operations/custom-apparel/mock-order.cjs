@@ -9,10 +9,11 @@
     tshirt: Object.freeze({sizes: ["XS","S","M","L","XL","2XL","3XL"], colors: ["black","white","navy","forest"]}),
     hoodie: Object.freeze({sizes: ["S","M","L","XL","2XL","3XL"], colors: ["black","cream","navy","forest"]})
   });
-  const FIELDS = new Set(["garment","size","color","quantity","frontText","backText","frontPlacement","backPlacement","textStyle"]);
+  const FIELDS = new Set(["garment","size","color","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","frontOffset","backOffset"]);
   const FRONT = new Set(["center","left-chest"]);
   const BACK = new Set(["center","upper-back"]);
   const STYLES = new Set(["bold","classic","mono"]);
+  const OFFSETS = new Set(["normal","raised"]);
 
   function validate(input) {
     if (!input || typeof input !== "object" || Array.isArray(input) ||
@@ -36,8 +37,11 @@
       return {ok:false, reason:"placement"};
     const textStyle = input.textStyle === undefined ? "bold" : input.textStyle;
     if (!STYLES.has(textStyle)) return {ok:false, reason:"text_style"};
+    const frontOffset = input.frontOffset === undefined ? "normal" : input.frontOffset;
+    const backOffset = input.backOffset === undefined ? "normal" : input.backOffset;
+    if (!OFFSETS.has(frontOffset) || !OFFSETS.has(backOffset)) return {ok:false, reason:"offset"};
     const design = Object.freeze({garment, size:input.size, color:input.color, quantity:input.quantity,
-      frontText, backText, frontPlacement:input.frontPlacement, backPlacement:input.backPlacement, textStyle});
+      frontText, backText, frontPlacement:input.frontPlacement, backPlacement:input.backPlacement, textStyle, frontOffset, backOffset});
     return {ok:true, design};
   }
 

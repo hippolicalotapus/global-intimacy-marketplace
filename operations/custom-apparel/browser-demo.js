@@ -17,6 +17,8 @@
   const textStyle = document.getElementById("textStyle");
   const frontPlacement = document.getElementById("frontPlacement");
   const backPlacement = document.getElementById("backPlacement");
+  const frontOffset = document.getElementById("frontOffset");
+  const backOffset = document.getElementById("backOffset");
   const placementHint = document.getElementById("placementHint");
   const backPlacementHint = document.getElementById("backPlacementHint");
   const frontInput = document.getElementById("frontText");
@@ -91,7 +93,8 @@
       backText:backInput.value,
       textStyle:textStyle.value,
       frontPlacement:frontPlacement.value,
-      backPlacement:backPlacement.value};
+      backPlacement:backPlacement.value,
+      frontOffset:frontOffset.value, backOffset:backOffset.value};
   }
   form.addEventListener("input", () => {
     updateCharacterCounts();
@@ -134,6 +137,8 @@
     front.dataset.placement = result.design.frontPlacement;
     back.dataset.placement = result.design.backPlacement;
     backStage.dataset.placement = result.design.backPlacement;
+    frontStage.dataset.offset = result.design.frontOffset;
+    backStage.dataset.offset = result.design.backOffset;
     for (const stage of [frontStage,backStage]) {
       stage.dataset.garment = result.design.garment;
       stage.dataset.color = result.design.color;
@@ -156,6 +161,7 @@
     previewSummary.textContent = "Illustrative " + result.design.color + " " + result.design.garment + ". " +
       "Front: " + (result.design.frontText || "no lettering") + ", " + result.design.frontPlacement + ". " +
       "Back: " + (result.design.backText || "no lettering") + ", " + result.design.backPlacement + ". " +
+      "Print-height presets: front " + result.design.frontOffset + ", back " + result.design.backOffset + ". " +
       "Supplier print dimensions are unverified. No real order is possible.";
     confirm.disabled = false;
     message("Mock preview ready: " + result.design.color + " " + result.design.garment + ", " + result.design.size + ", " + result.design.textStyle + " lettering. Pricing and delivery remain unverified; no real order can be placed.");
