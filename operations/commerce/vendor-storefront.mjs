@@ -68,13 +68,13 @@ function publicStorefront(vendor, profile, listings, country, now) {
   if (vendor?.status !== 'approved' || profile?.status !== 'approved' || profile.vendorSlug !== vendor.slug ||
     !Array.isArray(listings) || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(vendor.slug) ||
     !safeText(profile.name) || !safeText(profile.description) || profile.name !== vendor.displayName ||
-    !safeId(profile.submittedBy) || !safeId(profile.reviewedBy) || profile.submittedBy === profile.reviewedBy ||
+    !safeId(profile.submittedBy) || !safeId(profile.reviewedBy) || profile.submittedBy === profile.reviewedBy || profile.reviewedBy === vendor.ownerId ||
     typeof country !== 'string' || !/^[A-Z]{2}$/.test(country)) return null;
   const products=[]; const ids=new Set();
   for (const item of listings) {
     if (item?.vendorSlug !== vendor.slug || ids.has(item.id) || !safeId(item.id) ||
       !safeText(item.title) || !safeText(item.category) || !safeId(item.submittedBy) ||
-      !safeId(item.reviewedBy) || item.submittedBy === item.reviewedBy ||
+      !safeId(item.reviewedBy) || item.submittedBy === item.reviewedBy || item.reviewedBy === vendor.ownerId ||
       !canPublishProduct({vendor,product:item,country,now})) continue;
     ids.add(item.id);
     products.push(Object.freeze({id:item.id,title:item.title,category:item.category}));
