@@ -5,6 +5,7 @@
   const form = document.getElementById("customForm");
   const status = document.getElementById("status");
   const receipt = document.getElementById("receipt");
+  const previewSummary = document.getElementById("previewSummary");
   const confirm = document.getElementById("mockConfirm");
   const front = document.getElementById("frontMock");
   const back = document.getElementById("backMock");
@@ -51,6 +52,7 @@
     back.style.fontSize = "";
     frontStage.dataset.ready = "false";
     backStage.dataset.ready = "false";
+    previewSummary.textContent = "No current artwork preview. Review your mockup again before confirmation.";
     confirm.disabled = true;
   }
   // Reject lettering that would be silently cropped on the selected garment.
@@ -142,6 +144,10 @@
       message("The selected print area cannot display all lettering. Shorten your text or choose centre placement before reviewing again.");
       return;
     }
+    previewSummary.textContent = "Illustrative " + result.design.color + " " + result.design.garment + ". " +
+      "Front: " + (result.design.frontText || "no lettering") + ", " + result.design.frontPlacement + ". " +
+      "Back: " + (result.design.backText || "no lettering") + ", " + result.design.backPlacement + ". " +
+      "Supplier print dimensions are unverified. No real order is possible.";
     confirm.disabled = false;
     message("Mock preview ready: " + result.design.color + " " + result.design.garment + ", " + result.design.size + ", " + result.design.textStyle + " lettering. Pricing and delivery remain unverified; no real order can be placed.");
   });

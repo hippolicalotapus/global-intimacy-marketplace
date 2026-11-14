@@ -38,7 +38,7 @@ button:disabled{opacity:.5;cursor:not-allowed}:is(button,select,input):focus-vis
 .stage[data-side="back"][data-placement="upper-back"] .print-guide{top:20%;left:30%;width:40%;height:20%}
 .stage[data-ready="true"] .print-guide{opacity:.28}
 .stage:focus-within .print-guide{border-color:#006fd6}
-.zone-guidance{font-weight:600;line-height:1.5;color:#20354c}.character-count{display:block;text-align:right;font-size:.85rem;color:#34465b;margin-top:4px}.character-count[data-near-limit="true"]{color:#8a4300;font-weight:750}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;clip-path:inset(50%)}.zone-guidance{font-weight:600;line-height:1.5;color:#20354c}.character-count{display:block;text-align:right;font-size:.85rem;color:#34465b;margin-top:4px}.character-count[data-near-limit="true"]{color:#8a4300;font-weight:750}
 
 @media(max-width:420px){.preview-grid{gap:5px}}
 @media(max-width:350px){.preview-grid{grid-template-columns:1fr}.stage{max-width:220px;margin:0 auto}}
@@ -68,6 +68,7 @@ button:disabled{opacity:.5;cursor:not-allowed}:is(button,select,input):focus-vis
 </form>
 <section class="preview" aria-label="Illustrative garment previews">
 <h2>Front &amp; back garment preview</h2>
+<p id="previewSummary" role="status" aria-live="polite" aria-atomic="true" class="sr-only">No current artwork preview. Review the mockup to hear the selected print positions.</p>
 <p>Dashed borders mark illustrative print zones; actual supplier dimensions are unverified. Illustrative front/back garment silhouettes and print placement. Lettering that cannot fit will be rejected rather than cut off. Not a photograph, supplier proof or exact scale.</p><div class="preview-grid"><div class="mock-panel"><strong>Front</strong><div id="frontStage" class="stage" data-placement="center" data-garment="tshirt" data-color="black" data-side="front" data-text-style="bold" data-ready="false">
 <svg viewBox="0 0 240 320" aria-hidden="true" focusable="false">
 <g class="shirt"><path class="fabric" d="M75 45 L95 37 Q120 58 145 37 L165 45 L210 75 L190 124 L170 112 L170 275 Q120 282 70 275 L70 112 L50 124 L30 75 Z"/><path class="seam" d="M95 37 Q120 85 145 37 M73 269 Q120 279 167 269"/><path class="highlight" d="M73 65 L81 54 L82 269 L73 269 Z"/><path class="side-shadow" d="M160 59 L169 65 L168 268 L159 272 Z"/><path class="double-seam" d="M76 263 Q120 275 164 263"/></g>
