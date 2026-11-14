@@ -12,16 +12,20 @@
 <label>Placement <select id="placement"><option>front</option><option>back</option></select></label>
 <label>Original short text (24 characters maximum) <input id="text" maxlength="24" autocomplete="off"></label>
 <button type="button" id="prepare">Prepare fictional preview</button>
+<div id="visual" role="img" aria-label="Fictional clothing preview" style="margin:1rem auto;width:220px;min-height:170px;padding:25px 15px;background:#eee;color:#222;border-radius:65px 65px 18px 18px;text-align:center;white-space:pre-wrap;overflow-wrap:anywhere">♡ ONE HEART</div>
 <pre id="result" aria-live="polite">No preview prepared.</pre></div>
 <p>All prices, supplier SKUs, shipping, rights clearance and fulfillment remain unverified. No transaction is possible.</p>
 <script type="module">
 import {prepareFictionalDesign} from './design-preview.mjs';
 const ids=['brand','garment','color','size','placement','text'];
 const output=document.getElementById('result');
-for(const id of ids)document.getElementById(id).addEventListener('input',()=>{output.textContent='Selections changed. Prepare a new fictional preview.';});
+const visual=document.getElementById('visual');
+function updateVisual(){const color=document.getElementById('color').value;visual.style.background={ivory:'#f3e8d3',charcoal:'#33363d',ruby:'#8e1e37'}[color];visual.style.color=color==='ivory'?'#222':'#fff';visual.textContent=document.getElementById('brand').value+' '+document.getElementById('garment').value.toUpperCase()+'\n'+document.getElementById('text').value.slice(0,24);visual.setAttribute('aria-label','Fictional '+document.getElementById('garment').value+' preview');}
+for(const id of ids)document.getElementById(id).addEventListener('input',()=>{output.textContent='Selections changed. Prepare a new fictional preview.';updateVisual();});
 document.getElementById('prepare').addEventListener('click',()=>{
  const input={fictional:true,paymentStatus:'simulated',orderId:'DEMO-CUSTOM-LOCAL',...Object.fromEntries(ids.map(id=>[id,document.getElementById(id).value]))};
  try{output.textContent=JSON.stringify(prepareFictionalDesign(input),null,2);}
  catch(e){output.textContent='Invalid fictional selections; no preview prepared.';}
 });
+updateVisual();
 </script></main></body></html>
