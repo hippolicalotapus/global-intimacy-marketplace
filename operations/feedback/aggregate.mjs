@@ -19,7 +19,17 @@ const QUESTION_FIELDS = Object.freeze([
 /** Only aggregate consented, nonempty records; every reported bucket needs >=5 responses. */
 export function aggregateCreatorFeedback(records) {
   if (!Array.isArray(records)) throw new TypeError('Expected array of feedback records');
-  const eligible = records.filter(row => row && typeof row === 'object' && !Array.isArray(row) && row['response-consent'] === 'yes' && (row['form-name'] == null || row['form-name'] === 'creator-feedback') && (row['bot-field'] == null || row['bot-field'] === '') && QUESTION_FIELDS.some(field => typeof row[field] === 'string' && row[field].trim() !== ''));
+  // Guard against an importer accidentally passing one record object more
+  // than once. Do not deduplicate separately submitted identical answers.
+  const seen = new WeakSet();
+  const eligible = records.filter(row => {
+    if (!row || typeof row !== 'object' || Array.isArray(row) || seen.has(row)) return false;
+    seen.add(row);
+    return row['response-consent'] === 'yes' &&
+      (row['form-name'] == null || row['form-name'] === 'creator-feedback') &&
+      (row['bot-field'] == null || row['bot-field'] === '') &&
+      QUESTION_FIELDS.some(field => typeof row[field] === 'string' && row[field].trim() !== '');
+  });
   const groups = {};
   for (const [field, options] of Object.entries(OPTIONS)) {
     const counts = Object.fromEntries(options.map(x => [x, 0]));
