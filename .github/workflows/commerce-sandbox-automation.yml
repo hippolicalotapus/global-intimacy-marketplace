@@ -22,5 +22,10 @@ jobs:
         run: |
           node --check operations/commerce/mock-customer-cart.mjs
           node --check operations/commerce/mock-customer-cart.test.mjs
+          node --check operations/commerce/mock-checkout-browser.test.mjs
       - name: Offline commerce regression tests
         run: node --test operations/commerce/*.test.mjs tests/checkout-*.test.mjs
+      - name: Chromium browser interactions and mobile layout
+        run: |
+          command -v google-chrome
+          node --test operations/commerce/mock-checkout-browser.test.mjs
