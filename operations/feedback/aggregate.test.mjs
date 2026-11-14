@@ -78,3 +78,21 @@ test('empty and whitespace-only answers are excluded from small-group totals',()
   assert.equal(result.consentedSample,'below_reporting_threshold');
   assert.deepEqual(result.groups['creator-format'],{});
 });
+
+test('one response object reused in an import is counted only once',()=>{
+  const same=row();
+  const result=aggregateCreatorFeedback(Array(5).fill(same));
+  assert.equal(result.consentedSample,'below_reporting_threshold');
+  assert.deepEqual(result.groups['creator-format'],{});
+});
+test('separate records with identical selections are not deduplicated',()=>{
+  const result=aggregateCreatorFeedback(Array.from({length:5},()=>row()));
+  assert.equal(result.consentedSample,'at_least_five');
+  assert.equal(result.groups['creator-format']['Product reviews'],5);
+});
+test('reused object cannot push four separate entries over disclosure threshold',()=>{
+  const records=Array.from({length:4},()=>row());
+  const result=aggregateCreatorFeedback([...records,records[0]]);
+  assert.equal(result.consentedSample,'below_reporting_threshold');
+  assert.deepEqual(result.groups['privacy-priority'],{});
+});
