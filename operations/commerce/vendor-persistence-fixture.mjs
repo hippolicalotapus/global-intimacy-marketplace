@@ -89,7 +89,8 @@ function createFixturePersistenceContract({users=[],sessions=[],vendors=[],membe
       const member=access.get(record.vendorSlug+':'+record.submittedBy);
       ensure(state&&state.version===record.version&&state.status===record.status&&
         state.submittedBy===record.submittedBy&&state.reviewedBy===record.reviewedBy&&
-        member?.role!=='viewer'&&member?.active===true&&
+        // Historical submissions remain valid after a manager loses present-day access.
+        member&&['owner','manager'].includes(member.role)&&
         state.reviewedBy!==vendor.ownerId,'Inconsistent restored record');
       seen.add(record.id);records.set(record.id,Object.freeze(copy(record)));
     }
