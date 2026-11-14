@@ -139,6 +139,18 @@ byId('recover').addEventListener('click',()=>{
   }
 });
 byId('recover').setAttribute('aria-description','Restores only a fictional snapshot held in this page');
+// Localhost-only fictional failure injection for offline browser regression tests.
+// Never provide customer authentication, network access, payment or persistence.
+if(location.hostname==='127.0.0.1' && new URLSearchParams(location.search).get('fixtureErrors')==='1'){
+  Object.defineProperty(window,'__gimLocalFixtureErrors',{value:Object.freeze({
+    invalid(){snapshot='{invalid fictional snapshot';byId('recover').disabled=false},
+    expired(){
+      const value=JSON.parse(saveDemoCart(state));
+      value.expiresAt=value.expiresAt-1;
+      snapshot=JSON.stringify(value);byId('recover').disabled=false;
+    }
+  }),configurable:false});
+}
 render();
 </script>
 </body>

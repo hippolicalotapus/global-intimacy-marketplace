@@ -263,6 +263,42 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('#items').children.length"),1);
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
+    await t.test('invalid fictional snapshot rejects recovery, retains cart and announces error', async () => {
+      await send('Page.navigate',{url:url+'?fixtureErrors=1'});
+      for(let i=0;i<40;i++){
+        if(await evaluate("document.querySelector('#items')?.children.length>0 && !!window.__gimLocalFixtureErrors"))break;
+        await delay(50);
+      }
+      await evaluate("document.querySelector('#add-hoodie').click()");
+      const before=await evaluate("document.querySelector('#items').textContent");
+      await evaluate("window.__gimLocalFixtureErrors.invalid();document.querySelector('#recover').focus();document.activeElement.click()");
+      assert.equal(await evaluate("document.querySelector('#items').textContent"),before);
+      assert.equal(await evaluate("document.activeElement.id"),'recover');
+      assert.equal(await evaluate("document.querySelector('#status').dataset.kind"),'error');
+      assert.match(await evaluate("document.querySelector('#status').textContent"),/Cannot restore fictional cart/);
+      assert.equal(await evaluate("document.querySelector('#status').getAttribute('aria-live')"),'polite');
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
+    await t.test('expired fictional snapshot fails closed and can be replaced with fresh local snapshot', async () => {
+      const before=await evaluate("document.querySelector('#items').textContent");
+      await evaluate("window.__gimLocalFixtureErrors.expired();document.querySelector('#recover').focus();document.activeElement.click()");
+      assert.equal(await evaluate("document.querySelector('#items').textContent"),before);
+      assert.equal(await evaluate("document.querySelector('#status').dataset.kind"),'error');
+      assert.match(await evaluate("document.querySelector('#status').textContent"),/invalid, expired or belongs to another shopper/);
+      await evaluate("document.querySelector('#save').click()");
+      assert.equal(await evaluate("document.querySelector('#recover').disabled"),false);
+      await evaluate("document.querySelector('#recover').focus();document.activeElement.click()");
+      assert.match(await evaluate("document.querySelector('#status').textContent"),/restored for this shopper only/);
+      assert.equal(await evaluate("document.querySelector('#status').dataset.kind"),'info');
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
+    await t.test('keyboard Tab reaches the snapshot controls and preserves checkout safety', async () => {
+      await evaluate("document.querySelector('#save').focus()");
+      await send('Input.dispatchKeyEvent',{type:'rawKeyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
+      assert.equal(await evaluate("document.activeElement.id"),'recover');
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });

@@ -127,3 +127,12 @@ test('restoring fictional multi-item snapshots rejects tampered quantities and c
   assert.throws(()=>restore({...snapshot,ownerId:'another_fixture'}));
   assert.equal(serialized.includes('address'),false);
 });
+
+test('expired fictional snapshot timestamp rejects even for matching owner and session', () => {
+  const serialized=saveFictionalCart(opts());
+  const tampered=JSON.parse(serialized);
+  tampered.expiresAt-=1;
+  assert.throws(()=>restoreFictionalCart({serialized:JSON.stringify(tampered),session:session(),account:account(),now}));
+  const valid=restoreFictionalCart({serialized,session:session(),account:account(),now});
+  assert.equal(valid.lines[0].quantity,2);
+});
