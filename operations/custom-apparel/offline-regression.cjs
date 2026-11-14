@@ -1,6 +1,6 @@
 "use strict";
 /* Local-only regression preflight. No network, deployment, publishing or checkout actions. */
-const {existsSync, readdirSync, statSync, readFileSync} = require("node:fs");
+const {existsSync, readdirSync, statSync, lstatSync, realpathSync, readFileSync} = require("node:fs");
 const {createHash} = require("node:crypto");
 const path = require("node:path");
 const {spawnSync} = require("node:child_process");
@@ -82,7 +82,7 @@ function checkDrawingAssets(root) {
     }
     const relative="site/"+record.path;
     const full=path.join(root,relative);
-    if(!existsSync(full) || !statSync(full).isFile()) {
+    if(!safeRegularFile(root,relative)) {
       problems.push(relative);
       continue;
     }
@@ -92,14 +92,27 @@ function checkDrawingAssets(root) {
   return problems;
 }
 
+function safeRegularFile(root, relative) {
+  const full=path.join(root,relative);
+  if(!existsSync(full)) return false;
+  try {
+    const real=realpathSync(full);
+    const inside=path.relative(root,real);
+    if(inside.startsWith(".."+path.sep) || inside===".." || path.isAbsolute(inside)) return false;
+    return lstatSync(full).isFile();
+  } catch { return false; }
+}
+
 function inspect(root) {
   const fullRoot=path.resolve(root);
-  const missing=REQUIRED.filter(rel=> !existsSync(path.join(fullRoot,rel)) || !statSync(path.join(fullRoot,rel)).isFile());
+  const missing=REQUIRED.filter(rel=> !safeRegularFile(fullRoot,rel));
   missing.push(...checkDrawingAssets(fullRoot));
   const testDir=path.join(fullRoot,"tests");
   const testFiles=existsSync(testDir) ? readdirSync(testDir).filter(name=>name.endsWith(".test.mjs")).sort().map(name=>path.join("tests",name)) : [];
   const expectedTests=REQUIRED.filter(x=>x.startsWith("tests/")&&x.endsWith(".test.mjs"));
   const extraTests=testFiles.filter(x=>!expectedTests.includes(x));
+  // Never run unreviewed test files or consider a checkout complete with unexpected tests.
+  missing.push(...extraTests.map(x=>x+" (unexpected test)"));
   return Object.freeze({ready:missing.length===0,missing:Object.freeze(missing),tests:Object.freeze(testFiles),extraTests:Object.freeze(extraTests)});
 }
 function execute(root,runner=spawnSync) {

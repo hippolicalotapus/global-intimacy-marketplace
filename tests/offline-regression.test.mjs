@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-import {mkdtempSync, mkdirSync, writeFileSync, rmSync} from 'node:fs';
+import {mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import path from 'node:path';
 import os from 'node:os';
@@ -76,4 +76,42 @@ test('registry asset paths reject traversal and missing digests',()=>fixture(roo
   const report=inspect(root);
   assert.equal(report.ready,false);
   assert.ok(report.missing.includes('site/drawing-register.json (invalid asset entry)'));
+}));
+
+test('unknown extra test cannot silently run in full regression',()=>fixture(root=>{
+  populate(root);
+  writeFileSync(path.join(root,'tests/unreviewed.test.mjs'),'throw Error("unreviewed")');
+  let invoked=false;
+  const report=execute(root,()=>{invoked=true;return {status:0};});
+  assert.equal(invoked,false);
+  assert.equal(report.executed,false);
+  assert.ok(report.missing.includes('tests/unreviewed.test.mjs (unexpected test)'));
+}));
+test('required symlink to external file cannot establish complete checkout',()=>fixture(root=>{
+  populate(root);
+  const outside=mkdtempSync(path.join(os.tmpdir(),'gim-outside-'));
+  try {
+    const required=path.join(root,'site/app.js');
+    rmSync(required);
+    const target=path.join(outside,'external.js');
+    writeFileSync(target,'// fake external dependency');
+    symlinkSync(target,required);
+    const report=inspect(root);
+    assert.equal(report.ready,false);
+    assert.ok(report.missing.includes('site/app.js'));
+  } finally {rmSync(outside,{recursive:true,force:true});}
+}));
+test('registered drawing symlink cannot satisfy SHA-256 check',()=>fixture(root=>{
+  populate(root);
+  const outside=mkdtempSync(path.join(os.tmpdir(),'gim-drawing-'));
+  try {
+    const asset=path.join(root,'site/assets/drawings/p001.webp');
+    rmSync(asset);
+    const target=path.join(outside,'p001.webp');
+    writeFileSync(target,'fake-fixture');
+    symlinkSync(target,asset);
+    const report=inspect(root);
+    assert.equal(report.ready,false);
+    assert.ok(report.missing.includes('site/assets/drawings/p001.webp'));
+  } finally {rmSync(outside,{recursive:true,force:true});}
 }));
