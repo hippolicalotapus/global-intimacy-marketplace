@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {prepareFictionalDesign} from '../operations/gelato/design-preview.mjs';
+const good={fictional:true,paymentStatus:'simulated',orderId:'DEMO-CUSTOM-001',garment:'tee',brand:'ONE HEART',color:'ivory',size:'M',placement:'front',text:'Hello'};
+test('fictional tee preview cannot create an order',()=>{const r=prepareFictionalDesign(good);assert.equal(r.orderCreated,false);assert.equal(r.checkoutEnabled,false);assert.equal(r.supplierSkuMapped,false);});
+test('fictional hoodie is supported',()=>{assert.equal(prepareFictionalDesign({...good,garment:'hoodie',brand:'Sarcastabastard'}).garment,'hoodie');});
+test('real payments and identifiers rejected',()=>{for(const p of [{fictional:false},{paymentStatus:'paid'},{orderId:'LIVE-1'}])assert.throws(()=>prepareFictionalDesign({...good,...p}));});
+test('invalid garment, size, color and placement rejected',()=>{for(const p of [{garment:'jacket'},{size:'4XL'},{color:'unknown'},{placement:'sleeve'}])assert.throws(()=>prepareFictionalDesign({...good,...p}));});
+test('control characters and overlong text rejected',()=>{for(const text of ['a'.repeat(25),'hi\nthere'])assert.throws(()=>prepareFictionalDesign({...good,text}));});
+test('customer information and artwork URLs rejected',()=>{for(const p of [{customerEmail:'x@y.com'},{address:'Somewhere'},{artworkUrl:'https://example.com/art.png'}])assert.throws(()=>prepareFictionalDesign({...good,...p}));});
