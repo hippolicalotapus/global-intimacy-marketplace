@@ -24,4 +24,23 @@ function visibleFictionalHistory(history,account){
   if(history.ownerId!==null && history.ownerId!==account.accountId)return Object.freeze([]);
   return Object.freeze(history.events.filter(e=>e.ownerId===account.accountId));
 }
-export {emptyFictionalHistory,recordFictionalHistory,visibleFictionalHistory};
+// Details are derived from the current fictional account's bounded history.
+const statusDescriptions=Object.freeze({
+  review:'Review started. No purchase or charge was submitted.',
+  pending:'Payment is only simulated as pending; no money can be collected.',
+  declined:'The simulated payment was declined. No charge occurred.',
+  retried:'A new fictional draft was started after a decline; no old order was reopened.',
+  confirmed:'Fictional confirmation only. No paid order, receipt or shipment exists.',
+  cancelled:'Fictional checkout cancelled. No order was submitted.'
+});
+function detailFictionalHistory(history,account,key){
+  const events=visibleFictionalHistory(history,account);
+  if(typeof key!=='string'||!/^[A-Za-z0-9_-]{8,80}$/.test(key))throw new TypeError('Invalid fictional history selection');
+  const entry=events.find(x=>x.key===key);
+  if(!entry)throw new Error('Fictional history event not available to this shopper');
+  if(!Object.hasOwn(statusDescriptions,entry.status)||entry.ownerId!==account.accountId||
+    !Number.isSafeInteger(entry.attempt)||entry.attempt<1||entry.attempt>3)throw new TypeError('Invalid fictional history detail');
+  return Object.freeze({sequence:entry.sequence,status:entry.status,attempt:entry.attempt,
+    explanation:statusDescriptions[entry.status],mockOnly:true,paymentEnabled:false,orderSubmitted:false,receiptIssued:false});
+}
+export {emptyFictionalHistory,recordFictionalHistory,visibleFictionalHistory,detailFictionalHistory};

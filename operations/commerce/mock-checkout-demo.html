@@ -69,7 +69,7 @@ button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:
 <button id="journey-cancel" disabled>Cancel fictional checkout</button>
 </div>
 </section>
-<section class="panel" aria-labelledby="history-title"><h2 id="history-title">6. Fictional order history</h2><p><small>Current open page only. Switching shoppers clears the timeline. No real orders or customer data.</small></p><p id="history-summary" role="status" aria-live="polite" aria-atomic="true">No fictional activity recorded.</p><ol id="history-events" aria-label="Current fictional shopper checkout events"></ol><button id="history-clear" disabled>Clear fictional history</button></section>
+<section class="panel" aria-labelledby="history-title"><h2 id="history-title">6. Fictional order history</h2><p><small>Current open page only. Switching shoppers clears the timeline. No real orders or customer data.</small></p><p id="history-summary" role="status" aria-live="polite" aria-atomic="true">No fictional activity recorded.</p><ol id="history-events" aria-label="Current fictional shopper checkout events"></ol><h3 id="history-detail-title">Selected fictional event</h3><p id="history-detail" role="status" aria-live="polite" aria-atomic="true" aria-labelledby="history-detail-title">Select a fictional history entry to view its explanation.</p><button id="history-clear" disabled>Clear fictional history</button></section>
 <p id="status" role="status" aria-live="polite" aria-atomic="true"></p>
 </main>
 <script type="module">
@@ -79,8 +79,8 @@ import {
 } from './mock-customer-ui.mjs';
 import { assessFictionalCheckout } from './mock-checkout-review.mjs';
 import { beginFictionalJourney,progressFictionalJourney,retryDeclinedFictionalJourney,describeFictionalJourney } from './mock-checkout-lifecycle.mjs';
-import {emptyFictionalHistory,recordFictionalHistory,visibleFictionalHistory} from './mock-checkout-history.mjs';
-let state=createDemoCustomer(), snapshot=null, journey=null, history=emptyFictionalHistory(), historySequence=0;
+import {emptyFictionalHistory,recordFictionalHistory,visibleFictionalHistory,detailFictionalHistory} from './mock-checkout-history.mjs';
+let state=createDemoCustomer(), snapshot=null, journey=null, history=emptyFictionalHistory(), historySequence=0, selectedHistoryKey=null;
 const byId=id=>document.getElementById(id);
 function money(minor){return '$'+(minor/100).toFixed(2)+' CAD (fictional)'}
 function render(){
@@ -142,7 +142,24 @@ function render(){
   const events=visibleFictionalHistory(history,state.account);
   byId('history-summary').textContent=events.length?events.length+' fictional events (page memory only). No real orders.':'No fictional activity recorded.';
   const eventList=byId('history-events');eventList.replaceChildren();
-  for(const event of events){const li=document.createElement('li');li.textContent='Attempt '+event.attempt+' — '+event.status+' (fictional only)';eventList.append(li)}
+  for(const event of events){
+    const li=document.createElement('li'),button=document.createElement('button');
+    button.type='button';button.textContent='Attempt '+event.attempt+' — '+event.status+' (fictional only)';
+    button.setAttribute('aria-label','View fictional history event '+event.sequence+': '+event.status);
+    button.setAttribute('aria-pressed',String(selectedHistoryKey===event.key));
+    button.addEventListener('click',()=>{
+      selectedHistoryKey=event.key;render();
+      const selected=Array.from(byId('history-events').querySelectorAll('button')).find(x=>x.getAttribute('aria-pressed')==='true');
+      if(selected)selected.focus();
+      report('Viewing fictional '+event.status+' event. No real order or payment.');
+    });
+    li.append(button);eventList.append(li);
+  }
+  if(!events.some(x=>x.key===selectedHistoryKey))selectedHistoryKey=null;
+  const detail=selectedHistoryKey?detailFictionalHistory(history,state.account,selectedHistoryKey):null;
+  byId('history-detail').textContent=detail?
+    'Event '+detail.sequence+', attempt '+detail.attempt+': '+detail.status+'. '+detail.explanation:
+    'Select a fictional history entry to view its explanation.';
   byId('history-clear').disabled=events.length===0;
   byId('estimate').textContent=p.checkout
     ? 'Merchandise '+money(p.checkout.checkout.order.totalMinor)+
@@ -163,7 +180,7 @@ byId('shopper').addEventListener('change',event=>{
   const requested=event.target.value;
   try{
     const next=createDemoCustomer({shopper:requested});
-    snapshot=null;journey=null;history=emptyFictionalHistory();historySequence=0;state=next;render();
+    snapshot=null;journey=null;history=emptyFictionalHistory();historySequence=0;selectedHistoryKey=null;state=next;render();
     report('Fictional shopper switched. Previous shopper cart and saved snapshot cleared; no real account access.');
   }catch(error){
     event.target.value=state.shopper;
@@ -214,7 +231,7 @@ byId('journey-retry').addEventListener('click',()=>{
 });
 byId('journey-decline').addEventListener('click',()=>advanceJourney('decline'));
 byId('journey-cancel').addEventListener('click',()=>advanceJourney('cancel'));
-byId('history-clear').addEventListener('click',()=>{history=emptyFictionalHistory();historySequence=0;render();report('Fictional history cleared from this page only.');});
+byId('history-clear').addEventListener('click',()=>{history=emptyFictionalHistory();historySequence=0;selectedHistoryKey=null;render();report('Fictional history cleared from this page only.');});
 byId('recover').setAttribute('aria-description','Restores only a fictional snapshot held in this page');
 // Localhost-only fictional failure injection for offline browser regression tests.
 // Never provide customer authentication, network access, payment or persistence.

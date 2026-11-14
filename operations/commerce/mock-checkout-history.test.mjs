@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDemoCustomer} from './mock-customer-ui.mjs';
 import {beginFictionalJourney,progressFictionalJourney,retryDeclinedFictionalJourney} from './mock-checkout-lifecycle.mjs';
-import {emptyFictionalHistory,recordFictionalHistory,visibleFictionalHistory} from './mock-checkout-history.mjs';
+import {emptyFictionalHistory,recordFictionalHistory,visibleFictionalHistory,detailFictionalHistory} from './mock-checkout-history.mjs';
 const returning=()=>createDemoCustomer();
 test('fictional timeline tracks decline, retry, confirmation and cancellation',()=>{
   const account=returning().account;
@@ -41,4 +41,35 @@ test('duplicate and mismatched history events fail closed',()=>{
   assert.throws(()=>recordFictionalHistory(h,{...account,authenticated:true},j,'review','event_fake_09'));
   assert.deepEqual(Object.keys(h.events[0]).sort(),['key','status','attempt','ownerId','sequence'].sort());
   assert.equal(JSON.stringify(h).includes('unitPriceMinor'),false);
+});
+
+test('selectable fictional event detail distinguishes pending, decline, retry and confirmation',()=>{
+  const account=returning().account;
+  let h=emptyFictionalHistory();
+  const add=(j,status,key)=>{h=recordFictionalHistory(h,account,j,status,key);return detailFictionalHistory(h,account,key);};
+  let j=beginFictionalJourney(returning());
+  add(j,'review','event_detail_01');
+  j=progressFictionalJourney(j,'pending');
+  assert.match(add(j,'pending','event_detail_02').explanation,/no money/);
+  j=progressFictionalJourney(j,'decline');
+  assert.match(add(j,'declined','event_detail_03').explanation,/No charge/);
+  j=retryDeclinedFictionalJourney(j,returning());
+  assert.match(add(j,'retried','event_detail_04').explanation,/new fictional draft/);
+  j=progressFictionalJourney(j,'pending');add(j,'pending','event_detail_05');
+  j=progressFictionalJourney(j,'confirm');
+  const detail=add(j,'confirmed','event_detail_06');
+  assert.match(detail.explanation,/No paid order/);
+  assert.equal(detail.attempt,2);
+  assert.equal(detail.paymentEnabled,false);
+  assert.equal(detail.orderSubmitted,false);
+  assert.equal(detail.receiptIssued,false);
+  assert.ok(Object.isFrozen(detail));
+});
+test('detail selection rejects foreign fictional account and unknown selections',()=>{
+  const account=returning().account,guest=createDemoCustomer({shopper:'guest'}).account;
+  const h=recordFictionalHistory(emptyFictionalHistory(),account,beginFictionalJourney(returning()),'review','event_detail_07');
+  assert.throws(()=>detailFictionalHistory(h,guest,'event_detail_07'),/not available/);
+  assert.throws(()=>detailFictionalHistory(h,account,'event_absent_08'),/not available/);
+  assert.throws(()=>detailFictionalHistory(h,account,'bad!'),/Invalid/);
+  assert.equal(h.events.length,1);
 });

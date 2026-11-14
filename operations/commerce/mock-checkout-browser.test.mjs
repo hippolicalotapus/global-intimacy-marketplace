@@ -477,6 +477,32 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('#recover').disabled"),true);
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
+    await t.test('select fictional history details with focus and no real order capability',async()=>{
+      await navigateFixture();
+      await evaluate("document.querySelector('#journey-start').click();document.querySelector('#journey-pending').click();document.querySelector('#journey-decline').click()");
+      assert.equal(await evaluate("document.querySelectorAll('#history-events button').length"),3);
+      await evaluate("document.querySelectorAll('#history-events button')[2].focus();document.activeElement.click()");
+      assert.match(await evaluate("document.querySelector('#history-detail').textContent"),/simulated payment was declined/i);
+      assert.equal(await evaluate("document.activeElement.getAttribute('aria-pressed')"),'true');
+      await evaluate("document.querySelector('#journey-retry').click();document.querySelector('#journey-pending').click();document.querySelector('#journey-confirm').click()");
+      await evaluate("document.querySelectorAll('#history-events button')[5].focus();document.activeElement.click()");
+      assert.match(await evaluate("document.querySelector('#history-detail').textContent"),/Fictional confirmation only/);
+      assert.equal(await evaluate("document.querySelector('#history-detail').getAttribute('aria-live')"),'polite');
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
+    await t.test('history detail cannot survive shopper switching or clearing history',async()=>{
+      await evaluate("document.querySelector('#shopper').value='guest';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.equal(await evaluate("document.querySelector('#history-events').children.length"),0);
+      assert.match(await evaluate("document.querySelector('#history-detail').textContent"),/Select a fictional history/);
+      await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.equal(await evaluate("document.querySelector('#history-events').children.length"),0);
+      await evaluate("document.querySelector('#journey-start').click();document.querySelector('#journey-cancel').click()");
+      await evaluate("document.querySelectorAll('#history-events button')[1].click()");
+      assert.match(await evaluate("document.querySelector('#history-detail').textContent"),/Fictional checkout cancelled/);
+      await evaluate("document.querySelector('#history-clear').click()");
+      assert.equal(await evaluate("document.querySelector('#history-events').children.length"),0);
+      assert.match(await evaluate("document.querySelector('#history-detail').textContent"),/Select a fictional history/);
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });
