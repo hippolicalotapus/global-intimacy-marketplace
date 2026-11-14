@@ -112,3 +112,8 @@ test('cross-tenant drafts and inactive moderators cannot authorize approvals',()
   assert.throws(()=>moderateStorefront(vendor,draft,{...reviewer,role:'vendor_manager'},'approved'));
   assert.throws(()=>moderateListing(vendor,item,{...reviewer,role:'vendor_manager'},'approved',evidence));
 });
+
+test('public fixture output excludes owner-reviewed forged approvals',()=>{
+  assert.equal(publicStorefront(vendor,{...profile,reviewedBy:actor.id},[stocked],'CA',2000000),null);
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,reviewedBy:actor.id}],'CA',2000000).products.length,0);
+});
