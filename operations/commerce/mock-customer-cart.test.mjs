@@ -100,7 +100,7 @@ test('stale inventory, insufficient stock and unauthorized territories block shi
     { mediaRights: false }, { resaleAuthorized: false }
   ]) {
     const c = addMockCartLine(cart(), { ...line(), product: { ...product(), ...altered } });
-    assert.equal(previewMockShipping({ cart: c, country: 'CA', fixture: fixture(), now }).status, 'unavailable');
+    assert.equal(previewMockShipping({ cart: c, country: 'CA', fixture: fixture(), now, maxInventoryAgeMs: 50000 }).status, 'unavailable');
   }
 });
 test('shipping rejects unsafe fictional rate and invalid country input', () => {
