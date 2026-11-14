@@ -14,7 +14,12 @@ const plausibleProofLink = value => {
   try {
     const url = new URL(value);
     const host = url.hostname.toLowerCase();
+    // IP literals and internal-only hostnames cannot establish supplier proof provenance.
+    // Never resolve or contact the host: this is an offline syntax screen only.
+    const ipLiteral = /^\d+\.\d+\.\d+\.\d+$/.test(host) || host.startsWith("[");
+    const localName = /\.(?:local|lan|internal|home|corp|intranet|localhost)$/.test(host);
     return url.protocol === "https:" && !url.username && !url.password &&
+      !ipLiteral && !localName &&
       url.pathname.length > 1 && host !== "localhost" &&
       !host.endsWith(".localhost") && !host.endsWith(".invalid") &&
       !host.endsWith(".test") && !host.endsWith(".example") &&

@@ -109,3 +109,29 @@ test('proof URL checker never fetches or stores evidence', async () => {
   assert.ok(source.includes('plausibleProofLink'));
   assert.ok(!/fetch\s*\(|XMLHttpRequest|localStorage|sessionStorage|sendBeacon/.test(source));
 });
+
+test('proof links reject IP literals and internal hostnames without network lookups', () => {
+  const spec=makeSpec();
+  const place=spec.garments.hoodie.placements.front_left_chest;
+  for(const value of [
+    'https://8.8.8.8/proof', 'https://172.16.0.1/proof',
+    'https://[::1]/proof', 'https://[2001:4860:4860::8888]/proof',
+    'https://print.local/proof', 'https://portal.internal/proof',
+    'https://printer.lan/proof', 'https://orders.corp/proof',
+    'https://office.intranet/proof', 'https://nas.home/proof'
+  ]) {
+    place.supplierProofUrl=value;
+    const report=inspectSupplierProof(spec);
+    assert.ok(report.pending.some(x=>x.garment==='hoodie' &&
+      x.position==='front_left_chest' && x.field==='supplierProofUrl'),value);
+    assert.equal(report.manufacturingApproved,false);
+  }
+});
+test('ordinary HTTPS domain proof syntax remains acceptable but not manufacturing approval', () => {
+  const spec=makeSpec();
+  spec.garments.tshirt.placements.back_center.supplierProofUrl='https://prints.example.org/proofs/ABC';
+  const report=inspectSupplierProof(spec);
+  assert.ok(!report.pending.some(x=>x.garment==='tshirt' &&
+    x.position==='back_center' && x.field==='supplierProofUrl'));
+  assert.equal(report.manufacturingApproved,false);
+});
