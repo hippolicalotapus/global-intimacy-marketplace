@@ -125,14 +125,14 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
     });
     await t.test('keyboard Tab navigates controls and cart updates retain focus', async () => {
       await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
-      await evaluate("document.querySelector('#items button[aria-label^=\\"Add one\\"]').focus()");
+      await evaluate("document.querySelector('#items button[aria-label^=Add]').focus()");
       const before=await evaluate("document.activeElement.getAttribute('aria-label')");
       assert.match(before,/^Add one/);
       await send('Input.dispatchKeyEvent',{type:'rawKeyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
       await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
       assert.notEqual(await evaluate("document.activeElement.getAttribute('aria-label')"),before);
       assert.equal(await evaluate("document.activeElement.tagName"),'BUTTON');
-      await evaluate("document.querySelector('#items button[aria-label^=\\"Add one\\"]').focus()");
+      await evaluate("document.querySelector('#items button[aria-label^=Add]').focus()");
       await evaluate("document.activeElement.click()");
       const cartText=await evaluate("document.querySelector('#items').textContent");
       assert.match(cartText,/× 2/);
