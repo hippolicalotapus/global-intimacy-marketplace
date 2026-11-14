@@ -1,0 +1,75 @@
+// In-memory transaction simulator for fictional vendor records. NOT durable storage or production auth.
+import {createHash} from 'node:crypto';
+import {createFixturePersistenceContract} from './vendor-persistence-fixture.mjs';
+const fail=(ok,why)=>{if(!ok)throw new Error(why);};
+const token=x=>typeof x==='string'&&/^[A-Za-z0-9_-]{3,80}$/.test(x);
+const copy=x=>JSON.parse(JSON.stringify(x));
+const hash=x=>createHash('sha256').update(JSON.stringify(x),'utf8').digest('hex');
+function createFixtureTransactionStore({users=[],sessions=[],vendors=[],memberships=[],savedState,minimumRevision=0}={}){
+  const fixtures={users,sessions,vendors,memberships};
+  fail(Number.isSafeInteger(minimumRevision)&&minimumRevision>=0,'Invalid trusted revision floor');
+  const create=state=>createFixturePersistenceContract({...fixtures,...(state===undefined?{}:{savedState:state}),minimumRevision:state===undefined?0:minimumRevision});
+  let state,receipts;
+  if(savedState===undefined){
+    fail(minimumRevision===0,'Missing state for revision floor');
+    state=create().snapshot();
+    receipts=new Map();
+  }else{
+    fail(savedState&&typeof savedState==='object'&&!Array.isArray(savedState)&&
+      Object.keys(savedState).sort().join(',')==='receipts,state'&&Array.isArray(savedState.receipts),
+      'Invalid transaction restore');
+    state=create(savedState.state).snapshot();
+    receipts=new Map();
+    for(const item of savedState.receipts){
+      fail(item&&typeof item==='object'&&!Array.isArray(item)&&
+        Object.keys(item).sort().join(',')==='digest,key,result,revision'&&token(item.key)&&
+        /^[a-f0-9]{64}$/.test(item.digest)&&Number.isSafeInteger(item.revision)&&
+        item.revision>=0&&item.revision<=state.revision&&!receipts.has(item.key)&&
+        Array.isArray(item.result),'Invalid idempotency receipt');
+      // Receipts are trusted fixture data; only a verified external seal could attest integrity.
+      receipts.set(item.key,copy(item));
+    }
+  }
+  function batch({key,expectedRevision,operations}={}){
+    fail(token(key),'Idempotency key required');
+    fail(Array.isArray(operations)&&operations.length>0&&operations.length<=25,
+      'Batch requires 1-25 operations');
+    fail(operations.every(op=>op&&typeof op==='object'&&!Array.isArray(op)&&
+      ['submit','review'].includes(op.type)),'Invalid batch operation');
+    const digest=hash(operations);
+    const previous=receipts.get(key);
+    if(previous){
+      fail(previous.digest===digest,'Idempotency key reused for different operations');
+      return Object.freeze({replayed:true,revision:previous.revision,results:copy(previous.result)});
+    }
+    fail(Number.isSafeInteger(expectedRevision)&&expectedRevision>=0&&
+      expectedRevision===state.revision,'Global revision conflict');
+    const working=create(state);
+    const results=[];
+    for(const op of operations){
+      // Explicitly copy accepted arguments; never accept supplied actor role/tenant bypasses.
+      if(op.type==='submit'){
+        results.push(working.submit({sessionId:op.sessionId,vendorSlug:op.vendorSlug,
+          id:op.id,type:op.recordType,title:op.title}));
+      }else{
+        results.push(working.review({sessionId:op.sessionId,id:op.id,
+          expectedVersion:op.expectedVersion,decision:op.decision,evidence:op.evidence}));
+      }
+    }
+    const candidate=working.snapshot();
+    fail(Number.isSafeInteger(candidate.revision)&&candidate.revision>state.revision,
+      'Invalid committed batch');
+    // In-memory commit point. Any rejected operation leaves both structures unchanged.
+    state=candidate;
+    receipts.set(key,{key,digest,revision:state.revision,result:copy(results)});
+    return Object.freeze({replayed:false,revision:state.revision,results:copy(results)});
+  }
+  function read({sessionId,id}={}){
+    return create(state).read({sessionId,id});
+  }
+  function snapshot(){
+    return copy({state,receipts:[...receipts.values()]});
+  }
+  return Object.freeze({batch,read,snapshot});
+}
+export {createFixtureTransactionStore};
