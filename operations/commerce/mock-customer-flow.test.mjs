@@ -112,3 +112,18 @@ test('saving fictional cart rejects manipulated quantity, duplicate line and inv
   const duplicate={...plain,lines:[plain.lines[0],plain.lines[0]]};
   assert.throws(() => saveFictionalCart({...opts(),cart:duplicate}));
 });
+
+test('restoring fictional multi-item snapshots rejects tampered quantities and cross-session access', () => {
+  const extra={...item(),productId:'fictional_hoodie',quantity:1};
+  const combined=addMockCartLine(cart(),extra);
+  const serialized=saveFictionalCart({...opts(),cart:combined});
+  const snapshot=JSON.parse(serialized);
+  const recovered=restoreFictionalCart({serialized,session:session(),account:account(),now});
+  assert.equal(recovered.lines.length,2);
+  assert.equal(recovered.lines.find(x=>x.productId==='fictional_hoodie').quantity,1);
+  const restore=data=>restoreFictionalCart({serialized:JSON.stringify(data),session:session(),account:account(),now});
+  assert.throws(()=>restore({...snapshot,lines:snapshot.lines.map((x,i)=>i===1?{...x,quantity:999}:x)}));
+  assert.throws(()=>restore({...snapshot,sessionId:'another_session'}));
+  assert.throws(()=>restore({...snapshot,ownerId:'another_fixture'}));
+  assert.equal(serialized.includes('address'),false);
+});

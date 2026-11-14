@@ -236,6 +236,33 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.match(await evaluate("document.querySelector('#status').textContent"),/rejected shopper switch/);
       assert.equal(await evaluate("document.querySelector('#status').dataset.kind"),'error');
     });
+    await t.test('multi-item snapshot restores cart without overwriting fictional shipping selection', async () => {
+      await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      await evaluate("document.querySelector('#add-hoodie').click();document.querySelector('#add-hoodie').click();document.querySelector('#save').click()");
+      assert.equal(await evaluate("document.querySelector('#recover').disabled"),false);
+      await evaluate("document.querySelector('#items button[aria-label^=Remove]').click()");
+      await evaluate("document.querySelector('#country').value='US';document.querySelector('#country').dispatchEvent(new Event('change',{bubbles:true}))");
+      await evaluate("document.querySelector('#recover').focus();document.activeElement.click()");
+      const restored=await evaluate("({count:document.querySelector('#items').children.length,content:document.querySelector('#items').textContent,country:document.querySelector('#country').value,focus:document.activeElement.id,message:document.querySelector('#status').textContent,paymentDisabled:document.querySelector('button[aria-disabled=true]').disabled})");
+      assert.equal(restored.count,2);
+      assert.match(restored.content,/fictional_tee/);
+      assert.match(restored.content,/fictional_hoodie/);
+      assert.match(restored.content,/× 2/);
+      assert.equal(restored.country,'US');
+      assert.equal(restored.focus,'recover');
+      assert.match(restored.message,/restored for this shopper only/);
+      assert.equal(restored.paymentDisabled,true);
+    });
+    await t.test('switching fictional shopper clears multi-item snapshot and announces isolation', async () => {
+      await evaluate("document.querySelector('#shopper').value='guest';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.equal(await evaluate("document.querySelector('#recover').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('#items').textContent"),'Cart is empty');
+      assert.match(await evaluate("document.querySelector('#status').textContent"),/Previous shopper cart and saved snapshot cleared/);
+      await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.equal(await evaluate("document.querySelector('#recover').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('#items').children.length"),1);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });
