@@ -28,8 +28,11 @@ jobs:
           node --check site/apparel.js
           node --check operations/suppliers/import-feed.mjs
           node --check operations/suppliers/import-feed.test.mjs
+          node --check operations/suppliers/research-readiness.mjs
+          node --check operations/suppliers/research-readiness.test.mjs
+          node --check operations/suppliers/research-readiness.integration.test.mjs
           node --check operations/one-heart/quote-preview.cjs
           node --check operations/one-heart/preview-cli.cjs
       - name: Unit tests and static smoke tests
-        run: node --test tests/*.test.mjs operations/suppliers/import-feed.test.mjs
+        run: node --test tests/*.test.mjs operations/suppliers/import-feed.test.mjs operations/suppliers/research-readiness.test.mjs operations/suppliers/research-readiness.integration.test.mjs
 
