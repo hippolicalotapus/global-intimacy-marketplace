@@ -55,6 +55,8 @@ export function parseCSV(input) {
   if(rows.length<2)return [];
   const headers=rows.shift().map(normalizeHeader);
   if(!headers.some(Boolean))throw new Error("No valid CSV column headers");
+  const namedHeaders=headers.filter(Boolean);
+  if(new Set(namedHeaders).size!==namedHeaders.length)throw new Error("Duplicate CSV column header");
   return rows.map(r=>Object.fromEntries(headers.map((h,i)=>[h,text(r[i],12000)]).filter(([k])=>k)));
 }
 
