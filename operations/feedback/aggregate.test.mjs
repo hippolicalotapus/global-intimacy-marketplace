@@ -57,3 +57,24 @@ test('allows named creator-feedback records and legacy records without form-name
   const report=aggregateCreatorFeedback([...Array.from({length:3},()=>row({'form-name':'creator-feedback'})),...Array.from({length:2},()=>row())]);
   assert.equal(report.groups['creator-format']['Product reviews'],5);
 });
+
+test('unanswered consented submissions cannot inflate reportable sample',()=>{
+  const blank=Array.from({length:5},()=>({'form-name':'creator-feedback','response-consent':'yes','bot-field':'','stage-name':'Not a questionnaire answer','email':'private@example.com'}));
+  const result=aggregateCreatorFeedback(blank);
+  assert.equal(result.consentedSample,'below_reporting_threshold');
+  assert.deepEqual(result.groups['creator-format'],{});
+});
+test('a valid optional free-text answer qualifies even without selections',()=>{
+  const answers=Array.from({length:5},()=>({'form-name':'creator-feedback','response-consent':'yes','must-have-feature':'Safer gifting'}));
+  const result=aggregateCreatorFeedback(answers);
+  assert.equal(result.consentedSample,'at_least_five');
+  assert.deepEqual(result.groups['creator-format'],{});
+  assert.ok(!JSON.stringify(result).includes('Safer gifting'));
+});
+test('empty and whitespace-only answers are excluded from small-group totals',()=>{
+  const blank=Array.from({length:4},()=>({'response-consent':'yes','creator-format':'  ','wishlist-experience':'  '}));
+  const answered=Array.from({length:4},()=>row());
+  const result=aggregateCreatorFeedback([...blank,...answered]);
+  assert.equal(result.consentedSample,'below_reporting_threshold');
+  assert.deepEqual(result.groups['creator-format'],{});
+});
