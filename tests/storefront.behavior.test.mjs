@@ -541,3 +541,18 @@ test("Every product detail button announces its own product", async () => {
   assert.ok(buttons.every(m => /aria-label="View details for [^"]+"/.test(m[0])));
   assert.match(cards, /data-detail="201" aria-label="View details for ONE HEART Three Sisters[^"]*"/);
 });
+
+test("Detail modal accurately reflects wishlist membership before toggling", async () => {
+  const app = await storefront();
+  const delegated = (key, id) => app.document.dispatch("click", { closest: selector => selector === "[data-"+key+"]" ? { dataset: { [key]: String(id) } } : null });
+  delegated("detail", 201);
+  assert.match(app.nodes.get("modalBody").innerHTML, /data-wish="201" aria-label="Add Three Sisters[^"]* to demo wishlist" aria-pressed="false">Add to wishlist demo/);
+  app.nodes.get("closeModal").dispatch("click");
+  delegated("wish", 201);
+  delegated("detail", 201);
+  assert.match(app.nodes.get("modalBody").innerHTML, /data-wish="201" aria-label="Remove Three Sisters[^"]* from demo wishlist" aria-pressed="true">Remove from wishlist demo/);
+  app.nodes.get("closeModal").dispatch("click");
+  delegated("wish", 201);
+  delegated("detail", 201);
+  assert.match(app.nodes.get("modalBody").innerHTML, /data-wish="201" aria-label="Add Three Sisters[^"]* to demo wishlist" aria-pressed="false">Add to wishlist demo/);
+});
