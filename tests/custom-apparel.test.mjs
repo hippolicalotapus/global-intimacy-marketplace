@@ -101,7 +101,7 @@ test("browser demo is self-contained, unlinked and has no network/order storage"
 test("browser form previews shirt and hoodie, rejects invalid edits, and issues only fictional receipts", async () => {
   const {runInNewContext} = await import("node:vm");
   const browserSrc=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","textStyle","placementHint"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint";
   const elems=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
@@ -109,7 +109,7 @@ test("browser form previews shirt and hoodie, rejects invalid edits, and issues 
     replaceChildren(...options){this.options=options;this.value=options[0]?.value||"";}
   }]));
   const document={getElementById:id=>elems[id],createElement:tag=>({tagName:tag,value:"",textContent:""})};
-  elems.garment.value="tshirt";elems.frontPlacement.value="center";elems.textStyle.value="bold";
+  elems.garment.value="tshirt";elems.frontPlacement.value="center";elems.backPlacement.value="center";elems.backPlacement.value="center";elems.textStyle.value="bold";
   const window={GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")};
   runInNewContext(browserSrc,{document,window});
   const fire=(id,event)=>elems[id].listeners[event]({preventDefault(){}});
@@ -165,7 +165,7 @@ test("left-chest print zone has enough width for common two-word artwork", async
 test("browser preview rejects overflow and never issues fictional receipt for clipped text", async () => {
   const {runInNewContext} = await import("node:vm");
   const source = await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","textStyle","placementHint"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint";
   const nodes=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
@@ -173,7 +173,7 @@ test("browser preview rejects overflow and never issues fictional receipt for cl
     replaceChildren(...values){this.options=values;this.value=values[0]?.value||"";}
   }]));
   const document={getElementById:id=>nodes[id],createElement:()=>({value:"",textContent:""})};
-  nodes.garment.value="tshirt";nodes.frontPlacement.value="left-chest";nodes.textStyle.value="bold";
+  nodes.garment.value="tshirt";nodes.frontPlacement.value="left-chest";nodes.backPlacement.value="center";nodes.textStyle.value="bold";
   runInNewContext(source,{document,window:{GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")}});
   const fire=(id,name)=>nodes[id].listeners[name]({preventDefault(){}});
   nodes.frontText.value="Supercalifragilisticexpialidocious";
@@ -219,19 +219,19 @@ test("accessible print preview has labelled controls and front/back details", as
 test("front print position changes accessible guidance without authorizing an order", async () => {
   const {runInNewContext} = await import("node:vm");
   const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
-  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","textStyle","placementHint"];
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint";
   const elems=Object.fromEntries(ids.map(id=>[id,{
     value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},
     clientHeight:50,scrollHeight:50,clientWidth:60,scrollWidth:60,
     addEventListener(type,fn){this.listeners[type]=fn;},
     replaceChildren(...items){this.options=items;this.value=items[0]?.value||"";}
   }]));
-  elems.garment.value="tshirt";elems.frontPlacement.value="center";elems.textStyle.value="bold";
+  elems.garment.value="tshirt";elems.frontPlacement.value="center";elems.backPlacement.value="center";elems.backPlacement.value="center";elems.textStyle.value="bold";
   const document={getElementById:id=>elems[id],createElement:()=>({value:"",textContent:""})};
   runInNewContext(js,{document,window:{GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")}});
   assert.equal(elems.frontStage.dataset.placement,"center");
   assert.match(elems.placementHint.textContent,/larger lettering/);
-  elems.frontPlacement.value="left-chest";
+  elems.frontPlacement.value="left-chest";elems.backPlacement.value="center";
   elems.customForm.listeners.input({});
   elems.frontPlacement.listeners.change({});
   assert.equal(elems.mockConfirm.disabled,true);
@@ -246,4 +246,37 @@ test("print-zone guidance is accessible and never claims verified supplier dimen
   assert.equal((html.match(/class="print-guide"/g)||[]).length,2);
   assert.match(html,/actual supplier dimensions are unverified/);
   assert.match(html,/data-placement="left-chest"/);
+});
+
+
+test("front and back independent positions validate safely", () => {
+  assert.equal(validate({...base,backPlacement:"upper-back"}).ok,true);
+  assert.equal(validate({...base,frontPlacement:"left-chest",backPlacement:"upper-back"}).ok,true);
+  for(const backPlacement of ["shoulder","neck",null,"constructor"])
+    assert.equal(validate({...base,backPlacement}).reason,"placement");
+});
+test("supplier print-zone intake leaves all measurements unverified", async () => {
+  const spec=JSON.parse(await readFile(new URL("../operations/custom-apparel/print-zone-specifications.json",import.meta.url),"utf8"));
+  assert.equal(spec.status,"supplier_verification_required");
+  for(const garment of ["tshirt","hoodie"]) {
+    assert.equal(spec.garments[garment].supplierSku,null);
+    assert.equal(spec.garments[garment].fabricAndBlankConfirmed,false);
+    for(const position of ["front_center","front_left_chest","back_center","back_upper_back"]) {
+      const entry=spec.garments[garment].placements[position];
+      assert.equal(entry.status,"unverified");
+      for(const field of ["printAreaWidthMm","printAreaHeightMm","offsetFromCollarMm","offsetFromCenterMm","method","supplierProofUrl","approvedBy"])
+        assert.equal(entry[field],null);
+    }
+  }
+});
+test("browser preview exposes independent back position and safe guidance", async () => {
+  const html=await readFile(new URL("../operations/custom-apparel/index.html",import.meta.url),"utf8");
+  const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
+  assert.match(html,/id="backPlacement" aria-describedby="backPlacementHint"/);
+  assert.match(html,/data-side="back"\]\[data-placement="upper-back"/);
+  assert.match(html,/print-text\[data-placement="upper-back"/);
+  assert.match(js,/backPlacement:backPlacement\.value/);
+  assert.match(js,/backStage\.dataset\.placement = result\.design\.backPlacement/);
+  assert.match(js,/backPlacement\.addEventListener\("change", updateBackHint\)/);
+  assert.ok(!/fetch\(|XMLHttpRequest|localStorage|sessionStorage|innerHTML/.test(js));
 });

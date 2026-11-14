@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "status": "supplier_verification_required",
+  "purpose": "Internal specification intake only; never a manufacturing order or print authorization",
+  "currency": null,
+  "supplier": null,
+  "garments": {
+    "tshirt": {
+      "supplierSku": null,
+      "fabricAndBlankConfirmed": false,
+      "placements": {
+        "front_center": {
+          "side": "front",
+          "position": "center",
+          "status": "unverified",
+          "printAreaWidthMm": null,
+          "printAreaHeightMm": null,
+          "offsetFromCollarMm": null,
+          "offsetFromCenterMm": null,
+          "method": null,
+          "supplierProofUrl": null,
+          "approvedBy": null
+        },
+        "front_left_chest": {
+          "side": "front",
+          "position": "left-chest",
+          "status": "unverified",
+          "printAreaWidthMm": null,
+          "printAreaHeightMm": null,
+          "offsetFromCollarMm": null,
+          "offsetFromCenterMm": null,
+          "method": null,
+          "supplierProofUrl": null,
+          "approvedBy": null
+        },
+        "back_center": {
+          "side": "back",
+          "position": "center",
+          "status": "unverified",
+          "printAreaWidthMm": null,
+          "printAreaHeightMm": null,
+          "offsetFromCollarMm": null,
+          "offsetFromCenterMm": null,
+          "method": null,
+          "supplierProofUrl": null,
+          "approvedBy": null
+        },
+        "back_upper_back": {
+          "side": "back",
+          "position": "upper-back",
+          "status": "unverified",
+          "printAreaWidthMm": null,
+          "printAreaHeightMm": null,
+          "offsetFromCollarMm": null,
+          "offsetFromCenterMm": null,
+          "method": null,
+          "supplierProofUrl": null,
+          "approvedBy": null
+        }
+      }
+    },
+    "hoodie": {
+      "supplierSku": null,
+      "fabricAndBlankConfirmed": false,
+      "placements": {
+        "front_center": {
+          "side": "front",
+          "position": "center",
+          "status": "unverified",
+          "printAreaWidthMm": null,
+          "printAreaHeightMm": null,
+          "offsetFromCollarMm": null,
+          "offsetFromCenterMm": null,
+          "method": null,
+          "supplierProofUrl": null,
+          "approvedBy": null
+        },
+        "front_left_chest": {
+          "side": "front",
+          "position": "left-chest",
+          "status": "unverified",
+          "printAreaWidthMm": null,
+          "printAreaHeightMm": null,
+          "offsetFromCollarMm": null,
+          "offsetFromCenterMm": null,
+          "method": null,
+          "supplierProofUrl": null,
+          "approvedBy": null
+        },
+        "back_center": {
+          "side": "back",
+          "position": "center",
+          "status": "unverified",
+          "printAreaWidthMm": null,
+          "printAreaHeightMm": null,
+          "offsetFromCollarMm": null,
+          "offsetFromCenterMm": null,
+          "method": null,
+          "supplierProofUrl": null,
+          "approvedBy": null
+        },
+        "back_upper_back": {
+          "side": "back",
+          "position": "upper-back",
+          "status": "unverified",
+          "printAreaWidthMm": null,
+          "printAreaHeightMm": null,
+          "offsetFromCollarMm": null,
+          "offsetFromCenterMm": null,
+          "method": null,
+          "supplierProofUrl": null,
+          "approvedBy": null
+        }
+      }
+    }
+  }
+}

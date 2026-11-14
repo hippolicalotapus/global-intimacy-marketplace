@@ -31,9 +31,11 @@ button:disabled{opacity:.5;cursor:not-allowed}:is(button,select,input):focus-vis
 .stage[data-text-style="bold"] .print-text{font-family:system-ui,sans-serif;font-weight:850}
 .print-text{position:absolute;top:42%;left:28%;width:44%;transform:translateY(-50%);text-align:center;color:var(--ink);font-size:16px;font-weight:750;line-height:1.15;white-space:pre-wrap;overflow-wrap:normal;word-break:normal;max-height:30%;overflow:hidden}
 .print-text[data-placement="left-chest"]{top:34%;left:27%;width:28%;font-size:11px}
+.print-text[data-placement="upper-back"]{top:31%;left:30%;width:40%;font-size:12px}
 .stage[data-ready="false"] .print-text{display:none}
 .print-guide{position:absolute;top:26%;left:27%;width:46%;height:35%;border:2px dashed #6d7889;box-sizing:border-box;border-radius:4px;pointer-events:none;opacity:.7}
 .stage[data-side="front"][data-placement="left-chest"] .print-guide{top:24%;left:27%;width:28%;height:21%}
+.stage[data-side="back"][data-placement="upper-back"] .print-guide{top:20%;left:30%;width:40%;height:20%}
 .stage[data-ready="true"] .print-guide{opacity:.28}
 .stage:focus-within .print-guide{border-color:#006fd6}
 .zone-guidance{font-weight:600;line-height:1.5;color:#20354c}
@@ -55,7 +57,9 @@ button:disabled{opacity:.5;cursor:not-allowed}:is(button,select,input):focus-vis
 <label for="color">Colour</label><select id="color"></select>
 <label for="quantity">Mock quantity (1-10)</label><input id="quantity" type="number" min="1" max="10" step="1" value="1" required>
 <label for="frontPlacement">Front print position</label><select id="frontPlacement" aria-describedby="placementHint"><option value="center">Centre — larger lettering zone</option><option value="left-chest">Left chest — compact lettering zone</option></select>
-<p id="placementHint" class="zone-guidance" role="status" aria-live="polite">Front: centre print zone for larger lettering. Back: centred print zone only. Dashed outlines are illustrative.</p>
+<p id="placementHint" class="zone-guidance" role="status" aria-live="polite">Front: centre print zone for larger lettering. Dashed outlines are illustrative.</p>
+<label for="backPlacement">Back print position</label><select id="backPlacement" aria-describedby="backPlacementHint"><option value="center">Centre — larger lettering zone</option><option value="upper-back">Upper back — compact lettering zone</option></select>
+<p id="backPlacementHint" class="zone-guidance" role="status" aria-live="polite">Back: centred print area for larger lettering. Print dimensions are not supplier-verified.</p>
 <label for="frontText">Front text (48 characters max)</label><input id="frontText" maxlength="48" placeholder="Your original text" autocomplete="off" aria-describedby="artHint">
 <label for="backText">Back text (48 characters max)</label><input id="backText" maxlength="48" placeholder="Optional back text" autocomplete="off" aria-describedby="artHint">
 <p id="artHint" class="hint">Enter original lettering on at least one side. Long text may not fit the selected print area. No images or personal information.</p>
@@ -68,7 +72,7 @@ button:disabled{opacity:.5;cursor:not-allowed}:is(button,select,input):focus-vis
 <svg viewBox="0 0 240 320" aria-hidden="true" focusable="false">
 <g class="shirt"><path class="fabric" d="M75 45 L95 37 Q120 58 145 37 L165 45 L210 75 L190 124 L170 112 L170 275 Q120 282 70 275 L70 112 L50 124 L30 75 Z"/><path class="seam" d="M95 37 Q120 85 145 37 M73 269 Q120 279 167 269"/><path class="highlight" d="M73 65 L81 54 L82 269 L73 269 Z"/><path class="side-shadow" d="M160 59 L169 65 L168 268 L159 272 Z"/><path class="double-seam" d="M76 263 Q120 275 164 263"/></g>
 <g class="hoodie"><path class="fabric" d="M95 38 Q120 11 145 38 L164 48 L177 51 L209 77 L189 140 L170 127 L170 274 Q120 283 70 274 L70 127 L51 140 L31 77 L63 51 L76 48 Z"/><path class="fabric" d="M95 38 Q120 12 145 38 L159 61 Q120 99 81 61 Z"/><path class="seam" d="M75 269 Q120 278 165 269"/><path class="seam front-detail" d="M109 76 L111 110 M131 76 L129 110"/><path class="fabric front-detail" d="M89 201 Q120 209 151 201 L156 238 Q120 252 84 238 Z"/><path class="highlight" d="M74 73 L83 65 L83 269 L74 269 Z"/><path class="side-shadow" d="M157 65 L167 75 L167 269 L158 269 Z"/></g>
-</svg><div class="print-guide" aria-hidden="true"></div><div class="print-text" id="frontMock" data-placement="center"></div></div></div><div class="mock-panel"><strong>Back</strong><div id="backStage" class="stage" data-garment="tshirt" data-color="black" data-side="back" data-text-style="bold" data-ready="false">
+</svg><div class="print-guide" aria-hidden="true"></div><div class="print-text" id="frontMock" data-placement="center"></div></div></div><div class="mock-panel"><strong>Back</strong><div id="backStage" class="stage" data-placement="center" data-garment="tshirt" data-color="black" data-side="back" data-text-style="bold" data-ready="false">
 <svg viewBox="0 0 240 320" aria-hidden="true" focusable="false">
 <g class="shirt"><path class="fabric" d="M75 45 L95 37 Q120 58 145 37 L165 45 L210 75 L190 124 L170 112 L170 275 Q120 282 70 275 L70 112 L50 124 L30 75 Z"/><path class="seam" d="M95 37 Q120 85 145 37 M73 269 Q120 279 167 269"/><path class="highlight" d="M73 65 L81 54 L82 269 L73 269 Z"/><path class="side-shadow" d="M160 59 L169 65 L168 268 L159 272 Z"/><path class="double-seam" d="M76 263 Q120 275 164 263"/></g>
 <g class="hoodie"><path class="fabric" d="M95 38 Q120 11 145 38 L164 48 L177 51 L209 77 L189 140 L170 127 L170 274 Q120 283 70 274 L70 127 L51 140 L31 77 L63 51 L76 48 Z"/><path class="fabric" d="M95 38 Q120 12 145 38 L159 61 Q120 99 81 61 Z"/><path class="seam" d="M75 269 Q120 278 165 269"/><path class="seam front-detail" d="M109 76 L111 110 M131 76 L129 110"/><path class="fabric front-detail" d="M89 201 Q120 209 151 201 L156 238 Q120 252 84 238 Z"/><path class="highlight" d="M74 73 L83 65 L83 269 L74 269 Z"/><path class="side-shadow" d="M157 65 L167 75 L167 269 L158 269 Z"/></g>

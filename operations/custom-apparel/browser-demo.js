@@ -15,13 +15,22 @@
   const size = document.getElementById("size");
   const textStyle = document.getElementById("textStyle");
   const frontPlacement = document.getElementById("frontPlacement");
+  const backPlacement = document.getElementById("backPlacement");
   const placementHint = document.getElementById("placementHint");
+  const backPlacementHint = document.getElementById("backPlacementHint");
   function updatePlacementHint() {
     const chest = frontPlacement.value === "left-chest";
     frontStage.dataset.placement = chest ? "left-chest" : "center";
     placementHint.textContent = chest
       ? "Front: compact left-chest print zone, suitable for short lettering. Back: centred print zone only. Dashed outlines are illustrative."
       : "Front: centre print zone for larger lettering. Back: centred print zone only. Dashed outlines are illustrative.";
+  }
+  function updateBackHint() {
+    const upper = backPlacement.value === "upper-back";
+    backStage.dataset.placement = upper ? "upper-back" : "center";
+    backPlacementHint.textContent = upper
+      ? "Back: compact upper-back position for short lettering. Print dimensions are not supplier-verified."
+      : "Back: centred print area for larger lettering. Print dimensions are not supplier-verified.";
   }
   const message = (text) => {status.textContent = text;};
   function clearPreview() {
@@ -67,7 +76,7 @@
       backText:document.getElementById("backText").value,
       textStyle:textStyle.value,
       frontPlacement:frontPlacement.value,
-      backPlacement:"center"};
+      backPlacement:backPlacement.value};
   }
   form.addEventListener("input", () => {
     session.invalidate();
@@ -77,6 +86,7 @@
   });
   garment.addEventListener("change", () => {updateChoices(); session.invalidate(); clearPreview(); receipt.textContent = "";});
   frontPlacement.addEventListener("change", updatePlacementHint);
+  backPlacement.addEventListener("change", updateBackHint);
   form.addEventListener("submit", event => {
     event.preventDefault();
     const result = session.preview(data());
@@ -89,6 +99,7 @@
     back.textContent = result.design.backText;
     front.dataset.placement = result.design.frontPlacement;
     back.dataset.placement = result.design.backPlacement;
+    backStage.dataset.placement = result.design.backPlacement;
     for (const stage of [frontStage,backStage]) {
       stage.dataset.garment = result.design.garment;
       stage.dataset.color = result.design.color;
@@ -115,4 +126,5 @@
   });
   updateChoices();
   updatePlacementHint();
+  updateBackHint();
 }());

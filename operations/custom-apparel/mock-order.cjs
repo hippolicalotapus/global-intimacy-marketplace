@@ -11,7 +11,7 @@
   });
   const FIELDS = new Set(["garment","size","color","quantity","frontText","backText","frontPlacement","backPlacement","textStyle"]);
   const FRONT = new Set(["center","left-chest"]);
-  const BACK = new Set(["center"]);
+  const BACK = new Set(["center","upper-back"]);
   const STYLES = new Set(["bold","classic","mono"]);
 
   function validate(input) {
