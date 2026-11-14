@@ -44,3 +44,31 @@ test('listing reviewer rejects forged metadata and requested territories',()=>{
     {requestedTerritories:null}
   ]) assert.throws(()=>moderateListing(vendor,{...draft,...change},reviewer,'approved',evidence));
 });
+
+test('reviewer identity is recorded and required for public fixture projection',()=>{
+  assert.equal(profile.reviewedBy,reviewer.id);
+  assert.equal(listing.reviewedBy,reviewer.id);
+  assert.equal(publicStorefront(vendor,{...profile,reviewedBy:undefined},[stocked],'CA',2000000),null);
+  assert.equal(publicStorefront(vendor,{...profile,reviewedBy:actor.id},[stocked],'CA',2000000),null);
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,reviewedBy:undefined}],'CA',2000000).products.length,0);
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,reviewedBy:actor.id}],'CA',2000000).products.length,0);
+});
+
+test('forged onboarding and cross-tenant editors fail closed',()=>{
+  const pending=applyVendor({ownerId:'owner_001',displayName:'Real Vendor',slug:'real-vendor',country:'CA'});
+  const evidence={legalEntity:true,eligibility:true,terms:true};
+  for(const altered of [{ownerId:'../bad'}, {slug:'../other'}, {displayName:'<img>'}, {country:'bad'}]){
+    assert.throws(()=>moderateVendor({...pending,...altered},reviewer,'approved',evidence));
+  }
+  assert.throws(()=>draftStorefront(vendor,actor,{...membership,vendorSlug:'other-vendor'},'Wrong tenant'));
+  assert.throws(()=>submitListing(vendor,actor,{...membership,role:'viewer'},input));
+  assert.throws(()=>moderateListing(vendor,{...listing,status:'pending',vendorSlug:'other-vendor'},reviewer,'approved',{mediaRights:true,resaleRights:true,compliance:true,territories:['CA']}));
+});
+
+test('approval gate refuses stale or unauthorized display even after review',()=>{
+  assert.equal(publicStorefront({...vendor,status:'suspended'},profile,[stocked],'CA',2000000),null);
+  assert.equal(publicStorefront(vendor,{...profile,status:'draft'},[stocked],'CA',2000000),null);
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,territories:['US']}],'CA',2000000).products.length,0);
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,mediaRights:false}],'CA',2000000).products.length,0);
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,inventoryUpdatedAt:new Date(0).toISOString()}],'CA',2000000).products.length,0);
+});
