@@ -340,6 +340,35 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.match(await evaluate("document.querySelector('#review-summary').textContent"),/estimated before tax/);
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
+    await t.test('customer-facing fictional order lifecycle honors draft, pending, confirmation and cancellation',async()=>{
+      await send('Page.navigate',{url});
+      for(let i=0;i<40;i++){if(await evaluate("document.querySelector('#journey-start') && !document.querySelector('#journey-start').disabled"))break;await delay(50)}
+      assert.equal(await evaluate("document.querySelector('#journey-confirm').disabled"),true);
+      await evaluate("document.querySelector('#journey-start').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/Fictional review draft/);
+      await evaluate("document.querySelector('#journey-pending').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/payment pending/);
+      assert.equal(await evaluate("document.querySelector('#journey-start').disabled"),false);
+      await evaluate("document.querySelector('#journey-confirm').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/confirmation \(no charge\)/);
+      assert.equal(await evaluate("document.querySelector('#journey-cancel').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+      await evaluate("document.querySelector('#journey-start').click()");
+      await evaluate("document.querySelector('#journey-cancel').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/cancelled/);
+      assert.equal(await evaluate("document.querySelector('#journey-pending').disabled"),true);
+    });
+    await t.test('cart changes and shopper switches invalidate fictional lifecycle',async()=>{
+      await evaluate("document.querySelector('#journey-start').click()");
+      await evaluate("document.querySelector('#add-hoodie').click()");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/No fictional checkout review started/);
+      assert.equal(await evaluate("document.querySelector('#journey-pending').disabled"),true);
+      await evaluate("document.querySelector('#journey-start').click()");
+      await evaluate("document.querySelector('#shopper').value='guest';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.match(await evaluate("document.querySelector('#journey-state').textContent"),/No fictional checkout review started/);
+      assert.equal(await evaluate("document.querySelector('#journey-start').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });

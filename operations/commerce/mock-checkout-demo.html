@@ -56,6 +56,17 @@ button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:
 <div id="review-summary" role="status" aria-live="polite" aria-atomic="true"></div>
 <ul id="review-gates" aria-label="Checkout readiness requirements"></ul>
 </section>
+<section class="panel" aria-labelledby="journey-title">
+<h2 id="journey-title">5. Fictional order lifecycle</h2>
+<p><small>These controls only demonstrate order states. No payment request, purchase, receipt or supplier order will occur.</small></p>
+<p id="journey-state" role="status" aria-live="polite" aria-atomic="true">No fictional checkout review started.</p>
+<div class="controls">
+<button id="journey-start">Start fictional review</button>
+<button id="journey-pending" disabled>Simulate payment pending</button>
+<button id="journey-confirm" disabled>Simulate confirmation (no charge)</button>
+<button id="journey-cancel" disabled>Cancel fictional checkout</button>
+</div>
+</section>
 <p id="status" role="status" aria-live="polite" aria-atomic="true"></p>
 </main>
 <script type="module">
@@ -64,7 +75,8 @@ import {
   saveDemoCart,restoreDemoCart,previewDemo
 } from './mock-customer-ui.mjs';
 import { assessFictionalCheckout } from './mock-checkout-review.mjs';
-let state=createDemoCustomer(), snapshot=null;
+import { beginFictionalJourney,progressFictionalJourney,describeFictionalJourney } from './mock-checkout-lifecycle.mjs';
+let state=createDemoCustomer(), snapshot=null, journey=null;
 const byId=id=>document.getElementById(id);
 function money(minor){return '$'+(minor/100).toFixed(2)+' CAD (fictional)'}
 function render(){
@@ -115,6 +127,12 @@ function render(){
     line.textContent=(requirement.ready?'Sample ready: ':'Not enabled: ')+requirement.label;
     gates.append(line);
   }
+  const stage=journey?.state;
+  byId('journey-state').textContent=describeFictionalJourney(journey);
+  byId('journey-start').disabled=readiness.totalBeforeTaxMinor===null;
+  byId('journey-pending').disabled=stage!=='draft';
+  byId('journey-confirm').disabled=stage!=='awaiting_payment';
+  byId('journey-cancel').disabled=!['draft','awaiting_payment'].includes(stage);
   byId('estimate').textContent=p.checkout
     ? 'Merchandise '+money(p.checkout.checkout.order.totalMinor)+
       ' + fictional shipping '+money(p.shipping.shippingMinor)+
@@ -123,7 +141,7 @@ function render(){
 }
 function report(message,kind='info'){byId('status').dataset.kind=kind;byId('status').textContent=message}
 function apply(action){try{
-  const next=action();state=next;render();
+  const next=action();state=next;journey=null;render();
   report(next.cart.lines.length===0?'Fictional cart is empty. Add a sample item to continue.':'Local fictional simulation updated');
 }catch(error){
   const limit=error instanceof TypeError && /Unsafe fictional cart edit/.test(error.message);
@@ -133,7 +151,7 @@ byId('shopper').addEventListener('change',event=>{
   const requested=event.target.value;
   try{
     const next=createDemoCustomer({shopper:requested});
-    snapshot=null;state=next;render();
+    snapshot=null;journey=null;state=next;render();
     report('Fictional shopper switched. Previous shopper cart and saved snapshot cleared; no real account access.');
   }catch(error){
     event.target.value=state.shopper;
@@ -150,13 +168,23 @@ byId('recover').addEventListener('click',()=>{
   const previous=state;
   try{
     const next=restoreDemoCart(state,snapshot);
-    state=next;render();
+    state=next;journey=null;render();
     report('Saved fictional cart restored for this shopper only. Shipping selection unchanged. Payment disabled.');
   }catch(error){
     state=previous;
     report('Cannot restore fictional cart. This snapshot is invalid, expired or belongs to another shopper.','error');
   }
 });
+function advanceJourney(event){
+  try{
+    journey=event==='start'?beginFictionalJourney(state):progressFictionalJourney(journey,event);
+    render();report(describeFictionalJourney(journey));
+  }catch(error){report('Fictional lifecycle refused change: '+error.message,'error')}
+}
+byId('journey-start').addEventListener('click',()=>advanceJourney('start'));
+byId('journey-pending').addEventListener('click',()=>advanceJourney('pending'));
+byId('journey-confirm').addEventListener('click',()=>advanceJourney('confirm'));
+byId('journey-cancel').addEventListener('click',()=>advanceJourney('cancel'));
 byId('recover').setAttribute('aria-description','Restores only a fictional snapshot held in this page');
 // Localhost-only fictional failure injection for offline browser regression tests.
 // Never provide customer authentication, network access, payment or persistence.
