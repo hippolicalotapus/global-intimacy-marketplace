@@ -23,3 +23,18 @@ test("unverified shipping never produces a quote", () => {
   const result = quote({product: "standard", country: "CA", postal: "T0E2A0", shippingQuote: {...shippingQuote, verified: false}, taxCents: 0});
   assert.equal(result.status, "quote_required");
 });
+
+test("invalid destinations and expired shipping quotes fail closed", () => {
+  const base = {product: "premium", country: "CA", postal: "T0E2A0", shippingQuote, taxCents: 0};
+  assert.equal(quote({...base, country: "US"}).status, "quote_required");
+  assert.equal(quote({...base, shippingQuote: {...shippingQuote, expiresAt: "2000-01-01T00:00:00Z"}}).status, "quote_required");
+  assert.equal(quote({...base, shippingQuote: {...shippingQuote, postalCode: "T0E 2A1"}}).status, "quote_required");
+});
+test("size and tax requirements preserve preview-only behavior", () => {
+  const base = {product: "premium", country: "CA", postal: "T0E2A0", shippingQuote, taxCents: 0};
+  assert.equal(quote({...base, size: "3XL"}).status, "unavailable");
+  assert.equal(quote({...base, taxCents: -1}).status, "quote_required");
+  const result = quote({...base, size: "2XL+"});
+  assert.equal(result.totalCents, 8849);
+  assert.equal(result.checkoutEnabled, false);
+});
