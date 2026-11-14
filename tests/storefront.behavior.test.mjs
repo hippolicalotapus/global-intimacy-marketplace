@@ -517,3 +517,18 @@ test("Returning from a named collection to Shop restores the full preview catalo
   app.window.dispatch("hashchange");
   assert.equal(app.count(), 110);
 });
+
+test("Direct catalogue navigation restores all previews after browsing a named collection", async () => {
+  const app = await storefront("#one-heart");
+  assert.equal(app.count(), 18);
+  app.location.hash = "#catalog";
+  app.window.dispatch("hashchange");
+  assert.equal(app.count(), 110);
+  assert.equal(app.nodes.get("catalogResultsTitle").textContent, "All products");
+  app.location.hash = "#sarcastabastard";
+  app.window.dispatch("hashchange");
+  assert.equal(app.count(), 1);
+  app.location.hash = "#catalog";
+  app.window.dispatch("hashchange");
+  assert.equal(app.count(), 110);
+});
