@@ -1,0 +1,27 @@
+name: GIM development validation (manual, no deploy)
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify JavaScript syntax
+        run: |
+          find site operations tests -type f \( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \) -print0 | xargs -0 -n 1 node --check
+      - name: Run complete Node regression suite
+        run: node --test tests/*.test.mjs tests/*.test.cjs operations/suppliers/import-feed.test.mjs
+      - name: Run Python offline regression suite
+        run: |
+          python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Check offline preview cannot enable checkout
+        run: |
+          node --test tests/gelato-*.test.mjs
