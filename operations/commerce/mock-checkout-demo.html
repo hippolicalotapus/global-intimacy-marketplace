@@ -110,7 +110,17 @@ function apply(action){try{
   const limit=error instanceof TypeError && /Unsafe fictional cart edit/.test(error.message);
   report(limit?'Fictional cart limit reached. Use the minus button to reduce quantity; payment remains disabled.':'Simulation rejected change: '+error.message,'error')
 }}
-byId('shopper').addEventListener('change',event=>apply(()=>{snapshot=null;return createDemoCustomer({shopper:event.target.value})}));
+byId('shopper').addEventListener('change',event=>{
+  const requested=event.target.value;
+  try{
+    const next=createDemoCustomer({shopper:requested});
+    snapshot=null;state=next;render();
+    report('Fictional shopper switched. Previous shopper cart and saved snapshot cleared; no real account access.');
+  }catch(error){
+    event.target.value=state.shopper;
+    report('Simulation rejected shopper switch: '+error.message,'error');
+  }
+});
 byId('country').addEventListener('change',event=>apply(()=>changeDemoCountry(state,event.target.value)));
 byId('add-tee').addEventListener('click',()=>apply(()=>changeDemoQuantity(state,catalog.tee.productId,
   (state.cart.lines.find(x=>x.productId===catalog.tee.productId)?.quantity||0)+1)));

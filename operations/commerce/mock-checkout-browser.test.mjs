@@ -212,6 +212,30 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.match(await evaluate("document.querySelector('#estimate').textContent"),/before tax/);
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
+    await t.test('shopper switch clears snapshot and keeps the new fictional cart isolated', async () => {
+      await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      await evaluate("document.querySelector('#save').click()");
+      assert.equal(await evaluate("document.querySelector('#recover').disabled"),false);
+      await evaluate("document.querySelector('#shopper').focus()");
+      await evaluate("document.querySelector('#shopper').value='guest';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.equal(await evaluate("document.querySelector('#recover').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('#items').textContent"),'Cart is empty');
+      assert.equal(await evaluate("document.activeElement.id"),'shopper');
+      assert.match(await evaluate("document.querySelector('#status').textContent"),/Previous shopper cart and saved snapshot cleared/);
+      await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.equal(await evaluate("document.querySelector('#recover').disabled"),true);
+      assert.match(await evaluate("document.querySelector('#items').textContent"),/fictional_tee/);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
+    await t.test('invalid shopper selection fails closed without wiping current fictional state', async () => {
+      await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      await evaluate("document.querySelector('#save').click()");
+      await evaluate("document.querySelector('#shopper').value='not-a-real-fixture';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.equal(await evaluate("document.querySelector('#shopper').value"),'returning');
+      assert.equal(await evaluate("document.querySelector('#recover').disabled"),false);
+      assert.match(await evaluate("document.querySelector('#status').textContent"),/rejected shopper switch/);
+      assert.equal(await evaluate("document.querySelector('#status').dataset.kind"),'error');
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });

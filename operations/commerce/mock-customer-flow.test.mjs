@@ -104,3 +104,11 @@ test('journey fails closed for unsupported shipping and stale stock', () => {
   }));
   assert.throws(() => previewFictionalJourney({ ...common, country: 'CA' }));
 });
+
+test('saving fictional cart rejects manipulated quantity, duplicate line and invalid stock', () => {
+  const plain=cart();
+  const forged={...plain,lines:[{...plain.lines[0],quantity:-1}]};
+  assert.throws(() => saveFictionalCart({...opts(),cart:forged}));
+  const duplicate={...plain,lines:[plain.lines[0],plain.lines[0]]};
+  assert.throws(() => saveFictionalCart({...opts(),cart:duplicate}));
+});

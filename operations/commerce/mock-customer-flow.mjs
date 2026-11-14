@@ -43,8 +43,9 @@ function saveFictionalCart({ session, account, cart, now } = {}) {
       inventoryUpdatedAt: line.product?.inventoryUpdatedAt
     }
   }));
-  const verified = createMockCart({ ownerId: cart.ownerId, currency: cart.currency });
-  lines.reduce((c, line) => addMockCartLine(c, line), verified);
+  const verified = lines.reduce((c, line) => addMockCartLine(c, line),
+    createMockCart({ ownerId: cart.ownerId, currency: cart.currency }));
+  if (verified.lines.length !== lines.length) throw new TypeError('Invalid fictional cart snapshot');
   return JSON.stringify({
     format: 'gim-fictional-cart', version: 1, ownerId: session.ownerId,
     sessionId: session.sessionId, expiresAt: session.expiresAt,
