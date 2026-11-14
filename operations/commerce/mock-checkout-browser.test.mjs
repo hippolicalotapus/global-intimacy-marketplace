@@ -163,11 +163,38 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       const feedback=await evaluate("({message:document.querySelector('#status').textContent,kind:document.querySelector('#status').dataset.kind,live:document.querySelector('#status').getAttribute('aria-live'),disabled:document.querySelector('button[aria-disabled=true]').disabled})");
       assert.equal(feedback.kind,'error');
       assert.equal(feedback.live,'polite');
-      assert.match(feedback.message,/Simulation rejected change/);
+      assert.match(feedback.message,/Fictional cart limit reached/);
       assert.equal(feedback.disabled,true);
+      await evaluate("document.querySelector('#items button[aria-label^=Remove]').click()");
+      assert.match(await evaluate("document.querySelector('#items').textContent"),/× 9/);
+      assert.equal(await evaluate("document.querySelector('#status').dataset.kind"),'info');
+      assert.equal(await evaluate("document.querySelector('#items button[aria-label^=Add]').disabled"),false);
     });
-    await t.test('mobile 320px and 375px widths have no horizontal overflow', async () => {
-      for (const width of [320, 375]) {
+    await t.test('Chromium accessibility tree exposes controls and status, without claiming real screen-reader verification', async () => {
+      await send('Accessibility.enable');
+      const response=await send('Accessibility.getFullAXTree');
+      const nodes=response.nodes.filter(n=>!n.ignored);
+      const roles=nodes.map(n=>n.role?.value);
+      const names=nodes.map(n=>n.name?.value);
+      assert.ok(roles.includes('button'));
+      assert.ok(names.some(n=>typeof n==='string'&&n.includes('Add sample tee')));
+      assert.ok(names.some(n=>typeof n==='string'&&n.includes('Payment disabled')));
+      assert.ok(names.some(n=>typeof n==='string'&&n.includes('Quantity controls for fictional_tee')));
+      assert.equal(await evaluate("document.querySelector('#status').getAttribute('aria-live')"),'polite');
+    });
+    await t.test('cart max disables increment and maintains keyboard focus on a usable decrement', async () => {
+      await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      await evaluate("for(let i=0;i<8;i++)document.querySelector('#add-tee').click()");
+      await evaluate("document.querySelector('#items button[aria-label^=Add]').focus()");
+      await evaluate("document.activeElement.click()");
+      assert.match(await evaluate("document.querySelector('#items').textContent"),/× 10/);
+      assert.equal(await evaluate("document.activeElement.getAttribute('aria-label')"),'Remove one fictional_tee');
+      assert.equal(await evaluate("document.querySelector('#items button[aria-label^=Add]').disabled"),true);
+      await evaluate("document.activeElement.click()");
+      assert.match(await evaluate("document.querySelector('#items').textContent"),/× 9/);
+    });
+    await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
+      for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });
         await delay(75);
         const metrics = await evaluate("({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})");
