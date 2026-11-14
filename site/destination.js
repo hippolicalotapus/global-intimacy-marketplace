@@ -55,8 +55,10 @@
     var q = String(query || "").normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().trim();
     var list = countries.filter(function (c) {return (c.name + " " + c.code).normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().includes(q);});
     el("countrySelect").innerHTML = '<option value="">Select a country / region</option>' + list.map(function(c){return '<option value="'+c.code+'">'+escape(c.name)+'</option>';}).join("");
-    el("countrySelect").value = list.some(function(c){return c.code===previous;}) ? previous : "";
+    var kept = list.some(function(c){return c.code===previous;});
+    el("countrySelect").value = kept ? previous : "";
     el("enterCountry").disabled = !el("countrySelect").value;
+    if (previous && !kept) updateSelection("");
     el("countryMatchCount").textContent = list.length ? list.length + " countries and regions" : "No matches. Try another name or a two-letter country code.";
   }
   function schedule() { if (!frame && renderer && !el("countryEntrance").hidden) frame = requestAnimationFrame(function(){ frame = 0; draw(); }); }
