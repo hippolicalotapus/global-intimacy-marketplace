@@ -1,0 +1,44 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createDemoCustomer} from './mock-customer-ui.mjs';
+import {beginFictionalJourney,progressFictionalJourney,retryDeclinedFictionalJourney} from './mock-checkout-lifecycle.mjs';
+import {emptyFictionalHistory,recordFictionalHistory,visibleFictionalHistory} from './mock-checkout-history.mjs';
+const returning=()=>createDemoCustomer();
+test('fictional timeline tracks decline, retry, confirmation and cancellation',()=>{
+  const account=returning().account;
+  let history=emptyFictionalHistory();
+  const record=(journey,status,key)=>history=recordFictionalHistory(history,account,journey,status,key);
+  let j=beginFictionalJourney(returning());record(j,'review','event_review_01');
+  j=progressFictionalJourney(j,'pending');record(j,'pending','event_pending_01');
+  j=progressFictionalJourney(j,'decline');record(j,'declined','event_decline_01');
+  j=retryDeclinedFictionalJourney(j,returning());record(j,'retried','event_retry_01');
+  j=progressFictionalJourney(j,'pending');record(j,'pending','event_pending_02');
+  j=progressFictionalJourney(j,'confirm');record(j,'confirmed','event_confirm_02');
+  assert.deepEqual(history.events.map(x=>x.status),['review','pending','declined','retried','pending','confirmed']);
+  assert.equal(history.events[3].attempt,2);
+  assert.equal(history.events[5].sequence,6);
+  assert.ok(Object.isFrozen(history.events));
+  const cancelled=progressFictionalJourney(beginFictionalJourney(returning()),'cancel');
+  record(cancelled,'cancelled','event_cancel_03');
+  assert.equal(history.events.at(-1).status,'cancelled');
+  assert.equal(j.orderSubmitted,false);
+});
+test('fictional account switch never reveals another shopper history',()=>{
+  const account=returning().account;
+  const guest=createDemoCustomer({shopper:'guest'}).account;
+  const j=beginFictionalJourney(returning());
+  const history=recordFictionalHistory(emptyFictionalHistory(),account,j,'review','event_review_04');
+  assert.equal(visibleFictionalHistory(history,guest).length,0);
+  assert.throws(()=>recordFictionalHistory(history,guest,j,'review','event_review_05'),/owner mismatch/);
+  assert.equal(emptyFictionalHistory().events.length,0);
+});
+test('duplicate and mismatched history events fail closed',()=>{
+  const account=returning().account,j=beginFictionalJourney(returning());
+  const h=recordFictionalHistory(emptyFictionalHistory(),account,j,'review','event_review_06');
+  assert.throws(()=>recordFictionalHistory(h,account,j,'review','event_review_06'),/Duplicate/);
+  assert.throws(()=>recordFictionalHistory(h,account,j,'confirmed','event_fake_07'));
+  assert.throws(()=>recordFictionalHistory(h,account,{...j,paymentEnabled:true},'review','event_fake_08'));
+  assert.throws(()=>recordFictionalHistory(h,{...account,authenticated:true},j,'review','event_fake_09'));
+  assert.deepEqual(Object.keys(h.events[0]).sort(),['key','status','attempt','ownerId','sequence'].sort());
+  assert.equal(JSON.stringify(h).includes('unitPriceMinor'),false);
+});

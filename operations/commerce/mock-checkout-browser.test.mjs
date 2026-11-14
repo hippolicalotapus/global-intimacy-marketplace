@@ -439,6 +439,29 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.equal(await evaluate("document.querySelector('#journey-retry').disabled"),true);
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
+    await t.test('fictional event history shows decline retry confirmation and isolates shoppers',async()=>{
+      await navigateFixture();
+      assert.match(await evaluate("document.querySelector('#history-summary').textContent"),/No fictional activity/);
+      await evaluate("document.querySelector('#journey-start').click();document.querySelector('#journey-pending').click();document.querySelector('#journey-decline').click()");
+      assert.equal(await evaluate("document.querySelector('#history-events').children.length"),3);
+      await evaluate("document.querySelector('#journey-retry').click();document.querySelector('#journey-pending').click();document.querySelector('#journey-confirm').click()");
+      assert.equal(await evaluate("document.querySelector('#history-events').children.length"),6);
+      assert.match(await evaluate("document.querySelector('#history-events').textContent"),/retried/);
+      assert.match(await evaluate("document.querySelector('#history-events').textContent"),/confirmed/);
+      await evaluate("document.querySelector('#shopper').value='guest';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.equal(await evaluate("document.querySelector('#history-events').children.length"),0);
+      await evaluate("document.querySelector('#shopper').value='returning';document.querySelector('#shopper').dispatchEvent(new Event('change',{bubbles:true}))");
+      assert.equal(await evaluate("document.querySelector('#history-events').children.length"),0);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
+    await t.test('fictional cancellation history clears without persistent data',async()=>{
+      await evaluate("document.querySelector('#journey-start').click();document.querySelector('#journey-cancel').click()");
+      assert.match(await evaluate("document.querySelector('#history-events').textContent"),/cancelled/);
+      await evaluate("document.querySelector('#history-clear').focus();document.activeElement.click()");
+      assert.equal(await evaluate("document.querySelector('#history-events').children.length"),0);
+      assert.equal(await evaluate("document.querySelector('#history-clear').disabled"),true);
+      assert.equal(await evaluate("document.querySelector('#history-summary').getAttribute('aria-live')"),'polite');
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });
