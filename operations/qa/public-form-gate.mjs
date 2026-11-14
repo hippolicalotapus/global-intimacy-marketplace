@@ -5,8 +5,13 @@ import { join } from 'node:path';
 const ATTR = /([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g;
 function attrs(tag) {
   const values = Object.create(null);
-  for (const match of tag.matchAll(ATTR)) values[match[1].toLowerCase()] = match[2] ?? match[3] ?? match[4];
-  return values;
+  const duplicates = new Set();
+  for (const match of tag.matchAll(ATTR)) {
+    const name = match[1].toLowerCase();
+    if (Object.hasOwn(values, name)) duplicates.add(name);
+    else values[name] = match[2] ?? match[3] ?? match[4];
+  }
+  return { values, duplicates };
 }
 
 /** Fail closed for unexpected submissions, external targets and checkout. */
@@ -15,9 +20,12 @@ export function auditHtmlForms(html, file = 'page.html') {
   const tags = html.match(/<(?:form|button|input)\b[^>]*>/gi) ?? [];
   for (const tag of tags) {
     const kind = /^<([a-z]+)/i.exec(tag)[1].toLowerCase();
-    const a = attrs(tag);
+    const { values: a, duplicates } = attrs(tag);
     const id = `${file}:${kind}${a.id ? `#${a.id}` : ''}`;
-    if ('formaction' in a) findings.push(`${id}: form submit override forbidden`);
+    if (['action', 'method', 'formaction', 'formmethod'].some(name => duplicates.has(name))) {
+      findings.push(`${id}: duplicate submission attribute forbidden`);
+    }
+    if ('formaction' in a || 'formmethod' in a) findings.push(`${id}: form submit override forbidden`);
     if (kind !== 'form') continue;
     const method = (a.method ?? 'get').toLowerCase();
     const target = (a.action ?? '').trim();
