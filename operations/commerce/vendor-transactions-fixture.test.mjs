@@ -127,3 +127,45 @@ test('malformed batches and failed reviews cannot mutate the transaction store',
  ]) assert.throws(()=>store.batch(req));
  assert.deepEqual(store.snapshot(),before);
 });
+
+test('forged restored receipt results cannot rewrite status or review identity',()=>{
+ const store=createFixtureTransactionStore(fixtures());
+ store.batch({key:'receipt_001',expectedRevision:0,operations:[submit('receipt_item'),review('receipt_item')]});
+ const saved=store.snapshot();
+ const corruptions=[
+  receipt=>{receipt.result[0].status='approved';},
+  receipt=>{receipt.result[1].reviewedBy='owner_001';},
+  receipt=>{receipt.result[1].id='other_item';},
+  receipt=>{receipt.result[0].title='Altered garment';},
+  receipt=>{receipt.result[1].version=1;}
+ ];
+ for(const corrupt of corruptions){
+  const changed=structuredClone(saved);
+  corrupt(changed.receipts[0]);
+  assert.throws(()=>createFixtureTransactionStore({...fixtures(),savedState:changed,minimumRevision:2}));
+ }
+});
+test('missing overlapping or forged receipt audit coverage fails restoration',()=>{
+ const store=createFixtureTransactionStore(fixtures());
+ store.batch({key:'receipt_002',expectedRevision:0,operations:[submit('receipt_two')]});
+ store.batch({key:'receipt_003',expectedRevision:1,operations:[submit('receipt_three')]});
+ const saved=store.snapshot();
+ const invalid=[
+  {...saved,receipts:[saved.receipts[0]]},
+  {...saved,receipts:[saved.receipts[0],{...saved.receipts[0],key:'other_receipt'}]},
+  {...saved,receipts:saved.receipts.map((r,i)=>i===1?{...r,revision:1}:r)},
+  {...saved,receipts:saved.receipts.map((r,i)=>i===1?{...r,result:[]}:r)}
+ ];
+ for(const changed of invalid) assert.throws(()=>createFixtureTransactionStore({...fixtures(),savedState:changed,minimumRevision:2}));
+});
+test('valid restored receipts still replay without additional state changes',()=>{
+ const store=createFixtureTransactionStore(fixtures());
+ const request={key:'receipt_004',expectedRevision:0,operations:[submit('receipt_four'),review('receipt_four')]};
+ store.batch(request);
+ const saved=store.snapshot();
+ const restarted=createFixtureTransactionStore({...fixtures(),savedState:saved,minimumRevision:2});
+ assert.deepEqual(restarted.snapshot(),saved);
+ assert.equal(restarted.batch(request).replayed,true);
+ assert.deepEqual(restarted.snapshot(),saved);
+ assert.throws(()=>restarted.read({sessionId:'token_other',id:'receipt_four'}));
+});
