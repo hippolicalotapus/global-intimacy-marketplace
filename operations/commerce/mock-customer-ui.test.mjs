@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -48,7 +49,7 @@ test('fictional unsupported destination fails closed, never quotes delivery', ()
   const result = previewDemo(changeDemoCountry(createDemoCustomer(), 'GB'));
   assert.equal(result.checkout, null);
   assert.equal(result.paymentEnabled, false);
-  assert.equal(result.shipping.status, 'unknown');
+  assert.equal(result.shipping.status, 'unavailable');
   assert.throws(() => changeDemoCountry(createDemoCustomer(), 'ZZ'));
 });
 test('returning shopper recovers cart snapshot and resumes fictional draft', () => {
@@ -73,4 +74,16 @@ test('prototype never submits, reserves, authenticates or processes payment', ()
   assert.equal(result.checkout.shipmentBooked, false);
   assert.equal(result.checkout.taxNotCalculated, true);
   assert.equal(result.paymentEnabled, false);
+});
+
+test('standalone HTML demo contains labeled user controls and disabled payment', () => {
+  const html = readFileSync(new URL('./mock-checkout-demo.html', import.meta.url), 'utf8');
+  for (const controlId of ['shopper','items','add-tee','add-hoodie','save','recover','country','estimate','status']) {
+    assert.match(html, new RegExp('id="'+controlId+'"'));
+  }
+  assert.match(html, /Payment disabled — simulation only/);
+  assert.match(html, /button disabled aria-disabled="true"/);
+  assert.match(html, /role="status" aria-live="polite"/);
+  assert.match(html, /mock-customer-ui.mjs/);
+  assert.doesNotMatch(html, /localStorage|sessionStorage|fetch\s*\(|XMLHttpRequest/);
 });
