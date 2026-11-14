@@ -73,7 +73,7 @@
     try { var saved=localStorage.getItem("gim:country"); if(byCode.has(saved))country=saved; }catch(e){}
     updateChoices(""); updateSelection(country); updateSummary();
     el("countryEntrance").hidden=!!country; el("storeShell").hidden=!country;
-    el("countrySearch").addEventListener("input",function(e){updateChoices(e.target.value);});
+    el("countrySearch").addEventListener("input",function(e){updateChoices(e.target.value);updateSelection(el("countrySelect").value);});
     el("countrySelect").addEventListener("change",function(e){updateSelection(e.target.value);});
     el("countryForm").addEventListener("submit",function(e){e.preventDefault();enter(el("countrySelect").value);});
     el("countryCurrent").addEventListener("click",open);
