@@ -90,3 +90,27 @@ test("Changing countries revokes research-preview consent and blocks unapproved 
   assert.equal(destination.include(approved),false);
   assert.equal(app.localStorage.getItem("gim:country"),"US");
 });
+
+test("No-match country search disables entry but never changes saved destination",()=>{
+  const app = fixture();
+  app.element("countryCurrent").dispatch("click");
+  app.element("countrySearch").dispatch("input","not-a-real-place");
+  assert.equal(app.element("countrySelect").value,"");
+  assert.equal(app.element("enterCountry").disabled,true);
+  assert.match(app.element("countryMatchCount").textContent,/No matches/);
+  assert.equal(app.window.GIMDestination.country(),"CA");
+  assert.equal(app.localStorage.getItem("gim:country"),"CA");
+});
+
+test("A filtered list can select a new country without accidentally entering it",()=>{
+  const app = fixture();
+  app.element("countryCurrent").dispatch("click");
+  app.element("countrySearch").dispatch("input","United");
+  app.element("countrySelect").dispatch("change","US");
+  assert.match(app.element("countryStatus").textContent,/United States selected/);
+  assert.equal(app.element("enterCountry").disabled,false);
+  assert.equal(app.window.GIMDestination.country(),"CA");
+  app.element("countryForm").dispatch("submit");
+  assert.equal(app.window.GIMDestination.country(),"US");
+  assert.equal(app.element("previewMode").checked,false);
+});
