@@ -12,7 +12,7 @@ h1{font-size:1.8rem}header{border-bottom:1px solid #66525f;padding-bottom:16px}
 main{display:grid;gap:18px;margin-top:20px;min-width:0}.panel{background:#251b28;padding:18px;border-radius:12px;min-width:0;overflow-wrap:anywhere}
 .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;min-width:0}
 button,select{background:#efe5ee;color:#211323;border:0;border-radius:8px;padding:10px;font:inherit;min-height:44px;max-width:100%}
-button:focus-visible,select:focus-visible{outline:3px solid #f6bfdd}
+button:focus-visible,select:focus-visible{outline:3px solid #f6bfdd;outline-offset:3px}
 button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:#d6c1d2}
 @media(max-width:420px){body{padding:12px}.panel{padding:14px}h1{font-size:1.45rem}.controls button{flex:1 1 130px;min-width:0}}
 #status{white-space:pre-wrap}output{font-weight:700}
@@ -30,7 +30,7 @@ button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:
 </section>
 <section class="panel" aria-labelledby="cart-title">
 <h2 id="cart-title">2. Fictional cart</h2>
-<ul id="items"></ul>
+<ul id="items" aria-label="Fictional cart products"></ul>
 <div class="controls"><button id="add-tee">Add sample tee</button><button id="add-hoodie">Add sample hoodie</button><button id="save">Save local snapshot</button><button id="recover" disabled>Recover snapshot</button></div>
 <p><small>Snapshot exists only in this open page's memory. Nothing is saved to browser storage.</small></p>
 </section>
@@ -38,7 +38,7 @@ button:disabled{opacity:.55}li{margin:12px 0;overflow-wrap:anywhere}small{color:
 <h2 id="shipping-title">3. Fictional destination and checkout estimate</h2>
 <label for="country">Country</label>
 <select id="country"><option value="CA">Canada</option><option value="US">United States</option><option value="GB">United Kingdom (unsupported)</option></select>
-<p id="estimate"></p><p><small>Taxes and final pricing not calculated. No shipping booked.</small></p>
+<p id="estimate" role="status" aria-live="polite" aria-atomic="true"></p><p><small>Taxes and final pricing not calculated. No shipping booked.</small></p>
 <button disabled aria-disabled="true">Payment disabled — simulation only</button>
 </section>
 <p id="status" role="status" aria-live="polite"></p>
@@ -52,7 +52,9 @@ let state=createDemoCustomer(), snapshot=null;
 const byId=id=>document.getElementById(id);
 function money(minor){return '$'+(minor/100).toFixed(2)+' CAD (fictional)'}
 function render(){
-  const list=byId('items');list.replaceChildren();
+  const list=byId('items');
+  const focusLabel=list.contains(document.activeElement)?document.activeElement.getAttribute('aria-label'):null;
+  list.replaceChildren();
   for(const item of state.cart.lines){
     const li=document.createElement('li');
     li.append(document.createTextNode(item.productId+' — '+money(item.unitPriceMinor)+' × '+item.quantity+' '));
@@ -70,13 +72,14 @@ function render(){
   byId('recover').disabled=!snapshot;
   byId('country').value=state.country;
   byId('shopper').value=state.shopper;
+  if(focusLabel){const next=Array.from(list.querySelectorAll('button')).find(x=>x.getAttribute('aria-label')===focusLabel&&!x.disabled);if(next)next.focus()}
   byId('estimate').textContent=p.checkout
     ? 'Merchandise '+money(p.checkout.checkout.order.totalMinor)+
       ' + fictional shipping '+money(p.shipping.shippingMinor)+
       ' = '+money(p.checkout.mockTotalBeforeTaxMinor)+' before tax'
     : 'Checkout unavailable: '+p.shipping.status+' (no delivery promise)';
 }
-function apply(action){try{state=action();byId('status').textContent='Local fictional simulation updated';render()}
+function apply(action){try{state=action();render();byId('status').textContent='Local fictional simulation updated'}
 catch(error){byId('status').textContent='Simulation rejected change: '+error.message}}
 byId('shopper').addEventListener('change',event=>apply(()=>{snapshot=null;return createDemoCustomer({shopper:event.target.value})}));
 byId('country').addEventListener('change',event=>apply(()=>changeDemoCountry(state,event.target.value)));
@@ -86,6 +89,7 @@ byId('add-hoodie').addEventListener('click',()=>apply(()=>changeDemoQuantity(sta
   (state.cart.lines.find(x=>x.productId===catalog.hoodie.productId)?.quantity||0)+1)));
 byId('save').addEventListener('click',()=>{try{snapshot=saveDemoCart(state);byId('recover').disabled=false;byId('status').textContent='Fictional cart snapshot saved in page memory only'}catch(error){byId('status').textContent=error.message}});
 byId('recover').addEventListener('click',()=>apply(()=>restoreDemoCart(state,snapshot)));
+byId('recover').setAttribute('aria-description','Restores only a fictional snapshot held in this page');
 render();
 </script>
 </body>
