@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtempSync,writeFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {auditHtmlForms,auditSiteForms} from './public-form-gate.mjs';
 const approved = '<form id="cf-form" name="creator-feedback" method="POST" action="/creator-feedback-thanks.html" data-netlify="true"></form>';
 test('approved creator feedback action remains allowed',()=>assert.deepEqual(auditHtmlForms(approved,'site/creator-feedback.html'),[]));
@@ -29,4 +30,9 @@ test('site-file scanner audits every root HTML page and reports unsafe forms',()
   try { writeFileSync(join(dir,'a.html'),approved);writeFileSync(join(dir,'b.html'),'<form method="POST" action="https://invalid.example">');
     const issues=auditSiteForms(dir);assert.ok(issues.length>=2);
   } finally {rmSync(dir,{recursive:true,force:true});}
+});
+
+test('all public HTML pages pass the prelaunch form gate', () => {
+  const sourceSite = new URL('../../site/', import.meta.url);
+  assert.deepEqual(auditSiteForms(fileURLToPath(sourceSite)), []);
 });
