@@ -153,3 +153,10 @@ test("preview DOM updates use safe text and never persist or send orders", async
   assert.match(js,/clearPreview\(\)/);
   assert.ok(!/innerHTML|insertAdjacentHTML|fetch\(|XMLHttpRequest|localStorage|sessionStorage/.test(js));
 });
+
+
+test("left-chest print zone has enough width for common two-word artwork", async () => {
+  const html=await readFile(new URL("../operations/custom-apparel/index.html",import.meta.url),"utf8");
+  assert.match(html,/\.print-text\[data-placement="left-chest"\]\{[^}]*width:28%/);
+  assert.match(html,/\.stage\[data-ready="false"\] \.print-text\{display:none\}/);
+});
