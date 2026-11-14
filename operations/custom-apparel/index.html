@@ -62,7 +62,7 @@ button:disabled{opacity:.5;cursor:not-allowed}:is(button,select,input):focus-vis
 <p id="backPlacementHint" class="zone-guidance" role="status" aria-live="polite">Back: centred print area for larger lettering. Print dimensions are not supplier-verified.</p>
 <label for="frontText">Front text (48 characters max)</label><input id="frontText" maxlength="48" placeholder="Your original text" autocomplete="off" aria-describedby="artHint frontCount"><span class="character-count" id="frontCount" aria-live="off">0 of 48 characters</span>
 <label for="backText">Back text (48 characters max)</label><input id="backText" maxlength="48" placeholder="Optional back text" autocomplete="off" aria-describedby="artHint backCount"><span class="character-count" id="backCount" aria-live="off">0 of 48 characters</span>
-<p id="artHint" class="hint">Enter original lettering on at least one side. Long text may not fit the selected print area. No images or personal information.</p>
+<p id="artHint" class="hint">Enter original lettering on at least one side. Long text may not fit the selected print area; an overflowing side will be identified and its field marked invalid. No images or personal information.</p>
 <label for="textStyle">Lettering style</label><select id="textStyle"><option value="bold">Bold modern</option><option value="classic">Classic serif</option><option value="mono">Monospaced</option></select>
 <button type="submit">Review front and back mockup</button>
 </form>

@@ -46,6 +46,8 @@
   }
   const message = (text) => {status.textContent = text;};
   function clearPreview() {
+    frontInput.ariaInvalid = "false";
+    backInput.ariaInvalid = "false";
     front.textContent = "";
     back.textContent = "";
     front.style.fontSize = "";
@@ -138,10 +140,17 @@
       stage.dataset.textStyle = result.design.textStyle;
       stage.dataset.ready = "true";
     }
-    if (!fitPrintableText(front) || !fitPrintableText(back)) {
+    const frontFits = fitPrintableText(front);
+    const backFits = fitPrintableText(back);
+    if (!frontFits || !backFits) {
       session.invalidate();
       clearPreview();
-      message("The selected print area cannot display all lettering. Shorten your text or choose centre placement before reviewing again.");
+      frontInput.ariaInvalid = String(!frontFits);
+      backInput.ariaInvalid = String(!backFits);
+      const sides = [!frontFits ? "front" : "", !backFits ? "back" : ""].filter(Boolean).join(" and ");
+      message("The " + sides + " print area cannot display all lettering. Shorten that text or select a larger print position, then review again.");
+      const invalidInput = !frontFits ? frontInput : backInput;
+      if (typeof invalidInput.focus === "function") invalidInput.focus();
       return;
     }
     previewSummary.textContent = "Illustrative " + result.design.color + " " + result.design.garment + ". " +

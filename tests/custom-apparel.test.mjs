@@ -408,3 +408,37 @@ test("preview summary is a polite screen-reader region and never injects HTML", 
   assert.match(js,/previewSummary\.textContent = "Illustrative "/);
   assert.ok(!/innerHTML|insertAdjacentHTML|XMLHttpRequest|localStorage|sessionStorage|fetch\(/.test(js));
 });
+
+
+test("overflow identifies the failing side and marks only its field invalid", async () => {
+  const {runInNewContext} = await import("node:vm");
+  const source = await readFile(new URL("../operations/custom-apparel/browser-demo.js", import.meta.url), "utf8");
+  const ids=["customForm","status","receipt","mockConfirm","frontMock","backMock","frontStage","backStage","garment","color","size","quantity","frontText","backText","frontPlacement","backPlacement","textStyle","placementHint","backPlacementHint","frontCount","backCount","previewSummary"];
+  let focused="";
+  const nodes=Object.fromEntries(ids.map(id=>[id,{value:"",textContent:"",disabled:false,listeners:{},dataset:{},style:{},clientHeight:100,scrollHeight:20,clientWidth:100,scrollWidth:40,
+    addEventListener(event,callback){this.listeners[event]=callback;}, replaceChildren(...options){this.options=options;this.value=options[0]?.value||"";},focus(){focused=id;}}]));
+  nodes.garment.value="tshirt";nodes.frontPlacement.value="center";nodes.backPlacement.value="upper-back";nodes.textStyle.value="bold";
+  const window={GIMMockApparel:require("../operations/custom-apparel/mock-order.cjs")};
+  const document={getElementById:id=>nodes[id],createElement:()=>({value:"",textContent:""})};
+  runInNewContext(source,{window,document});
+  nodes.frontText.value="Readable";nodes.backText.value="A long word";nodes.quantity.value="1";
+  nodes.backMock.scrollHeight=200;
+  nodes.customForm.listeners.input({});nodes.customForm.listeners.submit({preventDefault(){}});
+  assert.equal(nodes.frontText.ariaInvalid,"false");
+  assert.equal(nodes.backText.ariaInvalid,"true");
+  assert.equal(focused,"backText");
+  assert.match(nodes.status.textContent,/back print area cannot display/);
+  assert.equal(nodes.mockConfirm.disabled,true);
+  nodes.backMock.scrollHeight=20;
+  nodes.customForm.listeners.input({});nodes.customForm.listeners.submit({preventDefault(){}});
+  assert.equal(nodes.backText.ariaInvalid,"false");
+  assert.equal(nodes.mockConfirm.disabled,false);
+});
+
+test("overflow messaging remains plain text and introduces no submission", async () => {
+  const js=await readFile(new URL("../operations/custom-apparel/browser-demo.js",import.meta.url),"utf8");
+  assert.match(js,/frontInput\.ariaInvalid = String\(!frontFits\)/);
+  assert.match(js,/backInput\.ariaInvalid = String\(!backFits\)/);
+  assert.match(js,/const sides =/);
+  assert.ok(!/innerHTML|insertAdjacentHTML|XMLHttpRequest|localStorage|sessionStorage|fetch\(/.test(js));
+});
