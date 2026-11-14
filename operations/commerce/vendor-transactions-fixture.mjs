@@ -60,6 +60,18 @@ function createFixtureTransactionStore({users=[],sessions=[],vendors=[],membersh
     const previous=receipts.get(key);
     if(previous){
       fail(previous.digest===digest,'Idempotency key reused for different operations');
+      // Even a cached receipt must be checked against CURRENT trusted fixture access.
+      // The returned result is never authorization to inspect another tenant.
+      const reader=create(state);
+      for(let i=0;i<operations.length;i++){
+        const op=operations[i],result=previous.result[i];
+        fail(result&&result.id===op.id,'Inconsistent replay receipt');
+        reader.read({sessionId:op.sessionId,id:result.id});
+        const principalId=sessions.find(x=>x.id===op.sessionId)?.userId;
+        fail(token(principalId)&&
+          (op.type==='submit'?result.submittedBy===principalId:
+            result.reviewedBy===principalId),'Replay actor mismatch');
+      }
       return Object.freeze({replayed:true,revision:previous.revision,results:copy(previous.result)});
     }
     fail(Number.isSafeInteger(expectedRevision)&&expectedRevision>=0&&
