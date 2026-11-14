@@ -17,9 +17,13 @@ test('current 14 Concorde public-source candidates remain research-only and unsh
   assert.equal(report.shippingUnverified, 14);
   assert.equal(report.conclusion, 'RESEARCH_ONLY_NOT_FOR_SALE');
 });
-test('current source has two candidate identifiers requiring supplier feed reconciliation', () => {
+test('current source flags EAN variant discrepancy and two absent identifiers for review', () => {
   const report = auditResearchCandidates(registry, candidates, 'GB');
-  assert.deepEqual(report.review.map(x => x.researchId), [86, 87]);
-  assert.equal(report.reviewCount, 2);
+  assert.deepEqual(report.review.map(x => [x.researchId, x.code]), [
+    [81, 'source_url_ean_variant_mismatch'],
+    [86, 'missing_supplier_identifier'],
+    [87, 'missing_supplier_identifier']
+  ]);
+  assert.equal(report.reviewCount, 3);
   assert.equal(report.shippingEligible, 0);
 });
