@@ -64,7 +64,7 @@
     return '<article class="product-card">'+
       '<div class="product-visual '+(p.previewImage?"visual-oneheart ":"")+(p.temporaryIllustration?"visual-drawing ":"")+visualClass(p)+'">'+
       '<span class="tag">'+esc(p.category)+'</span>'+
-      '<button type="button" class="fav-button'+(saved?" is-saved":"")+'" data-fav="'+p.id+'" aria-label="'+(saved?"Remove from":"Add to")+' saved items" aria-pressed="'+saved+'">'+(saved?"♥":"♡")+'</button>'+
+      '<button type="button" class="fav-button'+(saved?" is-saved":"")+'" data-fav="'+p.id+'" aria-label="'+(saved?"Remove ":"Add ")+esc(p.name)+(saved?" from":" to")+' saved items" aria-pressed="'+saved+'">'+(saved?"♥":"♡")+'</button>'+
       '<span class="product-mark">'+(p.previewImage?'<img class="product-preview-image" src="'+esc(p.previewImage)+'" alt="'+esc(p.previewImageAlt)+'" loading="lazy" decoding="async" width="307" height="438">' : mark(p))+'</span></div>'+
       '<div class="product-card-body">'+(p.temporaryIllustration?'<p class="drawing-label">'+esc(drawingLabel(p))+'</p>':'')+'<div class="product-brand">'+esc(p.brand)+'</div><h3>'+esc(p.name)+'</h3>'+
       '<p class="delivery-label">'+esc(deliveryLabel(p))+'</p><p class="product-meta">'+esc(p.researchType)+' · '+esc(p.collection)+' collection</p><div class="product-footer"><span class="product-status">Preview only</span>'+
@@ -184,7 +184,7 @@
     el("wishlistPicker").innerHTML=filtered.map(function(p){
       var added=selected.includes(p.id);
       return '<div class="picker-item"><div><b>'+esc(p.brand+" · "+p.name)+'</b><small>'+esc(p.category)+' · '+esc(deliveryLabel(p))+'</small></div>'+
-        '<button type="button" class="'+(added?"added":"")+'" data-wish="'+p.id+'" aria-pressed="'+added+'">'+(added?"✓ Added":"+ Add")+'</button></div>';
+        '<button type="button" class="'+(added?"added":"")+'" data-wish="'+p.id+'" aria-label="'+(added?"Remove ":"Add ")+esc(p.name)+(added?" from":" to")+' demo wishlist" aria-pressed="'+added+'">'+(added?"✓ Added":"+ Add")+'</button></div>';
     }).join("")||'<p class="muted" style="padding:15px">No matching products found.</p>';
   }
   function renderSelection(){
