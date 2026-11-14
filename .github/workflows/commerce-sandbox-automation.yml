@@ -28,4 +28,13 @@ jobs:
       - name: Chromium browser interactions and mobile layout
         run: |
           google-chrome --version
-          timeout 50s node --test operations/commerce/mock-checkout-browser.test.mjs
+          mkdir -p "$RUNNER_TEMP/gim-checkout-screenshots"
+          GIM_SCREENSHOT_DIR="$RUNNER_TEMP/gim-checkout-screenshots" timeout 50s node --test operations/commerce/mock-checkout-browser.test.mjs
+      - name: Preserve private mobile screenshots for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gim-fictional-checkout-mobile-screenshots
+          path: ${{ runner.temp }}/gim-checkout-screenshots/*.png
+          if-no-files-found: ignore
+          retention-days: 1

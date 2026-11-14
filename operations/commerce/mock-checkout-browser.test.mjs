@@ -127,10 +127,10 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       await evaluate("document.querySelector('#items button[aria-label^=\"Add one\"]').focus()");
       const before=await evaluate("document.activeElement.getAttribute('aria-label')");
       await send('Input.dispatchKeyEvent',{type:'rawKeyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
-      await send('Input.dispatchKeyEvent',{type:'char',text:'\\r',key:'Enter',windowsVirtualKeyCode:13});
       await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
       assert.equal(await evaluate("document.activeElement.getAttribute('aria-label')"),before);
-      assert.equal(await evaluate("document.querySelector('#items').textContent.includes('× 2')"),true);
+      const cartText = await evaluate("document.querySelector('#items').textContent");
+      assert.match(cartText, /× 2/, 'Keyboard Enter should increment exactly once: '+cartText);
       assert.equal(await evaluate("document.querySelector('#estimate').getAttribute('aria-live')"),'polite');
     });
     await t.test('mobile 320px and 375px widths have no horizontal overflow', async () => {
