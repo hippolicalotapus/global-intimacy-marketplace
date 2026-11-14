@@ -30,6 +30,7 @@ jobs:
           node --check operations/suppliers/import-feed.test.mjs
           node --check operations/one-heart/quote-preview.cjs
           node --check operations/one-heart/preview-cli.cjs
+          node --check tests/publication-boundary.test.mjs
       - name: Unit tests and static smoke tests
         run: node --test tests/*.test.mjs operations/suppliers/import-feed.test.mjs
 
