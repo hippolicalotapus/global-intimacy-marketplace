@@ -13,6 +13,11 @@ export function combineSnapshotManifests(core, images) {
   if (all.length === 0 || new Set(all.map(f => f.path)).size !== all.length) {
     throw new Error('Duplicate or empty storefront snapshot entries');
   }
+  const validFile = f => f && typeof f.path === 'string' &&
+    /^[a-zA-Z0-9_.-]+(?:\/[a-zA-Z0-9_.-]+)*$/.test(f.path) &&
+    !f.path.split('/').some(segment => segment === '.' || segment === '..') &&
+    /^[a-f0-9]{40}$/.test(f.sha) && Number.isSafeInteger(f.size) && f.size >= 0;
+  if (!all.every(validFile)) throw new Error('Invalid storefront snapshot entry');
   if (!images.files.length || !images.files.every(f =>
     typeof f.path === 'string' && /^site\/assets\/apparel\/[a-zA-Z0-9_./-]+\.(?:webp|svg)$/.test(f.path))) {
     throw new Error('Image manifest must contain only apparel WebP or SVG assets');
