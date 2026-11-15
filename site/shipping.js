@@ -18,7 +18,7 @@
     var rule = matching[0], at = now === undefined ? Date.now() : Number(now);
     if ((Object.hasOwn(rule, "excludedRegions") && !Array.isArray(rule.excludedRegions)) ||
         (Object.hasOwn(rule, "excludedPostcodes") && !Array.isArray(rule.excludedPostcodes))) return "unknown";
-    var validEvidenceDate = function(value) { return typeof value === "string" && /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2}))?$/.test(value) && Number.isFinite(Date.parse(value)); };
+    var validEvidenceDate = function(value) { if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2}))?$/.test(value) || !Number.isFinite(Date.parse(value))) return false; var date = value.slice(0, 10), midnight = Date.parse(date + "T00:00:00Z"); return Number.isFinite(midnight) && new Date(midnight).toISOString().slice(0, 10) === date; };
     if (!validEvidenceDate(rule.checkedAt) || !validEvidenceDate(rule.validUntil)) return "unknown";
     var checked = Date.parse(rule.checkedAt), until = Date.parse(rule.validUntil);
     if (!Number.isFinite(at) || !Number.isFinite(checked) || !Number.isFinite(until) || checked > at || until <= at) return "unknown";
