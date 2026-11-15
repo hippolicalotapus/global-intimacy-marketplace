@@ -131,3 +131,6 @@
 .hoodie-view{height:clamp(260px,48vh,470px)}
 .hoodie-detail-pair figcaption{text-align:center;font-size:.84rem;font-weight:700;padding:10px;color:#143943}
 @media(max-width:480px){.hoodie-detail-pair{grid-template-columns:1fr;padding:54px 12px 12px}.hoodie-view{height:350px}.hoodie-detail-pair figure+figure{border-top:1px solid #c8d8cf;padding-top:16px}}
+.header-inner{flex-wrap:wrap}.header-actions{flex-wrap:wrap}
+@media(min-width:801px) and (max-width:1280px){.desktop-nav{order:3;width:100%;justify-content:center;padding-bottom:12px;flex-wrap:wrap;row-gap:12px}}
+@media(max-width:800px){.header-inner{gap:8px 12px}.header-actions{justify-content:flex-end;flex:1;min-width:165px}.header-actions .button-sm{min-height:44px}.header-inner .brand{margin-right:auto}}
