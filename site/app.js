@@ -226,6 +226,7 @@
   }
   function details(id){
     var p=byId.get(id);if(!p)return;if(!destinationVisible(p)){notify(deliveryLabel(p));return;}
+    var wasOpen=el("productDialog").open;
     el("modalBody").innerHTML=detailGallery(p)+'<div class="modal-content"><span class="product-brand">'+esc(p.brand)+'</span>'+
       '<h2 id="modalName">'+esc(p.name)+'</h2><p class="delivery-label">'+esc(deliveryLabel(p))+'</p><p>'+esc(p.researchType)+' · '+esc(p.researchFeature)+'</p>'+
       '<p>'+(p.conceptImage?"This is an owner-selected clothing concept, not a manufactured product. Final fabric, sizing, colour accuracy and print quality require factory sampling.":"Explore this potential future product. Model-specific features, materials, territories and available stock must be verified before any sale.")+'</p>'+
@@ -233,8 +234,8 @@
       '<div class="modal-controls"><button class="button button-ghost" type="button" data-fav="'+p.id+'">'+(favorites.includes(p.id)?"♥ Saved":"♡ Save")+'</button>'+
       '<button class="button button-ghost" type="button" data-wish="'+p.id+'">Add to wishlist demo</button>'+
       '<a class="button button-primary" href="'+esc(enquiryUrl(p))+'">Ask about pre-order</a></div></div>';
-    if(!el("productDialog").open){el("productDialog").scrollTop=0;el("modalBody").scrollTop=0;}
     el("productDialog").showModal();
+    if(!wasOpen){el("productDialog").scrollTop=0;el("modalBody").scrollTop=0;}
   }
   function encodeShare(obj){
     var buffer=new TextEncoder().encode(JSON.stringify(obj)), raw="";

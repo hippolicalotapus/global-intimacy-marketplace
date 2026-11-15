@@ -57,6 +57,9 @@ test('real storefront navigation reaches a styled, inert cart at desktop and mob
         }
         await close.click();
         assert.equal(await dialog.isVisible(),false);
+        await page.locator('#productGrid [data-detail="201"]').click();
+        assert.equal(await body.evaluate(node=>node.scrollTop),0,'reopened details start at the top after native modal activation at '+width);
+        await close.click();
         const cart=page.getByRole('link',{name:'View cart (purchases not yet available)',exact:true});
         assert.equal(await cart.isVisible(),true,'cart link visible at '+width);
         const box=await cart.boundingBox();

@@ -24,8 +24,19 @@ async function storefront(hash = "", options = {}) {
     querySelectorAll() { return this.children || []; }
     focus(options) { this.focusOptions=options; this.focusCount=(this.focusCount||0)+1; }
     scrollIntoView(options) { this.scrollOptions=options; this.scrollCount=(this.scrollCount||0)+1; }
-    showModal() { this.open = true; }
-    close() { this.open = false; }
+    showModal() {
+      // Chromium can restore a closed dialog's scroll during activation.
+      if (!this.open && this.id === "productDialog") {
+        this.scrollTop = this.closedScrollTop || 0;
+        nodes.get("modalBody").scrollTop = this.closedBodyScrollTop || 0;
+      }
+      this.open = true;
+    }
+    close() {
+      this.closedScrollTop = this.scrollTop;
+      if (this.id === "productDialog") this.closedBodyScrollTop = nodes.get("modalBody").scrollTop;
+      this.open = false;
+    }
   }
   const nodes = new Map([...html.matchAll(/\bid="([^"]+)"/g)].map(m => [m[1], new Element(m[1])]));
   const links = [...html.matchAll(/<a\b([^>]+)>/g)].map(m => {
