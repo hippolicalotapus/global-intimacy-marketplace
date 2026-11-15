@@ -184,3 +184,15 @@
  #selectedWishItems>* ,#giftGrid>*{flex:0 0 min(82vw,320px);scroll-snap-align:center}
  #selectedWishItems:focus-visible,#giftGrid:focus-visible{outline:3px solid currentColor;outline-offset:3px}
 }
+
+/* Creator gifting is a non-transactional, local-only intention preview. */
+.gift-demo-controls{display:flex;gap:10px;align-items:center;justify-content:center;margin:12px 0 20px}
+.gift-demo-controls button{min-height:44px;padding:8px 14px;border-radius:9px;border:1px solid currentColor;background:transparent;color:inherit}
+.gift-demo-controls button:disabled{opacity:.4}
+.gift-demo-panel{display:grid;gap:12px;border:1px solid currentColor;border-radius:14px;padding:18px;margin:18px 0}
+.gift-demo-panel fieldset{display:grid;gap:10px;border:1px solid currentColor;border-radius:10px;padding:12px}
+.gift-demo-panel fieldset label{min-height:44px;display:flex;align-items:center;gap:9px}
+.gift-demo-panel textarea{min-height:88px}
+#giftConfirmation:not([hidden]){border:1px solid currentColor;border-radius:10px;padding:12px;overflow-wrap:anywhere}
+#giftGrid{scroll-snap-type:x mandatory;overflow-x:auto}
+#giftGrid>.wish-public-item{scroll-snap-align:center}
