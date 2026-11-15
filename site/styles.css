@@ -134,3 +134,27 @@
 .header-inner{flex-wrap:wrap}.header-actions{flex-wrap:wrap}
 @media(min-width:801px) and (max-width:1280px){.desktop-nav{order:3;width:100%;justify-content:center;padding-bottom:12px;flex-wrap:wrap;row-gap:12px}}
 @media(max-width:800px){.header-inner{gap:8px 12px}.header-actions{justify-content:flex-end;flex:1;min-width:165px}.header-actions .button-sm{min-height:44px}.header-inner .brand{margin-right:auto}}
+
+/* Premium mobile discovery: retain existing filters, labels and preview-only commerce. */
+.category-scroll{scroll-snap-type:x proximity;scroll-padding-inline:8px;overscroll-behavior-inline:contain}
+.category-chip{scroll-snap-align:start;min-height:44px;transition:background-color .18s,border-color .18s}
+.tier-chooser{scroll-margin-top:130px}
+.tier-option{min-height:58px;transition:box-shadow .18s,transform .18s}
+.tier-option:focus-visible,.category-chip:focus-visible{outline:3px solid #087b83;outline-offset:3px}
+.product-card{display:flex;flex-direction:column}
+.product-card-body{display:flex;flex:1;flex-direction:column}
+.product-card-body .product-footer{margin-top:auto;padding-top:16px}
+.product-card .product-preview-image{object-fit:contain}
+@media(max-width:800px){
+ .category-scroll{margin-inline:-17px;padding-inline:17px;scroll-padding-inline:17px}
+ .category-chip{padding-inline:16px}
+ .tier-chooser{scroll-snap-type:x proximity;overscroll-behavior-inline:contain}
+ .tier-option{scroll-snap-align:start}
+ .product-card-body{padding:14px}
+ .product-card h3{min-height:0;overflow-wrap:anywhere}
+ .product-footer{flex-wrap:wrap}
+ .product-footer .outline-small{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){
+ .category-chip,.tier-option{transition:none}
+}
