@@ -1,6 +1,6 @@
 {
   "sourceCommit": "b63bfe7419ecd85fbbf44fc14c957662b444b5b5",
-  "description": "Storefront smoke and behaviour test snapshot prerequisites; obtain files from this exact commit. This manifest does not deploy or download files.",
+  "description": "Pinned storefront smoke, behaviour and five-page public form audit prerequisites; obtain files from the same immutable source commit. This manifest never deploys or downloads files by itself.",
   "files": [
     {
       "path": "tests/site.smoke.test.mjs",
@@ -96,6 +96,26 @@
       "path": "site/ruby-welcome.js",
       "sha": "600eae118e5e2ad4a904228cd586473c5cb0f2c6",
       "size": 2587
+    },
+    {
+      "path": "site/creator-feedback-thanks.html",
+      "sha": "66cd3ce5731c79964ffcc8b5fe634fc01cd2209d",
+      "size": 1682
+    },
+    {
+      "path": "site/creator-feedback.html",
+      "sha": "fce4a735a194535a3d67d6eec251fc5498544dd6",
+      "size": 11061
+    },
+    {
+      "path": "site/drawing-review.html",
+      "sha": "3daeeb4c392e2dc4e1515fbb60e0e151acd07970",
+      "size": 49315
+    },
+    {
+      "path": "site/lookbook.html",
+      "sha": "d12ecfa856b9dcb1e9fa3c0ef1f880400613a9ee",
+      "size": 14729
     }
   ]
 }
