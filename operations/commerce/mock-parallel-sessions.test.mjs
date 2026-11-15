@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createParallelSessions,switchParallelShopper,addParallelTee,saveParallelSnapshot,
-  recoverParallelSnapshot,startParallelReview,restartParallelSlot,describeParallelSlot} from './mock-parallel-sessions.mjs';
+  recoverParallelSnapshot,startParallelReview,resumeInterruptedParallelReview,editParallelTee,restartParallelSlot,describeParallelSlot} from './mock-parallel-sessions.mjs';
 
 test('two fictional shoppers retain independent carts and history while switching',()=>{
   let store=createParallelSessions();
@@ -61,4 +61,48 @@ test('tampered shopper slot and invalid switching fail without changing other sh
   assert.throws(()=>switchParallelShopper(store,'unknown'));
   assert.throws(()=>describeParallelSlot({...store,slots:{...store.slots,returning:store.slots.guest}}));
   assert.equal(describeParallelSlot(store).shopper,'returning');
+});
+test('competing fictional edits reject stale revision and repeated operation without changing either cart',()=>{
+  const original=createParallelSessions();
+  const first=editParallelTee(original,0,'edit_case_0001');
+  assert.equal(describeParallelSlot(first).revision,1);
+  assert.throws(()=>editParallelTee(first,0,'edit_case_0002'),/Stale fictional cart revision/);
+  assert.throws(()=>editParallelTee(first,1,'edit_case_0001'),/Duplicate fictional cart edit/);
+  const second=editParallelTee(first,1,'edit_case_0002');
+  assert.equal(describeParallelSlot(second).cartCount,3);
+  assert.equal(describeParallelSlot(original).cartCount,1);
+  let guest=switchParallelShopper(second,'guest');
+  guest=editParallelTee(guest,0,'edit_case_0001');
+  assert.equal(describeParallelSlot(guest).revision,1);
+  assert.equal(describeParallelSlot(guest).cartCount,1);
+  assert.equal(describeParallelSlot(switchParallelShopper(guest,'returning')).cartCount,3);
+});
+test('interrupted fictional checkout resumes once, preserves other shopper, and cannot resume after edits or restart',()=>{
+  let s=createParallelSessions();
+  s=startParallelReview(s);
+  assert.equal(describeParallelSlot(s).canResume,true);
+  const guest=switchParallelShopper(s,'guest');
+  const withGuest=addParallelTee(guest);
+  s=switchParallelShopper(withGuest,'returning');
+  const resumed=resumeInterruptedParallelReview(s);
+  assert.equal(describeParallelSlot(resumed).events,2);
+  assert.equal(describeParallelSlot(resumed).canResume,false);
+  assert.throws(()=>resumeInterruptedParallelReview(resumed),/missing or stale/);
+  assert.equal(describeParallelSlot(switchParallelShopper(resumed,'guest')).cartCount,1);
+  const edited=addParallelTee(s);
+  assert.equal(describeParallelSlot(edited).canResume,false);
+  assert.throws(()=>resumeInterruptedParallelReview(edited),/missing or stale/);
+  const reset=restartParallelSlot(s);
+  assert.throws(()=>resumeInterruptedParallelReview(reset),/missing or stale/);
+  for(const o of [resumed,edited,reset])assert.equal(describeParallelSlot(o).paymentEnabled,false);
+});
+test('recovered older snapshot invalidates an interrupted fictional checkout',()=>{
+  let s=saveParallelSnapshot(createParallelSessions());
+  s=addParallelTee(s);
+  s=startParallelReview(s);
+  assert.equal(describeParallelSlot(s).canResume,true);
+  s=recoverParallelSnapshot(s);
+  assert.equal(describeParallelSlot(s).canResume,false);
+  assert.throws(()=>resumeInterruptedParallelReview(s));
+  assert.equal(describeParallelSlot(s).cartCount,1);
 });

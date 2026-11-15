@@ -521,6 +521,22 @@ test('offline checkout renders and responds in a real Chrome browser', { timeout
       assert.match(await evaluate("document.querySelector('#parallel-summary').textContent"),/guest fictional session: 2 cart items; 1 history events/);
       assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
     });
+    await t.test('interrupted parallel checkout resumes once and invalidates after cart edits or session reset',async()=>{
+      await navigateFixture();
+      await evaluate("document.querySelector('#parallel-review').click()");
+      assert.equal(await evaluate("document.querySelector('#parallel-resume').disabled"),false);
+      await evaluate("document.querySelector('#parallel-guest').click()");
+      assert.equal(await evaluate("document.querySelector('#parallel-resume').disabled"),true);
+      await evaluate("document.querySelector('#parallel-returning').click();document.querySelector('#parallel-resume').click()");
+      assert.equal(await evaluate("document.querySelector('#parallel-resume').disabled"),true);
+      assert.match(await evaluate("document.querySelector('#parallel-summary').textContent"),/2 history events/);
+      await evaluate("document.querySelector('#parallel-review').click();document.querySelector('#parallel-add-tee').click()");
+      assert.equal(await evaluate("document.querySelector('#parallel-resume').disabled"),true);
+      await evaluate("document.querySelector('#parallel-review').click();document.querySelector('#parallel-restart').click()");
+      assert.equal(await evaluate("document.querySelector('#parallel-resume').disabled"),true);
+      assert.match(await evaluate("document.querySelector('#parallel-summary').textContent"),/0 history events/);
+      assert.equal(await evaluate("document.querySelector('button[aria-disabled=true]').disabled"),true);
+    });
     await t.test('mobile responsive widths have no horizontal overflow and produce full-page screenshots', async () => {
       for (const width of [280, 320, 375, 414, 768]) {
         await send('Emulation.setDeviceMetricsOverride', { width, height: 740, deviceScaleFactor: 2, mobile: true });
