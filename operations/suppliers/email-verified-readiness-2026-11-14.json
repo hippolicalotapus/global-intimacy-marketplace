@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-11-14",
+  "purpose": "Private supplier readiness; not public product listings or inventory",
+  "suppliers": [
+    {
+      "id": "realdoll",
+      "name": "RealDoll",
+      "status": "introductory_call_offered",
+      "contactConfirmed": true,
+      "meetingProposed": "2026-12-04T11:00:00-05:00",
+      "meetingConfirmationPending": true,
+      "mediaPermission": false,
+      "resaleApproved": false,
+      "feedAvailable": false,
+      "stockVerified": false,
+      "priceVerified": false,
+      "checkoutEnabled": false,
+      "notes": "Discussion invitation only; no partnership or SKU authorization."
+    },
+    {
+      "id": "yxrobot",
+      "name": "YXROBOT TECH CO LTD",
+      "status": "promotional_permission_conditional",
+      "contactConfirmed": true,
+      "mediaPermission": true,
+      "mediaConditions": [
+        "Blur/censor sensitive parts before any public use",
+        "Preserve supplier branding",
+        "Review exact asset scope before publishing"
+      ],
+      "resaleApproved": false,
+      "feedAvailable": false,
+      "stockVerified": false,
+      "priceVerified": false,
+      "checkoutEnabled": false,
+      "shippingCountriesReported": [
+        "CA",
+        "US",
+        "GB"
+      ],
+      "shippingRatesVerified": false,
+      "notes": "Catalogue download links reported by supplier; no specific approved saleable SKUs or fixed freight quote."
+    },
+    {
+      "id": "sex-toy-distributing",
+      "name": "Sex Toy Distributing",
+      "status": "account_registration_eligible",
+      "contactConfirmed": true,
+      "preIncorporationRegistrationAllowed": true,
+      "mediaPermission": false,
+      "mediaPermissionPendingFeedTerms": true,
+      "resaleApproved": false,
+      "feedAvailable": false,
+      "feedFormatOffered": "XML after registration",
+      "stockVerified": false,
+      "priceVerified": false,
+      "checkoutEnabled": false,
+      "shippingCountriesReported": [
+        "CA",
+        "US",
+        "GB"
+      ],
+      "shippingRatesVerified": false,
+      "notes": "No account or live feed verified; per-order freight at checkout; customs and brand restrictions need review."
+    }
+  ]
+}
