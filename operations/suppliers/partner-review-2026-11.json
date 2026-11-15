@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "visibility": "internal-review-only",
+  "suppliers": [
+    {
+      "id": "realdoll",
+      "name": "Realdoll",
+      "relationship": "partnership-discussion",
+      "catalogue_access": "not-confirmed",
+      "website_media_permission": "not-confirmed",
+      "dropshipping": "not-confirmed",
+      "shipping": "not-confirmed",
+      "product_import_enabled": false,
+      "public_listing_enabled": false,
+      "evidence_date": "2026-11-15",
+      "next_step": "Discuss collaboration; no supply agreement or product feed yet"
+    },
+    {
+      "id": "sex-toy-distributing",
+      "name": "Sex Toy Distributing",
+      "relationship": "account-eligible",
+      "catalogue_access": "requires-registration",
+      "website_media_permission": "Supplier offers XML item photos after registration; verify brand restrictions",
+      "dropshipping": "Offered without minimums or extra dropshipping fee",
+      "shipping": "Canada, US, UK supported; order-specific freight and customs",
+      "product_import_enabled": false,
+      "public_listing_enabled": false,
+      "evidence_date": "2026-11-13",
+      "next_step": "Obtain authorized XML feed and verify SKU, price, stock, rights and landed cost before any listing"
+    },
+    {
+      "id": "yxrobot",
+      "name": "YXROBOT",
+      "relationship": "catalogue-review",
+      "catalogue_access": "supplier-provided-spreadsheet",
+      "website_media_permission": "Promotional use allowed; censor or blur sensitive imagery and retain branding",
+      "dropshipping": "individual-order-terms-unconfirmed",
+      "shipping": "Canada, US, UK feasible; variable freight quotes",
+      "product_import_enabled": false,
+      "public_listing_enabled": false,
+      "evidence_date": "2026-11-14",
+      "next_step": "Review authentic model codes, verify individual fulfillment, pricing and inventory"
+    }
+  ]
+}
