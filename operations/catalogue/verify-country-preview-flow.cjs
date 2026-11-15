@@ -1,0 +1,27 @@
+"use strict";
+const fs=require("node:fs"),vm=require("node:vm"),assert=require("node:assert/strict");
+const listeners={};const elements=new Map();
+function el(id){if(!elements.has(id))elements.set(id,{id,value:"",checked:false,hidden:false,disabled:false,textContent:"",innerHTML:"",style:{},addEventListener(type,fn){listeners[id+":"+type]=fn},focus(){},cloneNode(){return this},replaceWith(){},getBoundingClientRect(){return {left:0,top:0,width:400,height:400}}});return elements.get(id)}
+const country=[{code:"CA",name:"Canada"},{code:"US",name:"United States"}];
+const product={id:"preview-1"};
+const context={window:{GIM_COUNTRIES:country,GIM_PRODUCTS:[product],GIM_WORLD:null,GIMShipping:{status:()=> "unknown",label:()=> "Delivery not confirmed"},dispatchEvent(){}},document:{readyState:"loading",getElementById:el,addEventListener(type,fn){listeners["document:"+type]=fn},activeElement:el("main")},CustomEvent:function(){},localStorage:{getItem(){return null},setItem(){}},location:{hash:""},requestAnimationFrame(){return 1},console};
+context.window.GIMGlobe3D={create(){return null}};context.window.GIMGlobeSoftware={create(){return null}};
+context.window.scrollTo=()=>{};
+vm.runInNewContext(fs.readFileSync("site/destination.js","utf8"),context);
+listeners["document:DOMContentLoaded"]();
+assert.equal(context.window.GIMDestination.country(),"");
+listeners["countrySelect:change"]({target:{value:"CA"}});
+assert.equal(el("enterCountry").disabled,false);
+listeners["countrySearch:input"]({target:{value:"United"}});
+assert.equal(el("countrySelect").value,"");
+assert.equal(el("enterCountry").disabled,true,"filtered-out selection must disable entry");
+assert.match(el("countryStatus").textContent,/Spin the globe|find your country/);
+listeners["countrySearch:input"]({target:{value:"Canada"}});
+listeners["countrySelect:change"]({target:{value:"CA"}});
+assert.equal(context.window.GIMDestination.enter("CA"),true);
+assert.equal(context.window.GIMDestination.include(product),false,"unconfirmed products hidden by default");
+listeners["showResearchPreviews:click"]();
+assert.equal(context.window.GIMDestination.previews(),true);
+assert.equal(context.window.GIMDestination.include(product),true,"research previews visible after opt-in");
+assert.equal(context.location.hash,"catalog");
+console.log("PASS: country filter reset, selection, preview opt-in and catalogue navigation state");

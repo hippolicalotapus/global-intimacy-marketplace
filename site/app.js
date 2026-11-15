@@ -50,7 +50,7 @@
     var d = window.GIMDestination;
     var count = products.filter(function(p){return destinationVisible(p);}).length;
     el("countryEmpty").hidden = !d || d.previews() || count > 0;
-    el("countryEmptyText").textContent = d ? "We have not confirmed products for delivery to " + d.name() + ". Choose another country above, or explore clearly marked research previews." : "Choose your country first.";
+    el("countryEmptyText").textContent = d ? "No products are confirmed for delivery to " + d.name() + " yet. The catalogue contains " + products.length + " research and design previews that you can explore using the button below. These are not available to purchase." : "Choose your country first.";
     document.querySelectorAll("[data-research-content]").forEach(function(n){n.hidden = !d || !d.previews();});
     renderCatalog();renderFavorites();renderUnconventional();renderPicker();renderSelection();
     if(location.hash.startsWith("#gift="))renderGift();

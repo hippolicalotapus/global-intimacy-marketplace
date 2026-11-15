@@ -1,0 +1,23 @@
+name: Country and research preview flow (offline)
+on:
+  push:
+    branches:
+      - audit/catalogue-readiness-2026-11-10
+    paths:
+      - site/destination.js
+      - operations/catalogue/verify-country-preview-flow.cjs
+      - .github/workflows/country-preview-flow.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview-flow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check operations/catalogue/verify-country-preview-flow.cjs
+      - run: node operations/catalogue/verify-country-preview-flow.cjs
