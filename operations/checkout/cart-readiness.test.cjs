@@ -1,0 +1,11 @@
+'use strict';
+const {test}=require('node:test');const assert=require('node:assert/strict');const {validateCart}=require('./cart-readiness.cjs');
+const p={id:'approved-1',saleApproved:true,priceVerified:true,stockVerified:true,shippingApproved:true,supplierPermissionRef:'permission-record',priceCents:1500,currency:'CAD'};
+test('approved item calculates subtotal but never enables checkout',()=>assert.deepEqual(validateCart([{id:p.id,quantity:2}],[p]),{ready:true,checkoutEnabled:false,reason:'shipping_tax_payment_verification_required',currency:'CAD',subtotalCents:3000,lines:[{id:p.id,quantity:2,lineCents:3000}]}));
+test('unapproved candidate cannot be sold',()=>assert.equal(validateCart([{id:p.id,quantity:1}],[{...p,saleApproved:false}]).reason,'unverified_product'));
+test('missing supplier permission blocks sale',()=>assert.equal(validateCart([{id:p.id,quantity:1}],[{...p,supplierPermissionRef:''}]).reason,'unverified_product'));
+test('unverified stock blocks sale',()=>assert.equal(validateCart([{id:p.id,quantity:1}],[{...p,stockVerified:false}]).reason,'unverified_product'));
+test('invalid quantities and duplicate lines blocked',()=>{assert.equal(validateCart([{id:p.id,quantity:0}],[p]).reason,'invalid_cart_line');assert.equal(validateCart([{id:p.id,quantity:1},{id:p.id,quantity:1}],[p]).reason,'invalid_cart_line')});
+test('mixed currency blocked',()=>assert.equal(validateCart([{id:p.id,quantity:1},{id:'two',quantity:1}],[p,{...p,id:'two',currency:'USD'}]).reason,'mixed_currency'));
+test('overflow blocked',()=>assert.equal(validateCart([{id:p.id,quantity:20}],[{...p,priceCents:Number.MAX_SAFE_INTEGER}]).reason,'amount_overflow'));
+test('research-only catalogue is not sellable',()=>assert.equal(validateCart([{id:'candidate',quantity:1}],[{id:'candidate',name:'research only'}]).reason,'unverified_product'));
