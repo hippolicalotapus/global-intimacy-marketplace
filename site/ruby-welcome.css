@@ -93,3 +93,18 @@ body.ruby-open{overflow:hidden}
 .ruby-facet-69{--dx:176.4px;--dy:296.9px;--turn:22deg;--delay:72ms}
 .ruby-facet-70{--dx:308.6px;--dy:252.8px;--turn:-2deg;--delay:0ms}
 .ruby-facet-71{--dx:352.7px;--dy:296.9px;--turn:-26deg;--delay:18ms}
+
+/* Mobile cinematic polish: keep the original heart artwork and reveal sequence. */
+.ruby-welcome::before{content:"";position:absolute;inset:-30%;pointer-events:none;background:radial-gradient(circle at 50% 48%,rgba(225,166,113,.14),transparent 30%),radial-gradient(circle at 50% 50%,rgba(66,190,183,.13),transparent 54%);opacity:.9}
+.ruby-stage{z-index:1;filter:drop-shadow(0 24px 48px rgba(0,0,0,.35))}
+.ruby-reveal{min-width:44px;min-height:44px}
+.ruby-skip{clip-path:none;width:auto;height:auto;overflow:visible;z-index:2;opacity:.95}
+.ruby-skip:hover{background:#265866}
+@media(max-width:600px){
+ .ruby-stage{width:min(90vw,68svh,440px)}
+ .ruby-skip{right:max(14px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));font-size:.85rem}
+}
+@media(prefers-reduced-motion:reduce){
+ .ruby-stage{filter:none}
+ .ruby-welcome::before{opacity:.5}
+}
