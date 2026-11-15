@@ -274,15 +274,26 @@
     }catch(e){return null;}
   }
   function renderGift(){
-    var code=location.hash.slice(6);
-    var data=decodeShare(code);
-    if(!data){el("giftAlias").textContent="Invalid demo wishlist link";el("giftGrid").innerHTML='<p>This is not a valid preview wishlist. Ask the creator for a new link.</p>';return;}
-    el("giftAlias").textContent=data.a;
-    el("giftGrid").innerHTML=data.p.map(function(id){
+    var code=location.hash.slice(6),data=decodeShare(code),grid=el("giftGrid"),choice=el("giftChoice");
+    el("giftConfirmation").hidden=true;el("giftMessage").value="";el("giftSenderName").value="";
+    document.querySelector('input[name="giftSenderDemo"][value="anonymous"]').checked=true;el("giftSenderName").disabled=true;
+    if(!data){el("giftAlias").textContent="Invalid demo wishlist link";grid.innerHTML='<p>This is not a valid preview wishlist. Ask the creator for a new link.</p>';choice.innerHTML='<option value="">No available previews</option>';el("giftPreviewButton").disabled=true;updateGiftPosition();return;}
+    el("giftAlias").textContent=data.a;el("giftPreviewButton").disabled=false;
+    choice.innerHTML='<option value="">Choose a wishlist item</option>'+data.p.map(function(id){var p=byId.get(id);return p?'<option value="'+p.id+'">'+esc(p.brand+" · "+p.name)+'</option>':"";}).join("");
+    grid.innerHTML=data.p.map(function(id){
       var p=byId.get(id);
       return '<article class="wish-public-item"><div class="tiny-symbol">'+mark(p)+'</div><div><strong>'+esc(p.brand+" · "+p.name)+'</strong>'+
         '<small>'+esc(deliveryLabel(p))+' · Gifting and purchase disabled</small></div></article>';
     }).join("");
+    grid.scrollLeft=0;updateGiftPosition();
+  }
+  function giftIndex(){var grid=el("giftGrid"),items=Array.from(grid.querySelectorAll(".wish-public-item"));if(!items.length)return 0;var center=grid.scrollLeft+grid.clientWidth/2;return items.reduce(function(best,item,i){return Math.abs(item.offsetLeft+item.offsetWidth/2-center)<Math.abs(items[best].offsetLeft+items[best].offsetWidth/2-center)?i:best;},0);}
+  function updateGiftPosition(){var items=el("giftGrid").querySelectorAll(".wish-public-item"),index=giftIndex();el("giftPosition").textContent=items.length?(index+1)+" of "+items.length:"0 of 0";el("giftPrev").disabled=!items.length||index===0;el("giftNext").disabled=!items.length||index===items.length-1;}
+  function moveGift(step){var items=el("giftGrid").querySelectorAll(".wish-public-item");if(!items.length)return;var next=Math.max(0,Math.min(items.length-1,giftIndex()+step));items[next].scrollIntoView({behavior:"auto",block:"nearest",inline:"center"});el("giftChoice").value=String(items[next]&&decodeShare(location.hash.slice(6)).p[next]||"");updateGiftPosition();}
+  function previewGiftIntention(){var data=decodeShare(location.hash.slice(6)),id=Number(el("giftChoice").value),p=byId.get(id),out=el("giftConfirmation");if(!data||!data.p.includes(id)||!p){out.hidden=false;out.textContent="Select a wishlist item first.";return;}
+    var named=document.querySelector('input[name="giftSenderDemo"]:checked').value==="named",sender=safeAlias(el("giftSenderName").value),message=el("giftMessage").value.trim().slice(0,240);
+    out.replaceChildren();var heading=document.createElement("strong");heading.textContent="Preview only — no gift sent";out.appendChild(heading);
+    [ "Creator: "+data.a,"Gift: "+p.brand+" · "+p.name,"From: "+(named&&sender?sender:"Anonymous"),"Message: "+(message||"No message"),"Status: Demonstration only. No payment, reservation or delivery." ].forEach(function(line){var row=document.createElement("p");row.textContent=line;out.appendChild(row);});out.hidden=false;
   }
   function navigate(focusSearchResults){
     var hash=location.hash.slice(1), interestDeepLink=false;
@@ -318,6 +329,11 @@
     var scrollFrame=0;
     el("productGrid").addEventListener("scroll",function(){if(scrollFrame)return;scrollFrame=requestAnimationFrame(function(){scrollFrame=0;updateProductBrowse();});},{passive:true});
     window.addEventListener("resize",updateProductBrowse);
+    el("giftPrev").addEventListener("click",function(){moveGift(-1);});
+    el("giftNext").addEventListener("click",function(){moveGift(1);});
+    el("giftGrid").addEventListener("scroll",updateGiftPosition,{passive:true});
+    document.querySelectorAll('input[name="giftSenderDemo"]').forEach(function(input){input.addEventListener("change",function(){el("giftSenderName").disabled=input.value!=="named";el("giftConfirmation").hidden=true;});});
+    el("giftPreviewButton").addEventListener("click",previewGiftIntention);
     el("year").textContent=new Date().getFullYear();
     el("brandSelect").innerHTML='<option value="all">All brands</option>'+brands.map(function(b){return '<option value="'+esc(b)+'">'+esc(b)+'</option>';}).join("");
     el("categorySelect").innerHTML=categories.map(function(c){return '<option value="'+esc(c)+'">'+esc(c==="All"?"All categories":c)+'</option>';}).join("");
