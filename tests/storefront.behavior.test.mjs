@@ -24,8 +24,19 @@ async function storefront(hash = "", options = {}) {
     querySelectorAll() { return this.children || []; }
     focus(options) { this.focusOptions=options; this.focusCount=(this.focusCount||0)+1; }
     scrollIntoView(options) { this.scrollOptions=options; this.scrollCount=(this.scrollCount||0)+1; }
-    showModal() { this.open = true; }
-    close() { this.open = false; }
+    showModal() {
+      // Chromium can restore a closed dialog's scroll during activation.
+      if (!this.open && this.id === "productDialog") {
+        this.scrollTop = this.closedScrollTop || 0;
+        nodes.get("modalBody").scrollTop = this.closedBodyScrollTop || 0;
+      }
+      this.open = true;
+    }
+    close() {
+      this.closedScrollTop = this.scrollTop;
+      if (this.id === "productDialog") this.closedBodyScrollTop = nodes.get("modalBody").scrollTop;
+      this.open = false;
+    }
   }
   const nodes = new Map([...html.matchAll(/\bid="([^"]+)"/g)].map(m => [m[1], new Element(m[1])]));
   const links = [...html.matchAll(/<a\b([^>]+)>/g)].map(m => {
@@ -119,6 +130,23 @@ test("Every mountain hoodie exposes complete front and back without expanding hi
     assert.ok(html.includes('No payment or reservation will be taken'));
     app.nodes.get("closeModal").dispatch("click");
   }
+});
+
+test("New product details start at the top while saving keeps the current reading position", async () => {
+  const app = await storefront();
+  const delegated = (key, id) => app.document.dispatch("click", { closest: selector => selector === `[data-${key}]` ? { dataset: { [key]: String(id) } } : null });
+  delegated("detail", 201);
+  const body = app.nodes.get("modalBody"), dialog = app.nodes.get("productDialog");
+  dialog.scrollTop = 600;
+  body.scrollTop = 600;
+  app.nodes.get("closeModal").dispatch("click");
+  delegated("detail", 202);
+  assert.equal(dialog.scrollTop, 0, "new details must not inherit the last product's dialog scroll position");
+  assert.equal(body.scrollTop, 0, "new details start at the top of the scrollable content");
+  body.scrollTop = 350;
+  delegated("fav", 202);
+  assert.equal(body.scrollTop, 350, "saving should keep the shopper's place in the open details");
+  assert.equal(app.nodes.get("productDialog").open, true);
 });
 
 test("ONE HEART details, favorites and shareable wishlist use real catalogue IDs", async () => {

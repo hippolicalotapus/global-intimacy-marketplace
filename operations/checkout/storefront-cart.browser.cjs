@@ -37,6 +37,29 @@ test('real storefront navigation reaches a styled, inert cart at desktop and mob
         await page.locator('#rubySkip').click();
         await page.locator('#countrySelect').selectOption('CA');
         await page.locator('#enterCountry').click();
+        await page.locator('#previewMode').check();
+        await page.locator('#searchInput').fill('Three Sisters');
+        await page.locator('#storeSearchForm').evaluate(form=>form.requestSubmit());
+        await page.locator('#productGrid [data-detail="201"]').click();
+        const dialog=page.locator('#productDialog');
+        assert.equal(await dialog.isVisible(),true);
+        const body=page.locator('#modalBody');
+        await body.evaluate(node=>{node.scrollTop=node.scrollHeight;});
+        assert.ok(await body.evaluate(node=>node.scrollTop>0),'long hoodie details scroll within the content at '+width);
+        const close=page.getByRole('button',{name:'Close product details'});
+        const closeBox=await close.boundingBox(),dialogBox=await dialog.boundingBox();
+        assert.ok(closeBox&&closeBox.width>=44&&closeBox.height>=44,'close target stays available at '+width);
+        assert.ok(closeBox.y>=dialogBox.y&&closeBox.y+closeBox.height<=dialogBox.y+dialogBox.height,'close remains inside visible dialog after scrolling at '+width);
+        assert.equal(await body.evaluate(node=>node.scrollWidth<=node.clientWidth),true,'detail actions fit without sideways scrolling at '+width);
+        for(const action of await page.locator('.modal-controls .button').all()){
+          const rect=await action.boundingBox();
+          assert.ok(rect.x>=dialogBox.x&&rect.x+rect.width<=dialogBox.x+dialogBox.width,'detail action fits dialog at '+width);
+        }
+        await close.click();
+        assert.equal(await dialog.isVisible(),false);
+        await page.locator('#productGrid [data-detail="201"]').click();
+        assert.equal(await body.evaluate(node=>node.scrollTop),0,'reopened details start at the top after native modal activation at '+width);
+        await close.click();
         const cart=page.getByRole('link',{name:'View cart (purchases not yet available)',exact:true});
         assert.equal(await cart.isVisible(),true,'cart link visible at '+width);
         const box=await cart.boundingBox();
