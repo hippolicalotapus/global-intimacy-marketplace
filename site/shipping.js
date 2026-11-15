@@ -18,6 +18,8 @@
     var rule = matching[0], at = now === undefined ? Date.now() : Number(now);
     if ((Object.hasOwn(rule, "excludedRegions") && !Array.isArray(rule.excludedRegions)) ||
         (Object.hasOwn(rule, "excludedPostcodes") && !Array.isArray(rule.excludedPostcodes))) return "unknown";
+    var validEvidenceDate = function(value) { return typeof value === "string" && /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2}))?$/.test(value) && Number.isFinite(Date.parse(value)); };
+    if (!validEvidenceDate(rule.checkedAt) || !validEvidenceDate(rule.validUntil)) return "unknown";
     var checked = Date.parse(rule.checkedAt), until = Date.parse(rule.validUntil);
     if (!Number.isFinite(at) || !Number.isFinite(checked) || !Number.isFinite(until) || checked > at || until <= at) return "unknown";
     if (rule.status !== "allowed" || rule.verified !== true || rule.productId !== product.id ||
