@@ -130,7 +130,9 @@ test('unapproved storefront or vendor status cannot bypass subscription entitlem
  const fixture=vendorFixture();
  assert.equal(view(store,fixture,{profile:{...fixture.profile,status:'draft'}}).preview,null);
  const pending={...fixture.vendor,status:'pending'};
- assert.throws(()=>view(store,fixture,{vendor:pending}));
+ const denied=view(store,fixture,{vendor:pending});
+ assert.equal(denied.subscription.publishEligible,false);
+ assert.equal(denied.preview,null);
 });
 test('dashboard projection hides supplier internals and cross-tenant audit events',()=>{
  const store=createFixtureSubscriptions(access());select(store);activate(store);
