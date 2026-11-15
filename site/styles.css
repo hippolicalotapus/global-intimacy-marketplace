@@ -158,3 +158,17 @@
 @media(prefers-reduced-motion:reduce){
  .category-chip,.tier-option{transition:none}
 }
+
+/* Compact mobile product browsing: the original product cards and actions are unchanged. */
+.swipe-controls{display:none}
+@media(max-width:800px){
+ .swipe-controls{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin:12px 0}
+ .swipe-controls button{min-height:44px;border:1px solid #a4c8ba;background:#fff;color:#174b4b;border-radius:10px;padding:9px 12px;font-weight:700}
+ .swipe-controls button:focus-visible{outline:3px solid #087b83;outline-offset:2px}
+ #productPosition{font-size:.8rem;color:#385d59;min-width:76px;text-align:center}
+ #productGrid:not(.browse-grid){display:flex;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;gap:12px;padding:4px 16px 16px;margin-inline:-16px}
+ #productGrid:not(.browse-grid)::-webkit-scrollbar{display:none}
+ #productGrid:not(.browse-grid)>*{flex:0 0 calc(100% - 32px);max-width:430px;scroll-snap-align:center;scroll-snap-stop:always}
+ #productGrid.browse-grid{display:grid}
+}
+@media(prefers-reduced-motion:reduce){#productGrid{scroll-behavior:auto}}
