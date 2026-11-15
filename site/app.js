@@ -2,10 +2,10 @@
 /* Global Intimacy Marketplace — privacy-first browser-only beta.
  * No purchase, login, collection, shipping or inventory APIs are called. */
 (function () {
-  var products = Array.isArray(window.GIM_PRODUCTS) ? window.GIM_PRODUCTS : [];
+  var products = (Array.isArray(window.GIM_PRODUCTS) ? window.GIM_PRODUCTS : []).filter(function(p){return !/one[\s_-]*heart|sarcastabastard/i.test([p.brand,p.category,p.collection,p.designId].join(" "));});
   var byId = new Map(products.map(function (p) { return [p.id,p]; }));
-  var categories = ["All","ONE HEART Hoodies","ONE HEART Art Tees","SARCASTABASTARD Tees","Lingerie","Essentials","Massage & Care","Games & Gifts","AI Companions","Life-Size Dolls","Doll Care & Parts","Wearables","Interactive","Couples","Connected devices","Wellness","Kink & Accessories"];
-  var collections = ["All","Everyday","Premium","ULTRA","ONE HEART","SARCASTABASTARD"];
+  var categories = ["All","Lingerie","Essentials","Massage & Care","Games & Gifts","AI Companions","Life-Size Dolls","Doll Care & Parts","Wearables","Interactive","Couples","Connected devices","Wellness","Kink & Accessories"];
+  var collections = ["All","Everyday","Premium","ULTRA"];
   var brands = Array.from(new Set(products.map(function (p) {return p.brand;}))).sort();
   var activeCategory = "All", activeCollection = "All", search = "", brand = "all", sort = "featured";
   var toastTimer;
@@ -19,7 +19,7 @@
     connection:["Couples","Games & Gifts","Wearables","Connected devices","Interactive"],
     companions:["AI Companions","Life-Size Dolls","Doll Care & Parts"],
     kink:["Kink & Accessories"],
-    style:["ONE HEART Hoodies","ONE HEART Art Tees","SARCASTABASTARD Tees","Lingerie"],
+    style:["Lingerie"],
     roleplay:["Lingerie","Games & Gifts","Life-Size Dolls"],
     sensory:["Wellness","Essentials","Massage & Care","Wearables","Connected devices"],
     technology:["Interactive","Connected devices","Wearables","AI Companions"]
@@ -277,9 +277,9 @@
         interestDeepLink=true;unconventionalGroup=requestedGroup;interestCategory="all";el("unconventionalSearch").value="";
       }
     }
-    var view=hash.startsWith("gift=")?"gift":(hash==="catalog"||hash==="one-heart"||hash==="sarcastabastard"||hash==="results")?"shop":hash.split("?")[0];
-    if(hash==="one-heart")selectCollection("ONE HEART");
-    if(hash==="sarcastabastard")selectCollection("SARCASTABASTARD");
+    var view=hash.startsWith("gift=")?"gift":(hash==="catalog"||hash==="results")?"shop":hash.split("?")[0];
+    
+    
     if(!["shop","favorites","creators","gift","early","about","explore-interests"].includes(view))view="shop";
     document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("active",p.id==="view-"+view);});
     document.querySelectorAll("[data-route]").forEach(function(n){var on=n.dataset.route===view;n.classList.toggle("active",on);if(on)n.setAttribute("aria-current","page");else n.removeAttribute("aria-current");});
@@ -287,7 +287,7 @@
     if(view==="creators"){renderPicker();renderSelection();}
     if(view==="gift")renderGift();
     if(view==="explore-interests")renderUnconventional();
-    if(view==="shop"&&(hash==="catalog"||hash==="one-heart"||hash==="sarcastabastard"||hash==="results")){requestAnimationFrame(function(){el(hash==="results"?"catalogResults":"catalog").scrollIntoView({block:"start"});if(hash==="results"&&(focusSearchResults===true||document.activeElement!==el("searchInput")))el("catalogResultsTitle").focus({preventScroll:true});});}
+    if(view==="shop"&&(hash==="catalog"||hash==="results")){requestAnimationFrame(function(){el(hash==="results"?"catalogResults":"catalog").scrollIntoView({block:"start"});if(hash==="results"&&(focusSearchResults===true||document.activeElement!==el("searchInput")))el("catalogResultsTitle").focus({preventScroll:true});});}
     else if(view==="explore-interests"&&interestDeepLink)showInterestResults();
     else window.scrollTo({top:0,behavior:"instant"});
     document.title=(view==="shop"?"Explore":view==="explore-interests"?"Explore Your Interests":view.charAt(0).toUpperCase()+view.slice(1))+" | Global Intimacy Marketplace";
@@ -314,7 +314,7 @@
     el("brandSelect").addEventListener("change",function(e){brand=e.target.value;renderCatalog();});
     el("sortSelect").addEventListener("change",function(e){sort=e.target.value;renderCatalog();});
     el("categoryChips").addEventListener("click",function(e){var b=e.target.closest("[data-category]");if(b)browseCategory(b.dataset.category);});
-    document.querySelectorAll("[data-oneheart]").forEach(function(link){link.addEventListener("click",function(){selectCollection("ONE HEART");});});
+    
     document.querySelectorAll('[data-all-products], [data-route="shop"]').forEach(function(link){link.addEventListener("click",function(){selectCollection("All");});});
     el("collectionFilters").addEventListener("click",function(e){
       var b=e.target.closest("[data-collection]");
