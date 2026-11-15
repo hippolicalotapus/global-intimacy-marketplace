@@ -54,3 +54,12 @@ test('refuses overwrite of an existing snapshot',async()=>fixture(async dir=>{
   await assert.rejects(materializeStorefront({manifest,destination,token:'offline',fetchImpl:respond(content)}),/already exists/);
   assert.equal(await readFile(join(destination,'x.js'),'utf8'),'hello');
 }));
+
+
+test('rejects parent-child manifest path collisions in either order before transfer',async()=>fixture(async dir=>{
+ const base=manifestFor({'site/index.html':'hello'}).files[0];
+ for(const files of [[{...base,path:'site'},base],[base,{...base,path:'site'}]]){
+  const manifest={sourceCommit:'a'.repeat(40),files};
+  await assert.rejects(materializeStorefront({manifest,destination:join(dir,'snapshot'),token:'offline'}),/Invalid manifest/);
+ }
+}));
