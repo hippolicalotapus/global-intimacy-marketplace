@@ -134,6 +134,27 @@
     el("activeFilterChips").innerHTML=chips.join("");
     renderChips();renderCollections();
   }
+  var productBrowseGrid=false;
+  function updateProductBrowse(){
+    var grid=el("productGrid"),items=Array.from(grid.children),count=items.length;
+    grid.classList.toggle("browse-grid",productBrowseGrid);
+    el("productViewToggle").textContent=productBrowseGrid?"Swipe view":"Grid view";
+    el("productViewToggle").setAttribute("aria-pressed",String(productBrowseGrid));
+    var index=0;
+    if(count&&!productBrowseGrid){var center=grid.scrollLeft+grid.clientWidth/2;index=items.reduce(function(best,item,i){return Math.abs(item.offsetLeft+item.offsetWidth/2-center)<Math.abs(items[best].offsetLeft+items[best].offsetWidth/2-center)?i:best;},0);}
+    el("productPosition").textContent=count?(productBrowseGrid?count+" previews":(index+1)+" of "+count):"No products";
+    el("productPrev").disabled=productBrowseGrid||index===0;
+    el("productNext").disabled=productBrowseGrid||index>=count-1;
+  }
+  function moveProduct(direction){
+    var grid=el("productGrid"),items=Array.from(grid.children);if(!items.length||productBrowseGrid)return;
+    var center=grid.scrollLeft+grid.clientWidth/2;
+    var index=items.reduce(function(best,item,i){return Math.abs(item.offsetLeft+item.offsetWidth/2-center)<Math.abs(items[best].offsetLeft+items[best].offsetWidth/2-center)?i:best;},0);
+    var next=Math.max(0,Math.min(items.length-1,index+direction));
+    items[next].scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth",block:"nearest",inline:"center"});
+    el("productPosition").textContent=(next+1)+" of "+items.length;
+    el("productPrev").disabled=next===0;el("productNext").disabled=next===items.length-1;
+  }
   function runGlobalSearch(){
     activeCollection="All";activeCategory="All";brand="all";search=el("searchInput").value.trim();
     el("brandSelect").value="all";renderCatalog();location.hash="results";
@@ -291,6 +312,12 @@
     document.title=(view==="shop"?"Explore":view==="explore-interests"?"Explore Your Interests":view.charAt(0).toUpperCase()+view.slice(1))+" | Global Intimacy Marketplace";
   }
   function setup(){
+    el("productPrev").addEventListener("click",function(){moveProduct(-1);});
+    el("productNext").addEventListener("click",function(){moveProduct(1);});
+    el("productViewToggle").addEventListener("click",function(){productBrowseGrid=!productBrowseGrid;el("productGrid").scrollLeft=0;updateProductBrowse();});
+    var scrollFrame=0;
+    el("productGrid").addEventListener("scroll",function(){if(scrollFrame)return;scrollFrame=requestAnimationFrame(function(){scrollFrame=0;updateProductBrowse();});},{passive:true});
+    window.addEventListener("resize",updateProductBrowse);
     el("year").textContent=new Date().getFullYear();
     el("brandSelect").innerHTML='<option value="all">All brands</option>'+brands.map(function(b){return '<option value="'+esc(b)+'">'+esc(b)+'</option>';}).join("");
     el("categorySelect").innerHTML=categories.map(function(c){return '<option value="'+esc(c)+'">'+esc(c==="All"?"All categories":c)+'</option>';}).join("");
