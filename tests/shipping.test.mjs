@@ -44,3 +44,14 @@ test("Malformed exclusion lists cannot authorize unreviewed delivery",()=>{
   }
  }
 });
+
+
+test("Supplier evidence must use valid date strings, never numeric or informal dates",()=>{
+ const valid=fixture();
+ assert.equal(shipping.status(valid,"CA",now),"eligible");
+ for(const [field,bad] of [["checkedAt",0],["checkedAt",1],["checkedAt",null],["checkedAt","October 30 2026"],["validUntil",2099],["validUntil",true],["validUntil","sometime 2099"]]){
+  const p=fixture();
+  p.deliveryRules[0][field]=bad;
+  assert.equal(shipping.status(p,"CA",now),"unknown",field+": "+String(bad));
+ }
+});
