@@ -15,7 +15,7 @@ export async function materializeStorefront({ manifest, destination, token, fetc
   if (!manifest || !/^[a-f0-9]{40}$/.test(manifest.sourceCommit) || !Array.isArray(manifest.files) || manifest.files.length < 1) throw new Error('Invalid pinned snapshot manifest');
   const seen = new Set();
   for (const file of manifest.files) {
-    if (!safeName(file.path) || seen.has(file.path) || !/^[a-f0-9]{40}$/.test(file.sha) || !Number.isSafeInteger(file.size) || file.size < 0) throw new Error('Invalid manifest file entry');
+    if (!safeName(file.path) || seen.has(file.path) || [...seen].some(p => p.startsWith(`${file.path}/`) || file.path.startsWith(`${p}/`)) || !/^[a-f0-9]{40}$/.test(file.sha) || !Number.isSafeInteger(file.size) || file.size < 0) throw new Error('Invalid manifest file entry');
     seen.add(file.path);
   }
   const parent = await realpath(dirname(resolve(destination)));
