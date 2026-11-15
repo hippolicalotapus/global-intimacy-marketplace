@@ -39,7 +39,9 @@
   function notify(message) {var node=el("toast");node.textContent=message;node.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){node.classList.remove("show");},3400);}
   function enquiryUrl(p) {
     var subject="Pre-order enquiry — "+p.brand+" · "+p.name;
-    var body="Hello Global Intimacy Marketplace,\n\nI would like information about the potential pre-order of: "+p.brand+" · "+p.name+" (preview ID "+p.id+").\n\nPlease contact me when legal availability, manufacturer approval, pricing, production, shipping and delivery information are confirmed. I understand this email is an enquiry only: I am NOT placing a paid, binding, reserved or guaranteed order, and no delivery date has been promised.\n\nCountry / region: \nQuantity of interest (optional): \n\nThank you.";
+    var destination=window.GIMDestination, country=destination&&destination.country();
+    var countryLabel=country?destination.name()+" ("+country+")":"";
+    var body="Hello Global Intimacy Marketplace,\n\nI would like information about the potential pre-order of: "+p.brand+" · "+p.name+" (preview ID "+p.id+")."+(p.designId?"\nDesign code: "+p.designId:"")+"\n\nPlease contact me when legal availability, manufacturer approval, pricing, production, shipping and delivery information are confirmed. I understand this email is an enquiry only: I am NOT placing a paid, binding, reserved or guaranteed order, and no delivery date has been promised.\n\nCountry / region: "+countryLabel+"\nQuantity of interest (optional): \n\nThank you.";
     return "mailto:globalintimacypartner@gmail.com?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body);
   }
   function mark(p) {return p.category==="AI Companions"?"◇":p.category==="Life-Size Dolls"?"✧":p.category==="Doll Care & Parts"?"✳":p.category==="Couples"?"♡":p.category==="Interactive"?"◎":p.category==="Wearables"?"✧":p.category==="Wellness"?"◈":"✦";}

@@ -109,6 +109,46 @@ test("Direct ONE HEART route and its navigation link show all 18 designs", async
   assert.ok([...html.matchAll(/<a\b([^>]*data-oneheart[^>]*)>/g)].every(m => m[1].includes('href="#one-heart"')));
 });
 
+test("Product enquiry drafts retain the selected country and exact apparel design code", async () => {
+  const app = await storefront();
+  app.search("Three Sisters");
+  const enquiry = html => {
+    const match = html.match(/href="(mailto:[^"]+)"/);
+    assert.ok(match, "product has an enquiry link");
+    return new URL(match[1].replace(/&amp;/g, "&"));
+  };
+  const card = enquiry(app.nodes.get("productGrid").innerHTML);
+  assert.equal(card.pathname, "globalintimacypartner@gmail.com");
+  assert.match(card.searchParams.get("body"), /Country \/ region: Canada \(CA\)/);
+  assert.match(card.searchParams.get("body"), /Design code: OH-H01/);
+  assert.match(card.searchParams.get("body"), /NOT placing a paid, binding, reserved or guaranteed order/);
+  app.document.dispatch("click", { closest: selector => selector === '[data-detail]' ? { dataset: { detail: "201" } } : null });
+  const detail = enquiry(app.nodes.get("modalBody").innerHTML);
+  assert.equal(detail.searchParams.get("body"), card.searchParams.get("body"));
+  app.window.GIMDestination.enter("US");
+  app.nodes.get("previewMode").checked = true;
+  app.nodes.get("previewMode").dispatch("change");
+  const changed = enquiry(app.nodes.get("productGrid").innerHTML).searchParams.get("body");
+  assert.match(changed, /Country \/ region: United States \(US\)/);
+  assert.doesNotMatch(changed, /Canada \(CA\)/);
+  assert.match(changed, /Design code: OH-H01/);
+  assert.match(changed, /Quantity of interest \(optional\):/);
+});
+
+test("Enquiry drafts never invent a design code for research items without one", async () => {
+  const app = await storefront();
+  const product = app.window.GIM_PRODUCTS.find(p => !p.designId);
+  assert.ok(product);
+  app.document.dispatch("click", { closest: selector => selector === '[data-detail]' ? { dataset: { detail: String(product.id) } } : null });
+  const match = app.nodes.get("modalBody").innerHTML.match(/href="(mailto:[^"]+)"/);
+  const url = new URL(match[1].replace(/&amp;/g, "&"));
+  const body = url.searchParams.get("body");
+  assert.ok(body.includes("preview ID " + product.id));
+  assert.match(body, /Country \/ region: Canada \(CA\)/);
+  assert.doesNotMatch(body, /Design code:/);
+  assert.match(body, /no delivery date has been promised/);
+});
+
 test("Wishlist search uses the same collection and keyword search", async () => {
   const app = await storefront("#creators");
   for (const [query, expected] of [["oneheart", 18], ["one heart hoodies", 9], ["mountain collection", 9]]) {
