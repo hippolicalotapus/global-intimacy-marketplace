@@ -233,6 +233,7 @@
       '<div class="modal-controls"><button class="button button-ghost" type="button" data-fav="'+p.id+'">'+(favorites.includes(p.id)?"♥ Saved":"♡ Save")+'</button>'+
       '<button class="button button-ghost" type="button" data-wish="'+p.id+'">Add to wishlist demo</button>'+
       '<a class="button button-primary" href="'+esc(enquiryUrl(p))+'">Ask about pre-order</a></div></div>';
+    if(!el("productDialog").open){el("productDialog").scrollTop=0;el("modalBody").scrollTop=0;}
     el("productDialog").showModal();
   }
   function encodeShare(obj){
