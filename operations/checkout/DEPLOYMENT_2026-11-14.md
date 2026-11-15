@@ -1,3 +1,11 @@
+# GIM production checkpoint — mobile product details
+
+Latest production main:15d3de969aa47c034014fc7e08e8acc31fd6f2ce; tested development91f3062aa235202818c60813fb4378cad6308efd, tree1755cf31c7aa5ce55537eca46d86ebd170940902. Previous production/rollback source76c3b5b662d662acf17e7fdfae3fd32dcfc77c9b. Existing Netlify site and publication scope unchanged.
+
+112 tests passed. Live app.js/styles.css bytes match tested files. At320px Chromium, the original39px close scrolled to top-1663px; corrected44px control stayed visible at top84.4px with inner scroll1747px, outer scroll0, and no horizontal overflow. Closing and reopening the product resets inner scroll0 after showModal activation. Existing wrapped action layout, artwork and inactive checkout are preserved. This is mobile-width browser QA, not physical-device testing. No workflows manually dispatched.
+
+## Previous checkpoint (retained history)
+
 # GIM verified production checkpoint
 
 User authorized spending and deployment. Released exact tested tree 87273a487e401e031033fa7900128391fdd91940 through the existing GitHub-connected Netlify production branch.
