@@ -1,0 +1,42 @@
+name: Unified supplier preview checks
+on:
+  push:
+    branches:
+      - development/commerce-foundation-20261111
+    paths:
+      - 'operations/suppliers/build_unified_preview.py'
+      - 'tests/test_unified_supplier_preview.py'
+      - 'tests/test_supplier_review_page.py'
+      - 'tests/test_supplier_preview_feed.py'
+      - 'site/supplier-preview.json'
+      - 'site/supplier-review.html'
+      - '.github/workflows/unified-supplier-preview-tests.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'operations/suppliers/build_unified_preview.py'
+      - 'tests/test_unified_supplier_preview.py'
+      - 'tests/test_supplier_review_page.py'
+      - 'tests/test_supplier_preview_feed.py'
+      - 'site/supplier-preview.json'
+      - 'site/supplier-review.html'
+      - '.github/workflows/unified-supplier-preview-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run unified supplier preview regression tests
+        run: python -m unittest discover -s tests -p 'test_*supplier*preview*.py' -v
+      - name: Validate public supplier preview feed
+        run: python -m unittest discover -s tests -p 'test_supplier_preview_feed.py' -v
+      - name: Run supplier review page regression tests
+        run: python -m unittest discover -s tests -p 'test_supplier_review_page.py' -v

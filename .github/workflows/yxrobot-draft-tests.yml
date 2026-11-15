@@ -1,0 +1,26 @@
+name: Supplier draft and preview tests
+
+on:
+  push:
+    paths:
+      - 'operations/suppliers/build_yxrobot_drafts.py'
+      - 'tests/test_yxrobot_drafts.py'
+      - '.github/workflows/yxrobot-draft-tests.yml'
+  pull_request:
+    paths:
+      - 'operations/suppliers/build_yxrobot_drafts.py'
+      - 'tests/test_yxrobot_drafts.py'
+      - '.github/workflows/yxrobot-draft-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-draft-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate private YXROBOT draft importer
+        run: python3 -m unittest discover -s tests -p 'test_yxrobot_drafts.py' -v
