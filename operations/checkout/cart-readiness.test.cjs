@@ -9,3 +9,6 @@ test('invalid quantities and duplicate lines blocked',()=>{assert.equal(validate
 test('mixed currency blocked',()=>assert.equal(validateCart([{id:p.id,quantity:1},{id:'two',quantity:1}],[p,{...p,id:'two',currency:'USD'}]).reason,'mixed_currency'));
 test('overflow blocked',()=>assert.equal(validateCart([{id:p.id,quantity:20}],[{...p,priceCents:Number.MAX_SAFE_INTEGER}]).reason,'amount_overflow'));
 test('research-only catalogue is not sellable',()=>assert.equal(validateCart([{id:'candidate',quantity:1}],[{id:'candidate',name:'research only'}]).reason,'unverified_product'));
+
+test('zero-price candidate cannot become an approved sale',()=>assert.equal(validateCart([{id:p.id,quantity:1}],[{...p,priceCents:0}]).reason,'unverified_product'));
+test('whitespace-padded cart and catalogue IDs rejected',()=>{assert.equal(validateCart([{id:' approved-1',quantity:1}],[p]).reason,'invalid_cart_line');assert.equal(validateCart([{id:p.id,quantity:1}],[{...p,id:' approved-1'}]).reason,'invalid_catalogue')});
