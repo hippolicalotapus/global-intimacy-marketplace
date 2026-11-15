@@ -20,13 +20,14 @@ export function combineSnapshotManifests(core, images) {
   return { sourceCommit: core.sourceCommit, files: all };
 }
 
-export async function prepareAndTest({ core, images, destination, token, transfer, runner = defaultRunner }) {
+export async function prepareAndTest({ core, images, destination, token, transfer, preflight, runner = defaultRunner }) {
   const manifest = combineSnapshotManifests(core, images);
   const performTransfer = transfer || (await import('./materialize-storefront.mjs')).materializeStorefront;
   const snapshot = await performTransfer({ manifest, destination, token });
   if (snapshot.verified !== manifest.files.length || snapshot.missing !== 0 || snapshot.mismatched !== 0) {
     throw new Error('Incomplete verified storefront snapshot; refusing to run tests');
   }
+  if (preflight) await preflight(snapshot.directory, manifest);
   const code = await runner(snapshot.directory);
   return { sourceCommit: manifest.sourceCommit, verified: snapshot.verified, total: manifest.files.length, exitCode: code };
 }
