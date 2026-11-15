@@ -19,7 +19,7 @@ function buildSubscribedFixtureView({subscriptions,vendor,profile,listings=[],ev
   const baseline=buildFixtureVendorConsole({vendor,profile,listings,events,country,now});
   const approvedListings=listings.filter(item=>item.status==='approved').length;
   const subscription=subscriptions.entitlement({
-    vendorSlug:vendor.slug,sessionId,now,approvedStorefront:profile?.status==='approved',
+    vendorSlug:vendor.slug,sessionId,now,approvedStorefront:vendor.status==='approved'&&profile?.status==='approved',
     approvedListings
   });
   fail(subscription.vendorSlug===vendor.slug&&typeof subscription.canPublish==='boolean',
