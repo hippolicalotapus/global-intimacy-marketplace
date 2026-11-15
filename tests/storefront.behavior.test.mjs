@@ -43,7 +43,8 @@ async function storefront(hash = "", options = {}) {
     : selector === "[data-route]" ? links.filter(n => n.dataset.route)
     : selector === ".page" ? [...nodes.values()].filter(n => n.id.startsWith("view-")) : [];
   const storage = () => { const values = new Map(settings.country ? [["gim:country",settings.country]] : []); return { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) }; };
-  const location = { hash, href: "https://store.example/" + hash };
+  let fragment = hash;
+  const location = { get hash(){return fragment;}, set hash(value){fragment=value&&!value.startsWith("#")?"#"+value:value;}, href: "https://store.example/" + hash };
   const window = new Element("window");
   window.scrollTo = () => {};
   const local = settings.blockedStorage ? {getItem(){throw Error("blocked");},setItem(){throw Error("blocked");}} : storage();
@@ -143,7 +144,7 @@ test("ONE HEART details, favorites and shareable wishlist use real catalogue IDs
 test("Earlier community links open the combined interest area and its welcome", async () => {
   const app = await storefront("#gay-lesbian");
   assert.equal(app.document.title, "Explore Your Interests | Global Intimacy Marketplace");
-  assert.equal(app.location.hash, "explore-interests?group=community");
+  assert.equal(app.location.hash, "#explore-interests?group=community");
   assert.equal(app.nodes.get("interestCommunityWelcome").hidden, false);
   assert.equal(Number(app.nodes.get("unconventionalResultCount").textContent), 110);
   app.nodes.get("unconventionalSearch").value = "oneheart";
@@ -172,7 +173,7 @@ test("Header search reaches all products from another page and clears stale filt
   app.nodes.get("brandSelect").value = "Lovense";
   app.nodes.get("brandSelect").dispatch("change");
   app.search("oneheart");
-  assert.equal(app.location.hash, "results");
+  assert.equal(app.location.hash, "#results");
   assert.equal(app.count(), 18);
   assert.equal(app.nodes.get("brandSelect").value, "all");
   assert.equal(app.nodes.get("activeFilterSummary").hidden, false);
@@ -182,6 +183,32 @@ test("Header search reaches all products from another page and clears stale filt
   app.nodes.get("clearActiveFilters").dispatch("click");
   assert.equal(app.count(), 110);
   assert.equal(app.nodes.get("activeFilterSummary").hidden, true);
+});
+
+test("Live header search preserves typing focus when its results route opens", async () => {
+  const app = await storefront("#creators");
+  const input = app.nodes.get("searchInput"), title = app.nodes.get("catalogResultsTitle");
+  app.document.activeElement = input;
+  const before = title.focusCount || 0;
+  app.search("p");
+  app.location.hash = "#results";
+  app.window.dispatch("hashchange");
+  assert.equal(title.focusCount || 0, before, "route change must not interrupt typing");
+  app.search("paisley");
+  assert.equal(app.count(), 3);
+});
+
+test("Submitting header search focuses matching results even when the route is unchanged", async () => {
+  const app = await storefront("#results");
+  const input = app.nodes.get("searchInput"), title = app.nodes.get("catalogResultsTitle");
+  app.document.activeElement = input;
+  app.search("paisley");
+  const before = title.focusCount || 0;
+  app.nodes.get("storeSearchForm").dispatch("submit");
+  assert.equal(title.focusCount, before + 1);
+  assert.equal(title.focusOptions.preventScroll, true);
+  assert.match(title.textContent, /paisley/);
+  assert.equal(app.count(), 3);
 });
 
 test("Category menu links and select controls expose the same catalogue categories", async () => {
