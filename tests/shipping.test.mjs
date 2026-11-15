@@ -55,3 +55,16 @@ test("Supplier evidence must use valid date strings, never numeric or informal d
   assert.equal(shipping.status(p,"CA",now),"unknown",field+": "+String(bad));
  }
 });
+
+
+test("Impossible calendar dates cannot authorize delivery eligibility",()=>{
+ const fixtureForDate=()=>{const p=fixture();p.deliveryRules[0].checkedAt="2026-03-01";p.deliveryRules[0].validUntil="2026-12-31";return p;};
+ const comparisonTime=Date.parse("2026-03-05T00:00:00Z");
+ assert.equal(shipping.status(fixtureForDate(),"CA",comparisonTime),"eligible");
+ for(const date of ["2026-02-30","2026-04-31","2025-02-29","2026-00-15","2026-13-01","2026-02-30T00:00:00Z"]){
+  const p=fixtureForDate();p.deliveryRules[0].checkedAt=date;
+  assert.equal(shipping.status(p,"CA",comparisonTime),"unknown",date);
+ }
+ const leap=fixtureForDate();leap.deliveryRules[0].checkedAt="2024-02-29";
+ assert.equal(shipping.status(leap,"CA",comparisonTime),"eligible","real leap-day evidence stays eligible");
+});
