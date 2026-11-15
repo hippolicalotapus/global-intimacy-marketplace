@@ -276,7 +276,7 @@
   function renderGift(){
     var code=location.hash.slice(6);
     var data=decodeShare(code);
-    if(!data){el("giftAlias").textContent="Invalid or expired demo link";el("giftGrid").innerHTML='<p>This is not a valid preview wishlist. Ask the creator for a new link.</p>';return;}
+    if(!data){el("giftAlias").textContent="Invalid demo wishlist link";el("giftGrid").innerHTML='<p>This is not a valid preview wishlist. Ask the creator for a new link.</p>';return;}
     el("giftAlias").textContent=data.a;
     el("giftGrid").innerHTML=data.p.map(function(id){
       var p=byId.get(id);
