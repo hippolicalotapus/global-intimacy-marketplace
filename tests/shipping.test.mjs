@@ -19,3 +19,28 @@ test("Country eligibility cannot override unapproved resale, stock or order gate
  for(const gate of ["resellerApproved","stockVerified","canAcceptOrders"]){const p=fixture();p[gate]=false;assert.equal(shipping.status(p,"CA",now),"unknown",gate);}
  assert.equal(shipping.status({id:1},"CA",now),"unknown");
 });
+
+test("Missing or malformed product records fail closed without throwing",()=>{
+ for(const product of [null,undefined,false,0,"",[]]){
+  assert.equal(shipping.status(product,"CA",now),"unknown");
+ }
+});
+
+test("Malformed delivery rule entries fail closed without crashing the public preview",()=>{
+ for(const bad of [null,undefined,0,false,"",[]]){
+  const p=fixture();p.deliveryRules.push(bad);
+  assert.equal(shipping.status(p,"CA",now),"unknown",String(bad));
+ }
+});
+test("A country-level block remains authoritative even alongside corrupt delivery entries",()=>{
+ const p=fixture();p.deliveryRules.push(null,{country:"CA",status:"blocked"});
+ assert.equal(shipping.status(p,"CA",now),"blocked");
+});
+test("Malformed exclusion lists cannot authorize unreviewed delivery",()=>{
+ for(const key of ["excludedRegions","excludedPostcodes"]){
+  for(const bad of [null,{},true,0,""]){
+   const p=fixture();p.deliveryRules[0][key]=bad;
+   assert.equal(shipping.status(p,"CA",now),"unknown",key+":"+String(bad));
+  }
+ }
+});

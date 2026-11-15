@@ -263,7 +263,7 @@
         '<small>'+esc(deliveryLabel(p))+' · Gifting and purchase disabled</small></div></article>';
     }).join("");
   }
-  function navigate(){
+  function navigate(focusSearchResults){
     var hash=location.hash.slice(1), interestDeepLink=false;
     if(["unconventional","freaks-and-geeks","freaks-weirdos-deviants","gay-lesbian"].includes(hash)){
       hash=hash==="gay-lesbian"?"explore-interests?group=community":"explore-interests";
@@ -285,7 +285,7 @@
     if(view==="creators"){renderPicker();renderSelection();}
     if(view==="gift")renderGift();
     if(view==="explore-interests")renderUnconventional();
-    if(view==="shop"&&(hash==="catalog"||hash==="one-heart"||hash==="sarcastabastard"||hash==="results")){requestAnimationFrame(function(){el(hash==="results"?"catalogResults":"catalog").scrollIntoView({block:"start"});if(hash==="results")el("catalogResultsTitle").focus({preventScroll:true});});}
+    if(view==="shop"&&(hash==="catalog"||hash==="one-heart"||hash==="sarcastabastard"||hash==="results")){requestAnimationFrame(function(){el(hash==="results"?"catalogResults":"catalog").scrollIntoView({block:"start"});if(hash==="results"&&(focusSearchResults===true||document.activeElement!==el("searchInput")))el("catalogResultsTitle").focus({preventScroll:true});});}
     else if(view==="explore-interests"&&interestDeepLink)showInterestResults();
     else window.scrollTo({top:0,behavior:"instant"});
     document.title=(view==="shop"?"Explore":view==="explore-interests"?"Explore Your Interests":view.charAt(0).toUpperCase()+view.slice(1))+" | Global Intimacy Marketplace";
@@ -298,7 +298,7 @@
     updateDestination();
     window.addEventListener("gim:destinationchange",updateDestination);
     el("searchInput").addEventListener("input",runGlobalSearch);
-    el("storeSearchForm").addEventListener("submit",function(e){e.preventDefault();runGlobalSearch();});
+    el("storeSearchForm").addEventListener("submit",function(e){e.preventDefault();runGlobalSearch();navigate(true);});
     el("categorySelect").addEventListener("change",function(e){browseCategory(e.target.value);});
     el("clearActiveFilters").addEventListener("click",function(){selectCollection("All");});
     el("activeFilterChips").addEventListener("click",function(e){
