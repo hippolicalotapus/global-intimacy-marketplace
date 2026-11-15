@@ -48,3 +48,21 @@ test('reports a storefront test failure without masking it', async () => {
     runner:async()=>1});
   assert.equal(result.exitCode,1);
 });
+
+
+test('rejects unsafe paths and malformed file metadata before transfer', async () => {
+  const bad = [
+    {...images.files[0],path:'site/assets/apparel/../private.webp'},
+    {...images.files[0],path:'site/assets/apparel/./cards/oh-a01.webp'},
+    {...images.files[0],sha:'not-a-sha'},
+    {...images.files[0],size:-1},
+    {...images.files[0],size:1.5},
+  ];
+  for (const entry of bad) {
+    assert.throws(()=>combineSnapshotManifests(core,{...images,files:[entry]}),/Invalid storefront snapshot entry/);
+  }
+  assert.throws(()=>combineSnapshotManifests({...core,files:[{...core.files[0],path:'../outside.html'}]},images),/Invalid storefront snapshot entry/);
+  let transferred=false;
+  await assert.rejects(prepareAndTest({core,images:{...images,files:[bad[0]]},transfer:async()=>{transferred=true}}),/Invalid storefront snapshot entry/);
+  assert.equal(transferred,false);
+});
