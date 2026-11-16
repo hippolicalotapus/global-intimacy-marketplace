@@ -1,0 +1,119 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyVendor,moderateVendor,draftStorefront,moderateStorefront,submitListing,moderateListing,publicStorefront} from './vendor-storefront.mjs';
+
+const actor={id:'owner_001',active:true};
+const reviewer={id:'review_001',role:'platform_moderator',active:true};
+const vendor=moderateVendor(applyVendor({ownerId:'owner_001',displayName:'Real Vendor',slug:'real-vendor',country:'CA'}),reviewer,'approved',{legalEntity:true,eligibility:true,terms:true});
+const membership={active:true,userId:actor.id,vendorSlug:vendor.slug,role:'owner'};
+const profile=moderateStorefront(vendor,draftStorefront(vendor,actor,membership,'Legitimate fixture'),reviewer,'approved');
+const input={id:'sku_001',title:'Normal title',category:'Apparel',territories:['CA']};
+const listing=moderateListing(vendor,submitListing(vendor,actor,membership,input),reviewer,'approved',{mediaRights:true,resaleRights:true,compliance:true,territories:['CA']});
+const stocked={...listing,stock:4,inventoryUpdatedAt:new Date(2000000).toISOString()};
+
+test('public response must reject injected profile text and vendor name',()=>{
+  assert.equal(publicStorefront(vendor,{...profile,name:'<script>alert(1)</script>'},[stocked],'CA',2000000),null);
+  assert.equal(publicStorefront(vendor,{...profile,description:'<img src=x onerror=1>'},[stocked],'CA',2000000),null);
+});
+test('public response must reject malformed vendor slug',()=>{
+  assert.equal(publicStorefront({...vendor,slug:'../forged'}, {...profile,vendorSlug:'../forged'},[{...stocked,vendorSlug:'../forged'}],'CA',2000000),null);
+});
+test('public response never emits unapproved listings even if stock appears fresh',()=>{
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,status:'pending'}],'CA',2000000).products.length,0);
+});
+test('moderation rejects malicious user-facing titles and categories',()=>{
+  assert.throws(()=>submitListing(vendor,actor,membership,{...input,title:'Bad\u0000Title'}));
+  assert.throws(()=>submitListing(vendor,actor,membership,{...input,category:'<b>unsafe</b>'}));
+});
+
+test('storefront reviewer rejects forged draft fields before approval',()=>{
+  const draft=draftStorefront(vendor,actor,membership,'Legitimate fixture');
+  assert.throws(()=>moderateStorefront(vendor,{...draft,name:'<script>'},reviewer,'approved'));
+  assert.throws(()=>moderateStorefront(vendor,{...draft,description:'<img>'},reviewer,'approved'));
+  assert.throws(()=>moderateStorefront(vendor,{...draft,submittedBy:'../other'},reviewer,'approved'));
+  assert.throws(()=>moderateStorefront(vendor,{...draft,name:'Other Vendor'},reviewer,'approved'));
+});
+
+test('listing reviewer rejects forged metadata and requested territories',()=>{
+  const draft=submitListing(vendor,actor,membership,input);
+  const evidence={mediaRights:true,resaleRights:true,compliance:true,territories:['CA']};
+  for (const change of [
+    {title:'<script>'}, {category:'<img>'}, {id:'../escape'},
+    {submittedBy:'../other'}, {requestedTerritories:['ca']},
+    {requestedTerritories:['CA','CA']}, {requestedTerritories:[]},
+    {requestedTerritories:null}
+  ]) assert.throws(()=>moderateListing(vendor,{...draft,...change},reviewer,'approved',evidence));
+});
+
+test('reviewer identity is recorded and required for public fixture projection',()=>{
+  assert.equal(profile.reviewedBy,reviewer.id);
+  assert.equal(listing.reviewedBy,reviewer.id);
+  assert.equal(publicStorefront(vendor,{...profile,reviewedBy:undefined},[stocked],'CA',2000000),null);
+  assert.equal(publicStorefront(vendor,{...profile,reviewedBy:actor.id},[stocked],'CA',2000000),null);
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,reviewedBy:undefined}],'CA',2000000).products.length,0);
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,reviewedBy:actor.id}],'CA',2000000).products.length,0);
+});
+
+test('forged onboarding and cross-tenant editors fail closed',()=>{
+  const pending=applyVendor({ownerId:'owner_001',displayName:'Real Vendor',slug:'real-vendor',country:'CA'});
+  const evidence={legalEntity:true,eligibility:true,terms:true};
+  for(const altered of [{ownerId:'../bad'}, {slug:'../other'}, {displayName:'<img>'}, {country:'bad'}]){
+    assert.throws(()=>moderateVendor({...pending,...altered},reviewer,'approved',evidence));
+  }
+  assert.throws(()=>draftStorefront(vendor,actor,{...membership,vendorSlug:'other-vendor'},'Wrong tenant'));
+  assert.throws(()=>submitListing(vendor,actor,{...membership,role:'viewer'},input));
+  assert.throws(()=>moderateListing(vendor,{...listing,status:'pending',vendorSlug:'other-vendor'},reviewer,'approved',{mediaRights:true,resaleRights:true,compliance:true,territories:['CA']}));
+});
+
+test('approval gate refuses stale or unauthorized display even after review',()=>{
+  assert.equal(publicStorefront({...vendor,status:'suspended'},profile,[stocked],'CA',2000000),null);
+  assert.equal(publicStorefront(vendor,{...profile,status:'draft'},[stocked],'CA',2000000),null);
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,territories:['US']}],'CA',2000000).products.length,0);
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,mediaRights:false}],'CA',2000000).products.length,0);
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,inventoryUpdatedAt:new Date(0).toISOString()}],'CA',2000000).products.length,0);
+});
+
+test('vendor owner cannot moderate own storefront or listing through a moderator role',()=>{
+  const ownerModerator={id:actor.id,role:'platform_moderator',active:true};
+  const manager={id:'manager_001',active:true};
+  const managerMember={userId:manager.id,vendorSlug:vendor.slug,active:true,role:'manager'};
+  const otherDraft=draftStorefront(vendor,manager,managerMember,'Manager-created draft');
+  const otherListing=submitListing(vendor,manager,managerMember,{...input,id:'sku_002'});
+  assert.throws(()=>moderateStorefront(vendor,otherDraft,ownerModerator,'approved'));
+  assert.throws(()=>moderateListing(vendor,otherListing,ownerModerator,'approved',{mediaRights:true,resaleRights:true,compliance:true,territories:['CA']}));
+  assert.equal(moderateStorefront(vendor,otherDraft,reviewer,'approved').status,'approved');
+  assert.equal(moderateListing(vendor,otherListing,reviewer,'approved',{mediaRights:true,resaleRights:true,compliance:true,territories:['CA']}).status,'approved');
+});
+
+test('moderation is one-way and cannot approve rejected or already reviewed records',()=>{
+  const draft=draftStorefront(vendor,actor,membership,'Once only');
+  const listingDraft=submitListing(vendor,actor,membership,{...input,id:'sku_003'});
+  const evidence={mediaRights:true,resaleRights:true,compliance:true,territories:['CA']};
+  for (const decision of ['approved','rejected']) {
+    const reviewedStorefront=moderateStorefront(vendor,draft,reviewer,decision);
+    const reviewedListing=moderateListing(vendor,listingDraft,reviewer,decision,evidence);
+    assert.throws(()=>moderateStorefront(vendor,reviewedStorefront,reviewer,'approved'));
+    assert.throws(()=>moderateListing(vendor,reviewedListing,reviewer,'approved',evidence));
+  }
+  const application=applyVendor({ownerId:'owner_001',displayName:'Once Vendor',slug:'once-vendor',country:'CA'});
+  const reviewed=moderateVendor(application,reviewer,'rejected');
+  assert.throws(()=>moderateVendor(reviewed,reviewer,'approved',{legalEntity:true,eligibility:true,terms:true}));
+});
+
+test('cross-tenant drafts and inactive moderators cannot authorize approvals',()=>{
+  const otherVendor=moderateVendor(applyVendor({ownerId:'owner_002',displayName:'Other Vendor',slug:'other-vendor',country:'CA'}),reviewer,'approved',{legalEntity:true,eligibility:true,terms:true});
+  const draft=draftStorefront(vendor,actor,membership,'Current tenant');
+  const item=submitListing(vendor,actor,membership,{...input,id:'sku_004'});
+  const evidence={mediaRights:true,resaleRights:true,compliance:true,territories:['CA']};
+  assert.throws(()=>moderateStorefront(otherVendor,draft,reviewer,'approved'));
+  assert.throws(()=>moderateListing(otherVendor,item,reviewer,'approved',evidence));
+  assert.throws(()=>moderateStorefront(vendor,draft,{...reviewer,active:false},'approved'));
+  assert.throws(()=>moderateListing(vendor,item,{...reviewer,active:false},'approved',evidence));
+  assert.throws(()=>moderateStorefront(vendor,draft,{...reviewer,role:'vendor_manager'},'approved'));
+  assert.throws(()=>moderateListing(vendor,item,{...reviewer,role:'vendor_manager'},'approved',evidence));
+});
+
+test('public fixture output excludes owner-reviewed forged approvals',()=>{
+  assert.equal(publicStorefront(vendor,{...profile,reviewedBy:actor.id},[stocked],'CA',2000000),null);
+  assert.equal(publicStorefront(vendor,profile,[{...stocked,reviewedBy:actor.id}],'CA',2000000).products.length,0);
+});

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; connect-src 'none'; img-src 'none'; frame-ancestors 'none'">
+<title>GIM fictional vendor dashboard — local demo only</title>
+<style>
+:root{font:16px/1.5 system-ui,sans-serif;color:#e9edf5;background:#101726}
+*{box-sizing:border-box}body{margin:0;padding:clamp(1rem,4vw,3rem)}
+main{max-width:860px;margin:auto;background:#1d2940;border:1px solid #455570;border-radius:20px;padding:clamp(1rem,3vw,2rem)}
+h1{font-size:clamp(1.6rem,4vw,2.4rem);margin:.1em 0}.demo-label{color:#fdd781;font-weight:700;letter-spacing:.08em;font-size:.8rem}
+nav,.filters{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.5rem 0}
+button{cursor:pointer;border:1px solid #8497b7;color:#fff;background:#263755;border-radius:8px;padding:.7rem 1rem;font:inherit}
+button[aria-pressed=true]{background:#d6eaff;color:#091a30;border-color:#d6eaff;font-weight:700}
+button:focus-visible{outline:3px solid #fdd781;outline-offset:3px}
+#vendor-panel{border-top:1px solid #455570;padding-top:1rem;min-height:230px}
+ul,ol{padding-left:1.4rem}li{margin:.65rem 0}li span{color:#bdd0e8}dl{display:grid;grid-template-columns:max-content 1fr;gap:.5rem 1rem}dt{font-weight:700}
+footer{max-width:860px;margin:1rem auto;color:#aebdda;font-size:.9rem}
+@media(max-width:420px){nav,.filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}nav button,.filters button{min-width:0;padding:.7rem .5rem}dl{grid-template-columns:minmax(0,1fr);gap:0}dt{margin-top:.6rem}dd{margin:0}}
+</style>
+</head>
+<body>
+<main id="demo"><p>Loading fictional offline vendor dashboard…</p></main>
+<footer>This standalone file is a development fixture. It has no login, checkout, storage, server connection, or live moderation actions.</footer>
+<script type="module" src="./vendor-fixture-dashboard-demo.mjs"></script>
+</body>
+</html>

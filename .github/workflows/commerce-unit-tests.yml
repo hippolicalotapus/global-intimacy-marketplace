@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - development/commerce-foundation-20261111
+      - 'automation/gim-vendor-moderation-*'
     paths:
       - 'operations/commerce/**'
       - 'tests/checkout-*.test.mjs'
