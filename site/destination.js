@@ -10,15 +10,15 @@
   function escape(value) { return String(value).replace(/[&<>"']/g, function(c) {return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
   function notify() { window.dispatchEvent(new CustomEvent("gim:destinationchange")); }
   function chosen() { return country; }
-  function include(product) { return !!country && (shipping.status(product, country) === "eligible" || (previews && shipping.status(product, country) !== "blocked")); }
+  function include(product) { return !!country && (previews || shipping.status(product, country) === "eligible"); }
   function label(product) { return shipping.label(product, country, name(country)); }
   function updateSummary() {
     el("countryCurrent").textContent = "Country: " + name(country) + " · Change";
     el("previewMode").checked = previews;
-    el("destinationSummary").textContent = previews ? "Research previews for " + name(country) + " — delivery is not promised."
+    el("destinationSummary").textContent = previews ? "Worldwide research previews for " + name(country) + " — some products are restricted or unconfirmed. No delivery is promised."
       : "Showing only products with confirmed delivery eligibility for " + name(country) + ".";
     var confirmed = (window.GIM_PRODUCTS || []).filter(function(p){return shipping.status(p,country)==="eligible";}).length;
-    el("destinationNote").textContent = previews ? "Preview mode includes unconfirmed concepts. Nothing can be purchased or gifted in this beta."
+    el("destinationNote").textContent = previews ? "Worldwide browsing includes restricted and unconfirmed concepts. Nothing can be purchased or gifted in this beta."
       : confirmed ? confirmed + " products have country-level delivery confirmation. The final address is checked before any future order." : "No purchasable products are confirmed yet. You can explore unconfirmed research previews separately below.";
   }
   function open() {
