@@ -61,8 +61,14 @@
   }
   function card(p) {
     var saved=favorites.includes(p.id);
+    var destination=window.GIMDestination;
+    var deliveryState=destination && window.GIMShipping ? window.GIMShipping.status(p,destination.country()) : "unknown";
+    var unavailable=deliveryState!=="eligible";
+    var restrictionText=deliveryState==="blocked"?"Not deliverable to ":"Delivery not confirmed for ";
+    var restrictionLabel=restrictionText+(destination?destination.name():"selected country");
     return '<article class="product-card">'+
-      '<div class="product-visual '+(p.previewImage?"visual-oneheart ":"")+(p.temporaryIllustration?"visual-drawing ":"")+visualClass(p)+'">'+
+      '<div class="product-visual '+(unavailable?"delivery-unavailable ":"")+(p.previewImage?"visual-oneheart ":"")+(p.temporaryIllustration?"visual-drawing ":"")+visualClass(p)+'">'+
+      (unavailable?'<span class="delivery-restriction-badge">'+esc(restrictionLabel)+'</span>':"")+
       '<span class="tag">'+esc(p.category)+'</span>'+
       '<button type="button" class="fav-button'+(saved?" is-saved":"")+'" data-fav="'+p.id+'" aria-label="'+(saved?"Remove from":"Add to")+' saved items" aria-pressed="'+saved+'">'+(saved?"♥":"♡")+'</button>'+
       '<span class="product-mark">'+(p.previewImage?'<img class="product-preview-image" src="'+esc(p.previewImage)+'" alt="'+esc(p.previewImageAlt)+'" loading="lazy" decoding="async" width="307" height="438">' : mark(p))+'</span></div>'+
