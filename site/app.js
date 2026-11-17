@@ -209,7 +209,11 @@
     var focusContainer=restoreFocus?active.closest("#productGrid, #favoritesGrid, #unconventionalGrid"):null;
     favorites=favorites.includes(id)?favorites.filter(function(x){return x!==id;}):favorites.concat(id);
     saveJson("gim:favorites",favorites);renderCatalog();renderFavorites();renderUnconventional();
-    if(focusContainer){var replacement=focusContainer.querySelector('[data-fav="'+id+'"]');if(replacement)replacement.focus({preventScroll:true});}
+    if(focusContainer){
+      var replacement=focusContainer.querySelector('[data-fav="'+id+'"]');
+      if(!replacement&&focusContainer.id==="favoritesGrid")replacement=focusContainer.querySelector("[data-fav]")||el("favoritesEmpty").querySelector("a");
+      if(replacement)replacement.focus({preventScroll:true});
+    }
     notify(favorites.includes(id)?"Saved to your favorites.":"Removed from favorites.");
   }
   function wishlist(id){
