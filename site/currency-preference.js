@@ -5,7 +5,7 @@
   if(typeof module==="object"&&module.exports)module.exports=api;
   else {root.GIMCurrencyPreference=api;if(root.document){if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",api.init);else api.init();}}
 }(typeof window!=="undefined"?window:globalThis,function(){
-  var defaults={CA:"CAD",US:"USD",GB:"GBP",AU:"AUD",NZ:"NZD",JP:"JPY",CH:"CHF",IN:"INR",MX:"MXN",BR:"BRL",ZA:"ZAR",AE:"AED",SG:"SGD",DE:"EUR",FR:"EUR",ES:"EUR",IT:"EUR",NL:"EUR",IE:"EUR",BE:"EUR",AT:"EUR",PT:"EUR",FI:"EUR",GR:"EUR"};
+  var defaults={CA:"CAD",US:"USD",GB:"GBP",AU:"AUD",JP:"JPY",DE:"EUR",FR:"EUR",ES:"EUR",IT:"EUR",NL:"EUR",IE:"EUR",BE:"EUR",AT:"EUR",PT:"EUR",FI:"EUR",GR:"EUR"};
   function defaultFor(code){return defaults[String(code||"").toUpperCase()]||null;}
   function resolve(country,override){return override&&override!=="auto"?override:defaultFor(country);}
   function init(){
