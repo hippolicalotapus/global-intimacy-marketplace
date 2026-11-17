@@ -219,8 +219,13 @@
   function wishlist(id){
     if(!byId.has(id))return;
     if(!selected.includes(id)&&selected.length>=24){notify("Demo wishlists support up to 24 items.");return;}
+    var active=document.activeElement;
+    var focusPicker=active&&active.matches("#wishlistPicker [data-wish]")&&Number(active.dataset.wish)===id;
+    var focusRemoval=active&&active.matches("#selectedWishItems [data-remove]")&&Number(active.dataset.remove)===id;
     selected=selected.includes(id)?selected.filter(function(x){return x!==id;}):selected.concat(id);
     saveJson("gim:wishlist",selected);renderPicker();renderSelection();
+    if(focusPicker){var next=el("wishlistPicker").querySelector('[data-wish="'+id+'"]');if(next)next.focus({preventScroll:true});}
+    else if(focusRemoval){var nextRemoval=el("selectedWishItems").querySelector("[data-remove]")||el("wishlistSearch");nextRemoval.focus({preventScroll:true});}
     notify(selected.includes(id)?"Added to wishlist preview.":"Removed from wishlist preview.");
   }
   function detailVisual(p,view){
