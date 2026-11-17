@@ -1,0 +1,5 @@
+/* Country delivery preview: deliberately subtle 1px translucent diagonal lines. */
+.product-visual.delivery-unavailable{position:relative;isolation:isolate}
+.product-visual.delivery-unavailable::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;background:repeating-linear-gradient(135deg,transparent 0,transparent 33px,rgba(173,36,48,.22) 33px,rgba(173,36,48,.22) 34px,transparent 34px,transparent 68px)}
+.delivery-restriction-badge{position:absolute;z-index:3;left:8px;bottom:8px;max-width:calc(100% - 16px);background:rgba(27,24,31,.87);color:#fff;font-size:.7rem;line-height:1.3;padding:5px 8px;border-radius:6px;pointer-events:none}
+@media(forced-colors:active){.product-visual.delivery-unavailable::after{display:none}.delivery-restriction-badge{border:1px solid CanvasText}}
