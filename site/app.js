@@ -328,6 +328,11 @@
     });
     el("clearFilters").addEventListener("click",function(){selectCollection("All");});
     el("openSearchBtn").addEventListener("click",function(){el("searchInput").focus();});
+    el("shopMenu").addEventListener("keydown",function(e){
+      if(e.key==="Escape"&&el("shopMenu").open){
+        e.preventDefault();el("shopMenu").open=false;el("shopMenu").querySelector("summary").focus();
+      }
+    });
     document.addEventListener("click",function(e){
       var fav=e.target.closest("[data-fav]"),wish=e.target.closest("[data-wish]"),detail=e.target.closest("[data-detail]"),remove=e.target.closest("[data-remove]"),browse=e.target.closest("[data-browse-category]");
       if(fav){favorite(Number(fav.dataset.fav));if(el("productDialog").open)details(Number(fav.dataset.fav));}
