@@ -22,6 +22,7 @@
 <script src="globe-3d.js" defer></script>
 <script src="globe-software.js" defer></script>
 <script src="destination.js" defer></script>
+<script src="currency-preference.js" defer></script>
 <script src="ruby-welcome.js" defer></script>
 <script src="app.js" defer></script>
 <link rel="stylesheet" href="product-drawings.css">
@@ -87,8 +88,8 @@
   </div>
   <div class="global-search-inner"><details class="shop-menu" id="shopMenu"><summary>Categories <span aria-hidden="true">⌄</span></summary><nav id="shopCategoryLinks" aria-label="Product categories"></nav></details><form id="storeSearchForm" role="search"><label class="search-box"><span aria-hidden="true">⌕</span><span class="sr-only">Search products</span><input id="searchInput" type="search" placeholder="Search products, brands or design codes…" autocomplete="off"></label><button type="submit" class="button button-primary">Search</button></form></div>
 </header>
-<div class="destination-bar"><button id="countryCurrent" type="button">Choose country</button><span id="destinationSummary" role="status"></span></div>
-<div class="destination-controls site-width"><p id="destinationNote"></p><label><input id="previewMode" type="checkbox"> Explore unconfirmed research previews</label></div>
+<div class="destination-bar"><button id="countryCurrent" type="button">Choose country</button><label for="displayCurrency">Display currency <select id="displayCurrency" aria-label="Preferred display currency"><option value="auto">Country default</option><option value="CAD">CAD</option><option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="AUD">AUD</option><option value="JPY">JPY</option></select></label><span id="destinationSummary" role="status"></span></div>
+<div class="destination-controls site-width"><p id="destinationNote"></p><label><input id="previewMode" type="checkbox"> Browse worldwide (includes unavailable products)</label></div>
 <main id="main" tabindex="-1">
   <section class="page active" id="view-shop" aria-labelledby="heroTitle">
     <div class="hero site-width">
