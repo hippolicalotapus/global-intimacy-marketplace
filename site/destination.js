@@ -35,7 +35,8 @@
   }
   function enter(code) {
     if (!byCode.has(code)) { el("countryStatus").textContent = "Choose a country from the globe or list first."; return false; }
-    country = code; previews = false;
+    country = code;
+    try { localStorage.setItem("gim:previews", String(previews)); } catch(e) {}
     try { localStorage.setItem("gim:country", country); } catch (e) { /* Session selection still works without storage. */ }
     el("countryEntrance").hidden = true; el("storeShell").hidden = false;
     updateSummary(); notify(); el("main").focus(); return true;
@@ -72,7 +73,7 @@
     else el("countryStatus").textContent="For islands and small regions, choose the country from the list below.";
   }
   function init() {
-    try { var saved=localStorage.getItem("gim:country"); if(byCode.has(saved))country=saved; }catch(e){}
+    try { var saved=localStorage.getItem("gim:country"); if(byCode.has(saved))country=saved; previews=localStorage.getItem("gim:previews")==="true"; }catch(e){}
     updateChoices(""); updateSelection(country); updateSummary();
     el("countryEntrance").hidden=!!country; el("storeShell").hidden=!country;
     el("countrySearch").addEventListener("input",function(e){updateChoices(e.target.value);});
@@ -80,8 +81,8 @@
     el("countryForm").addEventListener("submit",function(e){e.preventDefault();enter(el("countrySelect").value);});
     el("countryCurrent").addEventListener("click",open);
     el("cancelCountry").addEventListener("click",function(){el("countryEntrance").hidden=true;el("storeShell").hidden=false;if(returnFocus)returnFocus.focus();});
-    el("previewMode").addEventListener("change",function(e){previews=!!e.target.checked;updateSummary();notify();});
-    el("showResearchPreviews").addEventListener("click",function(){previews=true;updateSummary();notify();location.hash="catalog";});
+    el("previewMode").addEventListener("change",function(e){previews=!!e.target.checked;try{localStorage.setItem("gim:previews",String(previews));}catch(e){}updateSummary();notify();});
+    el("showResearchPreviews").addEventListener("click",function(){previews=true;try{localStorage.setItem("gim:previews","true");}catch(e){}updateSummary();notify();location.hash="catalog";});
     canvas=el("countryGlobe");
     try {
       try{renderer=window.GIMGlobe3D.create(canvas,world);}
