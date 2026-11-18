@@ -1,4 +1,4 @@
-# Development continuity — GIM / RDS / MMS
+# Development continuity — GIM / RDS / MMS / Boots Forward
 
 Last verified: 2026-11-18. This is a cross-project handoff, not a substitute for source control or CI results.
 
@@ -25,6 +25,12 @@ Last verified: 2026-11-18. This is a cross-project handoff, not a substitute for
 - Change: index.html handles localStorage save failures for character and campaign; existing JSON export retained.
 - Verification: 8/8 static source checks; browser denied-storage and complete suite NOT verified.
 - Next: browser-test save success, denied-storage messages, reload, and JSON export.
+
+## Boots Forward (formerly All Aboard)
+- Status: active development project; repository and development branch not yet verified through the connected GitHub installation. Do not invent a repository or overwrite another project's code.
+- Product focus: Android-first field safety/FLHA workflows, read-only ArcGIS Field Maps integration, environmental/ROW and pipeline-crossing checks, offline resilience and field usability.
+- Employer/McElhanney/ATCO systems and information are strictly read-only: no create/update/delete, configuration changes, permission changes, or writes to company data. Do not export or share confidential employer information without separate authorization.
+- Next: identify the actual repository and current verified checkpoint, inspect existing tests and code, then continue from committed source. Keep integrations read-only and never commit credentials.
 
 ## Operating rules
 1. Verify actual branch HEAD and source before editing; do not rebuild existing features.
