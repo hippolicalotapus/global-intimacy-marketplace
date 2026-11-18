@@ -16,7 +16,8 @@ Last verified: 2026-11-18. This is a cross-project handoff, not a substitute for
 - Source: app.js fetches catalogue/launch-27.json in init(). Failure sets status text and provides no retry. Event listeners are registered inside successful init(); retry must not register duplicate listeners.
 - An isolated local 503-then-200 retry prototype reportedly passed 2/2 Node tests; NOT integrated into the full app, and original 77-test suite has NOT been rerun.
 - Preserve exactly 27 sale-disabled products, approved art, small chest print, wishlist/studio safeguards.
-- Next: recover full source in small GitHub connector batches without repeating blocked DNS clone; integrate retry; run original Node suite and Chromium 503 recovery; commit only verified passing changes.
+- New RDS development branch: development/catalogue-retry-20261118 at a1ada406150f68f24319aebf17d232d50fa477c6. Actual app.js retry integrated with loading and listener guards; 8/8 static integrity checks passed. Original 77-test suite and Chromium 503 recovery NOT yet verified; do not merge or deploy until they pass.
+- Next: run original Node suite and Chromium 503 recovery, verify no duplicate listeners, then promote only after passing.
 
 ## MMS / QuestForge
 - Repository: hippolicalotapus/QuestForge
